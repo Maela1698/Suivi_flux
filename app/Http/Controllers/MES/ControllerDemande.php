@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\MES\SuiviFluxMes;
 use App\Models\MES\VDemande;
 use App\Models\MES\VDestRecap;
+use App\Models\MES\VGeneralFinalRecap;
 use App\Models\MES\VListeOF;
 use App\Models\Saison;
 use App\Models\Tiers;
@@ -23,7 +24,7 @@ class ControllerDemande extends Controller
 
         // where = 2 puisque les demande dont l'etat = 2 
         // sont consideres comme confirmee
-        $demandesConfirmes = VDemande::where('id_etat', 2)->orderBy('id');
+        $demandesConfirmes = VDemande::where('id_etat', 2)->where('etat',0)->orderBy('id');
         
         $selectedTier = null;
         if ($request->has('id_tier') && $request->id_tier != '') {
@@ -48,7 +49,7 @@ class ControllerDemande extends Controller
     }
 
     public function getFicheDemandeConfirme($id){
-        $demandeConfirme = VDemande::find($id);
+        $demandeConfirme = VGeneralFinalRecap::find($id);
         // automatiquement, une commande validee va 
         // directement dans le view v_dest_recap.
         // il faut qu'au moins on repartie une taille 
@@ -71,10 +72,11 @@ class ControllerDemande extends Controller
         $qteof = $request->input('qteof');
         $iddemandeclient = $request->input('iddemandeclient');
         $id_destination = $request->input('id_destination');
+        $date_livraison_confirme = $request->input('date_livraison_confirme');
         $dateOper = Carbon::now()->format('Y-m-d');
         $checkbox = $request->input('checkbox',[]);
         foreach ($checkbox as $id) {
-            if (isset($numerocommande[$id], $uniteTaille[$id], $qteof[$id], $iddemandeclient[$id], $id_destination[$id])) {
+            if (isset($numerocommande[$id], $uniteTaille[$id], $qteof[$id], $iddemandeclient[$id], $id_destination[$id], $date_livraison_confirme[$id])) {
                 $suivi = new SuiviFluxMes();
                 $suivi->insertSuiviFlux(
                     $dateOper,
@@ -83,7 +85,8 @@ class ControllerDemande extends Controller
                     $qteof[$id],
                     $couleur,
                     $uniteTaille[$id],
-                    $id_destination[$id]
+                    $id_destination[$id],
+                    $date_livraison_confirme[$id]
                 );
             }
         }

@@ -61,7 +61,14 @@ class ControllerSuiviFlux extends Controller
             $condition = $condition." order by id desc";
         }
         $suivi = SuiviFluxMes::getAllSuiviFluxMes($condition);
+        $now = now();
 
+        foreach ($suivi as $s) {
+            $s->diff_date = self::diff_date($now, $s->ex_factory);
+            $s->pourcentage = self::getPourcentageByDifferenceDate($s->date_livraison_confirme, $s->ex_factory, $now);
+        }
+
+        
 
         return view('MES.suivi.flux.listeSuiviFlux',compact('idStyle','idTiers','modele','of','endEntree','startEntree','suivi','qte_po','qte_coupe','qte_entree_chaine','qte_transfere','qte_pret_livrer','qte_deja_livrer','entree_repassage','sortie_repassage','balanceatransferer','balancealivrer','balancerepassage'));
     }
@@ -80,6 +87,35 @@ class ControllerSuiviFlux extends Controller
         $dateActuelle = Carbon::now()->format('Y-m-d');
         SuiviFluxMes::updateSuiviFluxMes($dateActuelle, $qteCoupe, $qteEntreeChaine, $qteTransferes, $pretALivrer, $qteDejaLivre, $entreeRepassage, $sortieRepassage, $commentaire, $idSuivi);
         return redirect()->route('MES.suiviFlux');
+    }
+
+    public static function diff_date($date1, $date2){
+        $date1 = Carbon::parse($date1);
+        $date2 = Carbon::parse($date2);
+
+        $diff = $date1->diffInDays($date2); // Différence en jours (toujours positive)
+        $etat = $date2 >= $date1; // true si la deuxième date est après ou égale à la première
+        return [
+            'diff' => $diff,
+            'etat' => $etat
+        ];
+    }
+
+    public static function getPourcentageByDifferenceDate($dateConfirmeDemande,$dateLivrason,$today){
+        $dateConfirmeDemande = Carbon::parse($dateConfirmeDemande);
+        $dateLivrason = Carbon::parse($dateLivrason);
+        $today = Carbon::parse($today);
+
+        $diff = $dateConfirmeDemande->diffInDays($dateLivrason);
+        // dump($diff);
+        $dateReste = $today->diffInDays($dateLivrason);
+        $dateVita = $diff - $dateReste;
+
+        $pourcentage = 100; 
+        if($diff != 0){
+            $pourcentage = ($dateVita / $diff) * 100;
+        }
+        return $pourcentage;
     }
 
 }
