@@ -55,6 +55,14 @@ class ControllerSuiviFlux extends Controller
         $balancealivrer = SuiviFluxMes::sommeBalanceALivrer($condition);
         $balancerepassage = SuiviFluxMes::sommeBalanceRepassage($condition);
         $qte_po = SuiviFluxMes::sommeQtePo($condition);
+        $qteRejetChaine = SuiviFluxMes::sommeRejetChaine($condition);
+        $qteRejetCoupe = SuiviFluxMes::sommeRejetCoupe($condition);
+        $pourcentageCoupe = ($qte_coupe/$qte_po)*100;
+        $pourcentageExpediee = ($qte_deja_livrer/$qte_coupe)*100;
+        $pourcentageBoxing = ($qte_pret_livrer/$qte_coupe)*100;
+        $pourcentageRepassage = ($sortie_repassage/$qte_coupe)*100;
+        $pourcentageRejetCoupe = ($qteRejetCoupe/$qte_coupe)*100;
+        $pourcentageRejetChaine = ($qteRejetChaine/$qte_coupe)*100;
         if($condition == ""){
             $condition = " order by id desc limit 100";
         }else{
@@ -70,7 +78,7 @@ class ControllerSuiviFlux extends Controller
 
         
 
-        return view('MES.suivi.flux.listeSuiviFlux',compact('nomStyle','nomTiers','idStyle','idTiers','modele','of','endEntree','startEntree','suivi','qte_po','qte_coupe','qte_entree_chaine','qte_transfere','qte_pret_livrer','qte_deja_livrer','entree_repassage','sortie_repassage','balanceatransferer','balancealivrer','balancerepassage'));
+        return view('MES.suivi.flux.listeSuiviFlux',compact('pourcentageExpediee','pourcentageRepassage','pourcentageRejetChaine','pourcentageRejetCoupe','pourcentageBoxing','pourcentageCoupe','nomStyle','nomTiers','idStyle','idTiers','modele','of','endEntree','startEntree','suivi','qte_po','qte_coupe','qte_entree_chaine','qte_transfere','qte_pret_livrer','qte_deja_livrer','entree_repassage','sortie_repassage','balanceatransferer','balancealivrer','balancerepassage'));
     }
 
     public function modificationSuiviMes(Request $request)

@@ -135,4 +135,15 @@ class SuiviFluxMes extends Model
     }
 
 
+    public static function sommeRejetChaine($condition)
+    {
+        $select = DB::select("select sum(qte_rejet_chaine) as somme from v_suiviFluxMes where 1=1 ".$condition);
+        return $select[0]->somme ?? 0;
+    }
+
+    public static function sommeRejetCoupe($condition)
+    {
+        $select = DB::select("select sum(qte_rejet_coupe) as somme from v_suiviFluxMes where 1=1 ".$condition);
+        return $select[0]->somme ?? 0;
+    }
 }

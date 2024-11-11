@@ -13,34 +13,70 @@ create table suiviFluxMes(
     couleur VARCHAR(255),
     entree_repassage double precision,
     sortie_repassage double precision,
-    commentaire text
+    commentaire text,
+    qte_rejet_coupe DOUBLE precision DEFAULT 0,
+    qte_rejet_chaine double precision DEFAULT 0,
+    etat int DECIMAL 0
 );
 alter table suiviFluxMes add foreign key(id_demande_client) references demandeclient(id);
 alter table suiviFluxMes add foreign key(id_taille) references unitetaille(id);
 
 
-CREATE OR REPLACE VIEW v_suiviFluxMes AS
+CREATE OR REPLACE VIEW public.v_suivifluxmes
+AS
 SELECT
-    suiviFluxMes.*,
+    suivifluxmes.id,
+    suivifluxmes.date_operaton,
+    suivifluxmes.id_demande_client,
+    suivifluxmes.numero_commande,
+    COALESCE(suivifluxmes.qte_coupe, 0::double precision) AS qte_coupe,
+    COALESCE(suivifluxmes.qte_entree_chaine, 0::double precision) AS qte_entree_chaine,
+    COALESCE(suivifluxmes.qte_transfere, 0::double precision) AS qte_transfere,
+    COALESCE(suivifluxmes.qte_pret_livrer, 0::double precision) AS qte_pret_livrer,
+    COALESCE(suivifluxmes.qte_deja_livrer, 0::double precision) AS qte_deja_livrer,
+    suivifluxmes.id_taille,
+    COALESCE(suivifluxmes.qte_po, 0::double precision) AS qte_po,
+    CASE
+        WHEN COALESCE(suivifluxmes.qte_po, 0::double precision) = 0 THEN 0
+        ELSE (COALESCE(suivifluxmes.qte_coupe, 0::double precision) / COALESCE(suivifluxmes.qte_po, 0::double precision)) * 100
+    END AS pourcentageCoupe,
+    CASE
+        WHEN COALESCE(suivifluxmes.qte_coupe, 0::double precision) = 0 THEN 0
+        ELSE (COALESCE(suivifluxmes.qte_transfere, 0::double precision) / COALESCE(suivifluxmes.qte_coupe, 0::double precision)) * 100
+    END AS pourcentageTransferer,
+    CASE
+        WHEN COALESCE(suivifluxmes.qte_coupe, 0::double precision) = 0 THEN 0
+        ELSE (COALESCE(suivifluxmes.qte_rejet_chaine, 0::double precision) / COALESCE(suivifluxmes.qte_coupe, 0::double precision)) * 100
+    END AS pourcentageRejetChaine,
+    CASE
+        WHEN COALESCE(suivifluxmes.qte_coupe, 0::double precision) = 0 THEN 0
+        ELSE (COALESCE(suivifluxmes.qte_rejet_coupe, 0::double precision) / COALESCE(suivifluxmes.qte_coupe, 0::double precision)) * 100
+    END AS pourcentageRejetCoupe,
+    suivifluxmes.couleur,
+    COALESCE(suivifluxmes.entree_repassage, 0::double precision) AS entree_repassage,
+    COALESCE(suivifluxmes.sortie_repassage, 0::double precision) AS sortie_repassage,
+    suivifluxmes.commentaire,
+    suivifluxmes.id_destination,
+    suivifluxmes.qte_rejet_chaine,
+    suivifluxmes.qte_rejet_coupe,
+    suivifluxmes.etat,
     v_demandeclient.nomtier,
     v_demandeclient.id_tiers,
     v_demandeclient.nom_style,
     v_demandeclient.id_style,
     v_demandeclient.nom_modele,
     unitetaille.unite_taille,
-    suiviFluxMes.qte_coupe - suiviFluxMes.qte_transfere AS balanceATransferer,
-    suiviFluxMes.qte_coupe - suiviFluxMes.qte_deja_livrer AS balanceALivrer,
-    suiviFluxMes.qte_coupe - suiviFluxMes.sortie_repassage AS balanceRepassage,
+    COALESCE(suivifluxmes.qte_transfere, 0::double precision) - COALESCE(suivifluxmes.qte_coupe, 0::double precision) AS balanceatransferer,
+    COALESCE(suivifluxmes.qte_deja_livrer, 0::double precision) - COALESCE(suivifluxmes.qte_coupe, 0::double precision) AS balancealivrer,
+    COALESCE(suivifluxmes.sortie_repassage, 0::double precision) - COALESCE(suivifluxmes.qte_coupe, 0::double precision) AS balancerepassage,
+    v_destinationrecap.datelivraisonexacte,
+    v_destinationrecap.etdrevise,
+    v_destinationrecap.etdpropose,
+    v_destinationrecap.etdinitial,
     v_demandeclient.date_livraison,
-    recapcommande.etdpropose,
-    recapcommande.etdrevise,
-    COALESCE(recapcommande.etdrevise, recapcommande.etdpropose, v_demandeclient.date_livraison) AS ex_factory
-FROM
-    suiviFluxMes
-JOIN
-    v_demandeclient ON suiviFluxMes.id_demande_client = v_demandeclient.id
-JOIN
-    unitetaille ON unitetaille.id = suiviFluxMes.id_taille
-JOIN
-    recapcommande ON recapcommande.iddemandeclient = suiviFluxMes.id_demande_client;
+    COALESCE(v_destinationrecap.datelivraisonexacte, v_destinationrecap.etdrevise, v_destinationrecap.etdpropose, v_destinationrecap.etdinitial, v_demandeclient.date_livraison) AS ex_factory
+FROM suivifluxmes
+    JOIN v_demandeclient ON suivifluxmes.id_demande_client = v_demandeclient.id
+    JOIN unitetaille ON unitetaille.id = suivifluxmes.id_taille
+    LEFT JOIN v_destinationrecap ON v_destinationrecap.id = suivifluxmes.id_destination;
 
