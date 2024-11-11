@@ -81,13 +81,31 @@
                                     <td>{{ $suivi[$i]->couleur }}</td>
                                     <td>{{ $suivi[$i]->date_livraison_confirme }}</td>
                                     <td>{{ $suivi[$i]->ex_factory }}</td>
-                                    <td class="progress-td">
-                                        <div class="progress">
-                                            <div class="progress-bar bg-danger progress-animated" style="width: {{ $suivi[$i]->pourcentage }}%; height:6px;" role="progressbar">
-                                                <span class="sr-only"></span>
+                                    @if( $suivi[$i]->diff_date['diff'] <= 3 && $suivi[$i]->diff_date['etat'] == true )
+                                        <td class="progress-td">
+                                            <div class="progress">
+                                                <div class="progress-bar bg-danger progress-animated" style="width: {{ $suivi[$i]->pourcentage }}%; height:6px;" role="progressbar">
+                                                    <span class="sr-only"></span>
+                                                </div>
                                             </div>
-                                        </div>
-                                    </td>
+                                        </td>
+                                    @elseif( $suivi[$i]->diff_date['diff'] > 0 && $suivi[$i]->diff_date['etat'] == false )
+                                        <td class="progress-td">
+                                            <div class="progress">
+                                                <div class="progress-bar bg-danger progress-animated" style="width: {{ $suivi[$i]->pourcentage }}%; height:6px;" role="progressbar">
+                                                    <span class="sr-only"></span>
+                                                </div>
+                                            </div>
+                                        </td>
+                                    @else
+                                        <td class="progress-td">
+                                            <div class="progress">
+                                                <div class="progress-bar bg-success progress-animated" style="width: {{ $suivi[$i]->pourcentage }}%; height:6px;" role="progressbar">
+                                                    <span class="sr-only"></span>
+                                                </div>
+                                            </div>
+                                        </td>
+                                    @endif
                                     <td>J {{ $suivi[$i]->diff_date['etat'] ? '-' : '+' }}{{ $suivi[$i]->diff_date['diff'] }}</td>
                                 </tr>
                             @endfor
