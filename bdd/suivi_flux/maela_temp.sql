@@ -87,8 +87,9 @@ AS SELECT suivifluxmes.id,
     v_destinationrecap.etdinitial,
     v_demandeclient.date_livraison,
     COALESCE(v_destinationrecap.datelivraisonexacte, v_destinationrecap.etdrevise, v_destinationrecap.etdpropose, v_destinationrecap.etdinitial, v_demandeclient.date_livraison) AS ex_factory,
-    suivifluxmes.date_livraison_confirme
+    vdr.date_livraison_confirme
    FROM suivifluxmes
      JOIN v_demandeclient ON suivifluxmes.id_demande_client = v_demandeclient.id
      JOIN unitetaille ON unitetaille.id = suivifluxmes.id_taille
-     LEFT JOIN v_destinationrecap ON v_destinationrecap.id = suivifluxmes.id_destination;
+     LEFT JOIN v_destinationrecap ON v_destinationrecap.id = suivifluxmes.id_destination
+     LEFT JOIN v_dest_recap vdr ON vdr.id_destination = suivifluxmes.id_destination;
