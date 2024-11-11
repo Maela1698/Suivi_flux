@@ -349,6 +349,37 @@
                 </div>
             </div>
         </div>
+
+
+        @if (session('error'))
+            <div class="modal fade" id="errorModal" tabindex="-1" role="dialog" aria-labelledby="errorModalLabel"
+                aria-hidden="true">
+                <div class="modal-dialog" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="errorModalLabel">⚠️Attention!</h5>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                        <div class="modal-body">
+                            @if (session('error'))
+                                <ul style="color: red;">
+                                    @foreach (explode('|', session('error')) as $message)
+                                        <li>{{ $message }}</li>
+                                    @endforeach
+                                </ul>
+                            @endif
+                        </div>
+
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Fermer</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        @endif
+
     </div>
 </div>
 
@@ -369,7 +400,10 @@
             var sortieRepassage = button.data('sortierepassage');
             var commentaire = button.data('commentaire');
             var idsuivi = button.data('idsuivi');
-            console.log(qtePo);
+            var rejetcoupe = button.data('rejetcoupe');
+            var rejetchaine = button.data('rejetchaine');
+            var etat = button.data('etat');
+            console.log(etat);
             // Remplir les champs du formulaire
             modal.find('#qtePo1').val(qtePo);
             modal.find('#qteCoupe').val(qteCoupe);
@@ -380,7 +414,27 @@
             modal.find('#entreeRepassage').val(entreeRepassage);
             modal.find('#sortieRepassage').val(sortieRepassage);
             modal.find('#commentaires').val(commentaire);
+            modal.find('#rejetCoupe').val(rejetcoupe);
+            modal.find('#rejetChaine').val(rejetchaine);
             modal.find('#idSuivi').val(idsuivi);
+
+            const checkboxContainer = document.getElementById('checkboxContainer');
+
+            if (qtePo <= qteCoupe) {
+                checkboxContainer.style.display = 'block'; // Show the checkbox
+            } else {
+                checkboxContainer.style.display = 'none'; // Hide the checkbox
+            }
+
+            const inputQteCoupe = document.getElementById('qteCoupe');
+            const checkboxCondition = document.getElementById('checkboxCondition');
+            if (etat == 1) {
+                inputQteCoupe.disabled = true; // Désactive l'input
+                checkboxCondition.checked = true;
+                checkboxCondition.disabled = true;
+            } else {
+                inputQteCoupe.disabled = false; // Active l'input
+            }
         });
     });
 </script>
@@ -498,6 +552,15 @@
                 suggestionsList.style.display = 'none';
             }
         });
+    });
+</script>
+
+<script>
+    // Afficher automatiquement le modal si une erreur est présente
+    document.addEventListener('DOMContentLoaded', function() {
+        @if (session('error'))
+            $('#errorModal').modal('show');
+        @endif
     });
 </script>
 

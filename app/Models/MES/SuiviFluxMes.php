@@ -28,8 +28,8 @@ class SuiviFluxMes extends Model
 
     use HasFactory;
 
-    public static function updateSuiviFluxMes($date_operaton, $qte_coupe, $qte_entree_chaine,$qte_transfere,$qte_pret_livrer,$qte_deja_livrer,$entree_repassage,$sortie_repassage,$commentaire,$id){
-        DB::select('update suivifluxmes set date_operaton=?, qte_coupe=?, qte_entree_chaine=?, qte_transfere=?, qte_pret_livrer=?, qte_deja_livrer=?, entree_repassage=?, sortie_repassage=?, commentaire=?  where id=?',[$date_operaton, $qte_coupe, $qte_entree_chaine,$qte_transfere,$qte_pret_livrer,$qte_deja_livrer,$entree_repassage,$sortie_repassage,$commentaire,$id]);
+    public static function updateSuiviFluxMes($date_operaton, $qte_coupe, $qte_entree_chaine,$qte_transfere,$qte_pret_livrer,$qte_deja_livrer,$entree_repassage,$sortie_repassage,$commentaire,$rejetCoupe,$rejetChaine,$etat,$id){
+        DB::select('update suivifluxmes set date_operaton=?, qte_coupe=?, qte_entree_chaine=?, qte_transfere=?, qte_pret_livrer=?, qte_deja_livrer=?, entree_repassage=?, sortie_repassage=?, commentaire=?, qte_rejet_coupe=?, qte_rejet_chaine=?, etat=? where id=?',[$date_operaton, $qte_coupe, $qte_entree_chaine,$qte_transfere,$qte_pret_livrer,$qte_deja_livrer,$entree_repassage,$sortie_repassage,$commentaire,$rejetCoupe,$rejetChaine,$etat,$id]);
     }
 
     public static function getAllSuiviFluxMes($condition)
