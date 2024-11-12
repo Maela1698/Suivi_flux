@@ -61,3 +61,9 @@
 .progress-td{
     width: 36%;
 }
+
+.jourJ{
+    background-color: rgb(255, 201, 201);
+    color : rgb(255, 67, 67);
+    font-weight : bold;
+}

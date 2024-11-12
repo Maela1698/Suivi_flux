@@ -58,11 +58,18 @@ class ControllerSuiviFlux extends Controller
         $qteRejetChaine = SuiviFluxMes::sommeRejetChaine($condition);
         $qteRejetCoupe = SuiviFluxMes::sommeRejetCoupe($condition);
         $pourcentageCoupe = ($qte_coupe/$qte_po)*100;
-        $pourcentageExpediee = ($qte_deja_livrer/$qte_coupe)*100;
-        $pourcentageBoxing = ($qte_pret_livrer/$qte_coupe)*100;
-        $pourcentageRepassage = ($sortie_repassage/$qte_coupe)*100;
-        $pourcentageRejetCoupe = ($qteRejetCoupe/$qte_coupe)*100;
-        $pourcentageRejetChaine = ($qteRejetChaine/$qte_coupe)*100;
+        //Maela
+            // $pourcentageExpediee = ($qte_deja_livrer/$qte_coupe)*100;
+            // $pourcentageBoxing = ($qte_pret_livrer/$qte_coupe)*100;
+            // $pourcentageRepassage = ($sortie_repassage/$qte_coupe)*100;
+            // $pourcentageRejetCoupe = ($qteRejetCoupe/$qte_coupe)*100;
+            // $pourcentageRejetChaine = ($qteRejetChaine/$qte_coupe)*100;
+            $pourcentageExpediee = 0; 
+            $pourcentageBoxing = 0;
+            $pourcentageRepassage = 0;
+            $pourcentageRejetCoupe = 0;
+            $pourcentageRejetChaine = 0;
+        //Maela
         if($condition == ""){
             $condition = " order by id desc limit 100";
         }else{
@@ -141,11 +148,23 @@ class ControllerSuiviFlux extends Controller
         $date1 = Carbon::parse($date1);
         $date2 = Carbon::parse($date2);
 
+
         $diff = $date1->diffInDays($date2); // Différence en jours (toujours positive)
-        $etat = $date2 >= $date1; // true si la deuxième date est après ou égale à la première
+        $etat = 0;
+        $jourJ = false;
+        if($date2 >= $date1){
+            $etat = 1;
+        }
+        if($etat == 1){
+            $diff++;
+        }
+        if($diff == 0){
+            $jourJ = true;
+        }
         return [
             'diff' => $diff,
-            'etat' => $etat
+            'etat' => $etat,
+            'jourJ' => $jourJ
         ];
     }
 
@@ -154,14 +173,18 @@ class ControllerSuiviFlux extends Controller
         $dateLivrason = Carbon::parse($dateLivrason);
         $today = Carbon::parse($today);
 
-        $diff = $dateConfirmeDemande->diffInDays($dateLivrason);
-        // dump($diff);
-        $dateReste = $today->diffInDays($dateLivrason);
-        $dateVita = $diff - $dateReste;
-
+        // $diff = $dateConfirmeDemande->diffInDays($dateLivrason);
+        $diff = self::diff_date($dateConfirmeDemande,$dateLivrason);
+        // $dateReste = $today->diffInDays($dateLivrason);
+        $dateReste = self::diff_date($today,$dateLivrason);
+        // $dateVita = $diff - $dateReste;
+        $dateVita = $diff['diff'] - $dateReste['diff'];
+        if($dateVita < 0){
+            $dateVita = $dateVita * -1;
+        }
         $pourcentage = 100; 
         if($diff != 0){
-            $pourcentage = ($dateVita / $diff) * 100;
+            $pourcentage = ($dateVita / $diff['diff']) * 100;
         }
         return $pourcentage;
     }
