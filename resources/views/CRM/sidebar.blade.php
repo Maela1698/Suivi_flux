@@ -26,6 +26,11 @@
                     class="icon-plane"></i><span class="nav-text">TRANSIT</span></a>
             </li>
         </ul>
+        <ul class="metismenu" id="menu">
+            <li><a class="has-arrow" href="#" aria-expanded="false"><i
+                    class="icon-control-forward"></i><span class="nav-text">MES</span></a>
+            </li>
+        </ul>
     </div>
 </div>
 <!--**********************************
