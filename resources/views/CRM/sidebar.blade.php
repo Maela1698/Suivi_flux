@@ -27,7 +27,7 @@
             </li>
         </ul>
         <ul class="metismenu" id="menu">
-            <li><a class="has-arrow" href="#" aria-expanded="false"><i
+            <li><a class="has-arrow" href="{{ route('MES.suiviFlux') }}" aria-expanded="false"><i
                     class="icon-control-forward"></i><span class="nav-text">MES</span></a>
             </li>
         </ul>
