@@ -1,0 +1,502 @@
+INSERT INTO FAMILLETISSUS VALUES (
+    DEFAULT,
+    'Chaîne et trame',
+    DEFAULT
+),
+(
+    DEFAULT,
+    'Maille',
+    DEFAULT
+),
+(
+    DEFAULT,
+    'Ouate',
+    DEFAULT
+);
+
+INSERT INTO WMS_TYPE VALUES (
+    DEFAULT,
+    'Accessoire',
+    DEFAULT
+),
+(
+    DEFAULT,
+    'Serigraphie',
+    DEFAULT
+),
+(
+    DEFAULT,
+    'Teinture et lavage',
+    DEFAULT
+),
+(
+    DEFAULT,
+    'Maintenance',
+    DEFAULT
+);
+
+INSERT INTO FAMILLEWMS VALUES
+ -- ? FAMILLE Accessoire
+(
+    DEFAULT,
+    1,
+    'LIEN',
+    DEFAULT
+),
+(
+    DEFAULT,
+    1,
+    'STICKERS',
+    DEFAULT
+),
+(
+    DEFAULT,
+    1,
+    'ELASTIQUE',
+    DEFAULT
+),
+(
+    DEFAULT,
+    1,
+    'CARTON',
+    DEFAULT
+),
+(
+    DEFAULT,
+    1,
+    'FIL',
+    DEFAULT
+),
+(
+    DEFAULT,
+    1,
+    'SNAP',
+    DEFAULT
+),
+(
+    DEFAULT,
+    1,
+    'VIGNETTE',
+    DEFAULT
+),
+(
+    DEFAULT,
+    1,
+    'SACHET',
+    DEFAULT
+),
+(
+    DEFAULT,
+    1,
+    'VISELINE',
+    DEFAULT
+),
+(
+    DEFAULT,
+    1,
+    'RUBAN',
+    DEFAULT
+),
+(
+    DEFAULT,
+    1,
+    'ZIP',
+    DEFAULT
+),
+(
+    DEFAULT,
+    1,
+    'BOUTON',
+    DEFAULT
+),
+(
+    DEFAULT,
+    1,
+    'VIGNETTE DE TAILLE',
+    DEFAULT
+),
+(
+    DEFAULT,
+    1,
+    'CARTONNETTE',
+    DEFAULT
+),
+(
+    DEFAULT,
+    1,
+    'VIGNETTE COMPOS',
+    DEFAULT
+),
+(
+    DEFAULT,
+    1,
+    'AIGUILLE',
+    DEFAULT
+),
+(
+    DEFAULT,
+    1,
+    'SCOTCH',
+    DEFAULT
+),
+(
+    DEFAULT,
+    1,
+    'PAPIER',
+    DEFAULT
+),
+(
+    DEFAULT,
+    1,
+    'DIVERS',
+    DEFAULT
+),
+(
+    DEFAULT,
+    1,
+    'CEINTRE',
+    DEFAULT
+),
+(
+    DEFAULT,
+    1,
+    'CEINTURE',
+    DEFAULT
+),
+
+-- ? FAMILLE SERIGRAPHIE
+(
+    DEFAULT,
+    2,
+    'ENCRE',
+    DEFAULT
+),
+(
+    DEFAULT,
+    2,
+    'COLLE',
+    DEFAULT
+),
+(
+    DEFAULT,
+    2,
+    'TOILES',
+    DEFAULT
+),
+(
+    DEFAULT,
+    2,
+    'PRODUIT INSOLATION',
+    DEFAULT
+),
+(
+    DEFAULT,
+    2,
+    'DILUANT',
+    DEFAULT
+),
+
+-- ? FAMILLE LAVAGE ET TEINTURE
+(
+    DEFAULT,
+    3,
+    'PRODUIT POUR TISSUS',
+    DEFAULT
+),
+(
+    DEFAULT,
+    3,
+    'PRODUIT POUR RAPHIA',
+    DEFAULT
+),
+(
+    DEFAULT,
+    3,
+    'AZURANT',
+    DEFAULT
+),
+(
+    DEFAULT,
+    3,
+    'ENZYME',
+    DEFAULT
+),
+(
+    DEFAULT,
+    3,
+    'DYNAFLAX',
+    DEFAULT
+),
+(
+    DEFAULT,
+    3,
+    'SOUDE',
+    DEFAULT
+),
+(
+    DEFAULT,
+    3,
+    'SILICONE',
+    DEFAULT
+),
+(
+    DEFAULT,
+    3,
+    'ACIDE',
+    DEFAULT
+),
+(
+    DEFAULT,
+    3,
+    'PEROXYDE',
+    DEFAULT
+),
+(
+    DEFAULT,
+    3,
+    'DWF',
+    DEFAULT
+),
+(
+    DEFAULT,
+    3,
+    'FIXATEUR',
+    DEFAULT
+),
+
+--? FAMILLE Maintenance
+(
+    DEFAULT,
+    4,
+    'ABRASIF',
+    DEFAULT
+),
+(
+    DEFAULT,
+    4,
+    'LAME',
+    DEFAULT
+),
+(
+    DEFAULT,
+    4,
+    'ELECTRIQUE',
+    DEFAULT
+),
+(
+    DEFAULT,
+    4,
+    'PRODUIT CHIMIQUE',
+    DEFAULT
+),
+(
+    DEFAULT,
+    4,
+    'OUTILLAGE',
+    DEFAULT
+),
+(
+    DEFAULT,
+    4,
+    'PIECE DETACHE',
+    DEFAULT
+),
+(
+    DEFAULT,
+    4,
+    'EPI',
+    DEFAULT
+),
+(
+    DEFAULT,
+    4,
+    'PIED',
+    DEFAULT
+),
+(
+    DEFAULT,
+    4,
+    'ROULEMENT',
+    DEFAULT
+),
+(
+    DEFAULT,
+    4,
+    'GUIDE',
+    DEFAULT
+),
+(
+    DEFAULT,
+    4,
+    'AUTRES',
+    DEFAULT
+),
+(
+    DEFAULT,
+    4,
+    'GASOIL',
+    DEFAULT
+),
+(
+    DEFAULT,
+    4,
+    'MACHINE',
+    DEFAULT
+);
+
+INSERT INTO CODIFICATIONACCESSOIRE VALUES (
+    DEFAULT,
+    'A1',
+    'COMPOSITION',
+    'MA'
+),
+(
+    DEFAULT,
+    'B1',
+    'COUNTRY OF ORIGIN',
+    'MA'
+),
+(
+    DEFAULT,
+    'C1',
+    'CARE SYMBOLS',
+    'MI'
+),
+(
+    DEFAULT,
+    'D1',
+    'CARE INSTRUCTION',
+    'MI'
+),
+(
+    DEFAULT,
+    'E1',
+    'WEAVING STRUCTURE',
+    'MA'
+),
+(
+    DEFAULT,
+    'F1',
+    'CLARITY OF PRINT',
+    'MI'
+),
+(
+    DEFAULT,
+    'G1',
+    'DIMENSION AND FOLDING TYPE',
+    'MA'
+),
+(
+    DEFAULT,
+    'H1',
+    'EDGE SLIT',
+    'MI'
+),
+(
+    DEFAULT,
+    'I1',
+    'SHADE FASTNESS TO WASHING',
+    'MA'
+),
+(
+    DEFAULT,
+    'J1',
+    'LOGO ALIGNEMENT',
+    'MA'
+),
+(
+    DEFAULT,
+    'K1',
+    'BARCODE READING',
+    'MA'
+);
+
+INSERT INTO CODIFICATIONACCESSOIRE_FAMILLEWMS VALUES (
+    1,
+    13
+),
+(
+    2,
+    13
+),
+(
+    3,
+    13
+),
+(
+    4,
+    13
+),
+(
+    5,
+    13
+),
+(
+    6,
+    13
+),
+(
+    7,
+    13
+),
+(
+    8,
+    13
+),
+(
+    9,
+    13
+),
+(
+    10,
+    13
+),
+(
+    11,
+    13
+);
+
+INSERT INTO CODIFICATIONACCESSOIRE_FAMILLEWMS VALUES (
+    1,
+    8
+),
+(
+    2,
+    8
+),
+(
+    3,
+    8
+),
+(
+    4,
+    8
+),
+(
+    5,
+    8
+),
+(
+    6,
+    8
+),
+(
+    7,
+    8
+),
+(
+    8,
+    8
+),
+(
+    9,
+    8
+),
+(
+    10,
+    8
+),
+(
+    11,
+    8
+);
