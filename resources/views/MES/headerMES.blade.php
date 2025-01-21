@@ -33,7 +33,7 @@
                         </div>
                     </li>
                     <li class="nav-item dropdown mr-5">
-                        <a class="nav-link" href="#" aria-haspopup="true"
+                        <a class="nav-link" href="{{ route('MES.demande') }}" aria-haspopup="true"
                             aria-expanded="false" style="color: black">
                             Demande
                         </a>

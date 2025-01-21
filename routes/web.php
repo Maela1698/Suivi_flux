@@ -20,7 +20,8 @@ use App\Http\Controllers\ControllerObjectifSaison;
 use App\Http\Controllers\ControllerPlanningDev;
 use App\Http\Controllers\ControllerTransit;
 use App\Http\Controllers\ControlleurRetroMerch;
-use App\Http\Controllers\MES\ControllerSuiviFlux;
+use App\Http\Controllers\MES\ControllerDemande as MESControllerDemande;
+use App\Http\Controllers\MES\ControllerSuiviFlux as MESControllerSuiviFlux;
 
 /*
 |--------------------------------------------------------------------------
@@ -369,4 +370,5 @@ Route::get('/transit',[ControllerTransit::class,'acceuil'])->name('TRANSIT.acceu
 
 
 /*----------------------MES--------------------------*/
-Route::get('/mes',[ControllerSuiviFlux::class,'suiviFlux'])->name('MES.suiviFlux');
+Route::get('/mes-suiviFlux',[MESControllerSuiviFlux::class,'suiviFlux'])->name('MES.suiviFlux');
+Route::get('/mes-demande',[MESControllerDemande::class,'getDemandeConfirme'])->name('MES.demande');
