@@ -16,7 +16,7 @@ use App\Http\Controllers\ControllerFDC;
 use App\Http\Controllers\ControllerKpiCRM;
 use App\Http\Controllers\ControllerListeEmploye;
 use App\Http\Controllers\ControllerMasterPlan;
-use App\Http\Controllers\ControllerMES;
+use App\Http\Controllers\ControllerSuiviFlux;
 use App\Http\Controllers\ControllerObjectifSaison;
 use App\Http\Controllers\ControllerPlanningDev;
 use App\Http\Controllers\ControllerTransit;
@@ -369,5 +369,4 @@ Route::get('/transit',[ControllerTransit::class,'acceuil'])->name('TRANSIT.acceu
 
 
 /*----------------------MES--------------------------*/
-Route::get('/mes',[ControllerMES::class,'suiviFlux'])->name('MES.suiviFlux');
-
+Route::get('/mes',[ControllerSuiviFlux::class,'suiviFlux'])->name('MES.suiviFlux');

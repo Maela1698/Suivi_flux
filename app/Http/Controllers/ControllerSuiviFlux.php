@@ -4,10 +4,10 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 
-class ControllerMES extends Controller
+class ControllerSuiviFlux extends Controller
 {
     //
     public function suiviFlux(){
-        return view('MES.suiviFlux.listeSuiviFlux');
+        return view('MES.suivi.flux.listeSuiviFlux');
     }
 }
