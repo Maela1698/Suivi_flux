@@ -43,7 +43,7 @@
                     <div class="card-body d-flex align-items-center justify-content-between" style="height: 100%;">
                         <div>
                             <h3 class="card-title text-white" style="margin-bottom: 5px; font-size: calc(0.1em + 1vw);">
-                                Quantité Transferes</h3>
+                                Quantité Entrée chaine</h3>
                             <div class="d-inline-block">
                                 <h2 class="text-white" style="font-size: calc(0.5em + 1vw);">3</h2>
                             </div>
@@ -59,7 +59,7 @@
                     <div class="card-body d-flex align-items-center justify-content-between" style="height: 100%;">
                         <div>
                             <h3 class="card-title text-white" style="margin-bottom: 5px; font-size: calc(0.1em + 1vw);">
-                                Commande Annulée</h3>
+                                Quantité Transferés</h3>
                             <div class="d-inline-block">
                                 <h2 class="text-white" style="font-size: calc(0.5em + 1vw);">2</h2>
                             </div>
@@ -77,7 +77,7 @@
                     <div class="card-body d-flex align-items-center justify-content-between" style="height: 100%;">
                         <div>
                             <h3 class="card-title text-white" style="margin-bottom: 5px; font-size: calc(0.1em + 1vw);">
-                                PROTO</h3>
+                                Balance à transférer</h3>
                             <div class="d-inline-block">
                                 <h2 class="text-white" style="font-size: calc(0.5em + 1vw);">6</h2>
                             </div>
@@ -93,7 +93,7 @@
                     <div class="card-body d-flex align-items-center justify-content-between" style="height: 100%;">
                         <div>
                             <h3 class="card-title text-white" style="margin-bottom: 5px; font-size: calc(0.1em + 1vw);">
-                                TDS</h3>
+                                Prêt à livrer</h3>
                             <div class="d-inline-block">
                                 <h2 class="text-white" style="font-size: calc(0.5em + 1vw);">7</h2>
                             </div>
@@ -109,7 +109,7 @@
                     <div class="card-body d-flex align-items-center justify-content-between" style="height: 100%;">
                         <div>
                             <h3 class="card-title text-white" style="margin-bottom: 5px; font-size: calc(0.1em + 1vw);">
-                                PPS</h3>
+                                Quantité déjà livré</h3>
                             <div class="d-inline-block">
                                 <h2 class="text-white" style="font-size: calc(0.5em + 1vw);">6</h2>
                             </div>
@@ -125,7 +125,9 @@
                     <div class="card-body d-flex align-items-center justify-content-between" style="height: 100%;">
                         <div>
                             <h3 class="card-title text-white"
-                                style="margin-bottom: 5px; font-size: calc(0.1em + 1vw);">PROD</h3>
+                                style="margin-bottom: 5px; font-size: calc(0.1em + 1vw);">
+                                Balance à livrer
+                            </h3>
                             <div class="d-inline-block">
                                 <h2 class="text-white" style="font-size: calc(0.5em + 1vw);">7</h2>
                             </div>
