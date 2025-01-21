@@ -16,11 +16,11 @@ use App\Http\Controllers\ControllerFDC;
 use App\Http\Controllers\ControllerKpiCRM;
 use App\Http\Controllers\ControllerListeEmploye;
 use App\Http\Controllers\ControllerMasterPlan;
-use App\Http\Controllers\ControllerSuiviFlux;
 use App\Http\Controllers\ControllerObjectifSaison;
 use App\Http\Controllers\ControllerPlanningDev;
 use App\Http\Controllers\ControllerTransit;
 use App\Http\Controllers\ControlleurRetroMerch;
+use App\Http\Controllers\MES\ControllerSuiviFlux;
 
 /*
 |--------------------------------------------------------------------------
