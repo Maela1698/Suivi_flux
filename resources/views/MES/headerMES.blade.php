@@ -28,7 +28,7 @@
                             class="dropdown-menu"
                             aria-labelledby="navbarDropdownMenuLink"
                         >
-                            <a class="dropdown-item" href="#">Flux</a>
+                            <a class="dropdown-item" href="{{ route('MES.suiviFlux') }}">Flux</a>
                             <a class="dropdown-item" href="#">Horraire</a>
                         </div>
                     </li>

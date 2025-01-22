@@ -1,0 +1,26 @@
+.table th {
+    color: #000000;
+    /* Couleur noire intense */
+    font-weight: bold;
+    /* Optionnel : Rend le texte plus épais */
+}
+
+.table td {
+    color: #828282;
+    /* Couleur noire intense */
+    font-weight: bold;
+    /* Optionnel : Rend le texte plus épais */
+
+}
+
+.hover-table tr{
+    cursor: pointer;
+}
+
+.modal-tr{
+    background-color: #e6e6e6;
+}
+
+.modal-tr td{
+    color: #d7d7d7;
+}

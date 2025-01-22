@@ -9,6 +9,10 @@ class ControllerDemande extends Controller
 {
     //
     public function getDemandeConfirme(){
-        // dd("huhu ha");
+        return view('MES.demande.listeDemandeConfirme');
+    }
+
+    public function getFicheDemandeConfirme(){
+        return view('MES.demande.ficheDemandeConfirme');
     }
 }
