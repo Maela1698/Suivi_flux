@@ -103,7 +103,7 @@
                                             <div class="form-group">
                                                 <div class="form-check form-check-inline">
                                                     <label class="form-check-label">
-                                                        {{-- <input type="checkbox" class="form-check-input" value=""> --}}
+                                                        <input type="checkbox" class="form-check-input" value="">
                                                     </label>
                                                 </div>
                                             </div>
