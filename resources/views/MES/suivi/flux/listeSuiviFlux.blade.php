@@ -14,13 +14,47 @@
         font-weight: bold;
         /* Optionnel : Rend le texte plus épais */
     }
+
+    #suggestionsListTiers {
+        max-height: 200px;
+        overflow-y: auto;
+        color: #767575;
+        z-index: 5000;
+        position: absolute;
+        /* Permet de positionner l'élément par rapport à son conteneur */
+        background-color: #fff;
+        border: 1px solid #ccc;
+        width: 100%;
+        /* Assure que la largeur de la liste correspond à celle du champ */
+        top: 100%;
+        /* Place la liste juste en dessous du champ */
+        left: 0;
+        /* Aligne la liste avec le champ */
+    }
+
+    #suggestionsListStyle {
+        max-height: 200px;
+        overflow-y: auto;
+        color: #767575;
+        z-index: 5000;
+        position: absolute;
+        /* Permet de positionner l'élément par rapport à son conteneur */
+        background-color: #fff;
+        border: 1px solid #ccc;
+        width: 100%;
+        /* Assure que la largeur de la liste correspond à celle du champ */
+        top: 100%;
+        /* Place la liste juste en dessous du champ */
+        left: 0;
+        /* Aligne la liste avec le champ */
+    }
 </style>
 <div class="content-body">
     <!-- row -->
     <div class="container-fluid">
         @include('MES.headerMES')
         <div class="row" style="margin-bottom: -20px;margin-top: -10px;">
-            <div class="col-lg-3 col-sm-4">
+            <div class="col-lg-6 col-sm-4">
                 <div class="card card-small"
                     style="border-radius: 15px 3px 15px 3px; height: 50px; background: linear-gradient(to right, #3a7bd5, #3a6073);">
                     <div class="card-body d-flex align-items-center justify-content-between" style="height: 100%;">
@@ -28,7 +62,7 @@
                             <h3 class="card-title text-white" style="margin-bottom: 5px; font-size: calc(0.1em + 1vw);">
                                 Quantité PO</h3>
                             <div class="d-inline-block">
-                                <h2 class="text-white" style="font-size: calc(0.5em + 1vw);">5</h2>
+                                <h2 class="text-white" style="font-size: calc(0.5em + 1vw);">{{ $qte_po }}</h2>
                             </div>
                         </div>
                         <span class="display-5" style="font-size: calc(1em + 1vw);"><i class="fa fa-list"
@@ -36,47 +70,15 @@
                     </div>
                 </div>
             </div>
-            <div class="col-lg-3 col-sm-6">
-                <div class="card card-small"
-                    style="border-radius: 15px 3px 15px 3px; height: 50px; background: linear-gradient(to right, #4568dc, #b06ab3);">
-                    <div class="card-body d-flex align-items-center justify-content-between" style="height: 100%;">
-                        <div>
-                            <h3 class="card-title text-white" style="margin-bottom: 5px; font-size: calc(0.1em + 1vw);">
-                                Quantité Coupe</h3>
-                            <div class="d-inline-block">
-                                <h2 class="text-white" style="font-size: calc(0.5em + 1vw);">4</h2>
-                            </div>
-                        </div>
-                        <span class="display-5" style="font-size: calc(1em + 1vw);"><i class="fa fa-handshake"
-                                style="color: white;"></i></span>
-                    </div>
-                </div>
-            </div>
-            <div class="col-lg-3 col-sm-6">
-                <div class="card card-small"
-                    style="border-radius: 15px 3px 15px 3px; height: 50px; background: linear-gradient(to right, #43cea2, #185a9d);">
-                    <div class="card-body d-flex align-items-center justify-content-between" style="height: 100%;">
-                        <div>
-                            <h3 class="card-title text-white" style="margin-bottom: 5px; font-size: calc(0.1em + 1vw);">
-                                Quantité Entrée chaine</h3>
-                            <div class="d-inline-block">
-                                <h2 class="text-white" style="font-size: calc(0.5em + 1vw);">3</h2>
-                            </div>
-                        </div>
-                        <span class="display-5" style="font-size: calc(1em + 1vw);"><i class="fa fa-check-circle"
-                                style="color: white;"></i></span>
-                    </div>
-                </div>
-            </div>
-            <div class="col-lg-3 col-sm-6">
+            <div class="col-lg-6 col-sm-6">
                 <div class="card card-small"
                     style="border-radius: 15px 3px 15px 3px; height: 50px; background: linear-gradient(to right, #f3904f, #3b4371);">
                     <div class="card-body d-flex align-items-center justify-content-between" style="height: 100%;">
                         <div>
                             <h3 class="card-title text-white" style="margin-bottom: 5px; font-size: calc(0.1em + 1vw);">
-                                Quantité Transferés</h3>
+                                Quantité Coupé</h3>
                             <div class="d-inline-block">
-                                <h2 class="text-white" style="font-size: calc(0.5em + 1vw);">2</h2>
+                                <h2 class="text-white" style="font-size: calc(0.5em + 1vw);">{{ $qte_coupe }}</h2>
                             </div>
                         </div>
                         <span class="display-5" style="font-size: calc(1em + 1vw);"><i class="fa fa-times-circle"
@@ -85,16 +87,17 @@
                 </div>
             </div>
         </div>
-        <div class="row" style="margin-top: 0;">
-            <div class="col-lg-3 col-sm-4">
+        <div class="row" style="margin-top: 0;margin-top: -10px;">
+            <div class="col-lg-4 col-sm-4">
                 <div class="card card-small"
                     style="border-radius: 15px 3px 15px 3px; height: 50px; background: linear-gradient(to right, #ff6e7f, #556770);">
                     <div class="card-body d-flex align-items-center justify-content-between" style="height: 100%;">
                         <div>
                             <h3 class="card-title text-white" style="margin-bottom: 5px; font-size: calc(0.1em + 1vw);">
-                                Balance à transférer</h3>
+                                Quantité Entrée Chaine</h3>
                             <div class="d-inline-block">
-                                <h2 class="text-white" style="font-size: calc(0.5em + 1vw);">6</h2>
+                                <h2 class="text-white" style="font-size: calc(0.5em + 1vw);">{{ $qte_entree_chaine }}
+                                </h2>
                             </div>
                         </div>
                         <span class="display-5" style="font-size: calc(1em + 1vw);"><i class="fa fa-cogs"
@@ -102,31 +105,15 @@
                     </div>
                 </div>
             </div>
-            <div class="col-lg-3 col-sm-6">
-                <div class="card card-small"
-                    style="border-radius: 15px 3px 15px 3px; height: 50px; background: linear-gradient(to right, #16a085, #f4d03f);">
-                    <div class="card-body d-flex align-items-center justify-content-between" style="height: 100%;">
-                        <div>
-                            <h3 class="card-title text-white" style="margin-bottom: 5px; font-size: calc(0.1em + 1vw);">
-                                Prêt à livrer</h3>
-                            <div class="d-inline-block">
-                                <h2 class="text-white" style="font-size: calc(0.5em + 1vw);">7</h2>
-                            </div>
-                        </div>
-                        <span class="display-5" style="font-size: calc(1em + 1vw);"><i class="fa fa-file-alt"
-                                style="color: white;"></i></span>
-                    </div>
-                </div>
-            </div>
-            <div class="col-lg-3 col-sm-6">
+            <div class="col-lg-4 col-sm-6">
                 <div class="card card-small"
                     style="border-radius: 15px 3px 15px 3px; height: 50px; background: linear-gradient(to right, #82a382, #000c40);">
                     <div class="card-body d-flex align-items-center justify-content-between" style="height: 100%;">
                         <div>
                             <h3 class="card-title text-white" style="margin-bottom: 5px; font-size: calc(0.1em + 1vw);">
-                                Quantité déjà livré</h3>
+                                Quantité Transferé</h3>
                             <div class="d-inline-block">
-                                <h2 class="text-white" style="font-size: calc(0.5em + 1vw);">6</h2>
+                                <h2 class="text-white" style="font-size: calc(0.5em + 1vw);">{{ $qte_transfere }}</h2>
                             </div>
                         </div>
                         <span class="display-5" style="font-size: calc(1em + 1vw);"><i class="fa fa-box"
@@ -134,7 +121,60 @@
                     </div>
                 </div>
             </div>
-            <div class="col-lg-3 col-sm-6">
+            <div class="col-lg-4 col-sm-6">
+                <div class="card card-small"
+                    style="border-radius: 15px 3px 15px 3px; height: 50px; background: linear-gradient(to right, #667eea, #764ba2);">
+                    <div class="card-body d-flex align-items-center justify-content-between" style="height: 100%;">
+                        <div>
+                            <h3 class="card-title text-white" style="margin-bottom: 5px; font-size: calc(0.1em + 1vw);">
+                                Balance à transferer
+                            </h3>
+                            <div class="d-inline-block">
+                                <h2 class="text-white" style="font-size: calc(0.5em + 1vw);">{{ $balanceatransferer }}
+                                </h2>
+                            </div>
+                        </div>
+                        <span class="display-5" style="font-size: calc(1em + 1vw);"><i class="fa fa-industry"
+                                style="color: white;"></i></span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row" style="margin-top: 0;">
+            <div class="col-lg-4 col-sm-4">
+                <div class="card card-small"
+                    style="border-radius: 15px 3px 15px 3px; height: 50px; background: linear-gradient(to right, #ff6e7f, #556770);">
+                    <div class="card-body d-flex align-items-center justify-content-between" style="height: 100%;">
+                        <div>
+                            <h3 class="card-title text-white" style="margin-bottom: 5px; font-size: calc(0.1em + 1vw);">
+                                Quantité Prêt à livrer</h3>
+                            <div class="d-inline-block">
+                                <h2 class="text-white" style="font-size: calc(0.5em + 1vw);">{{ $qte_pret_livrer }}</h2>
+                            </div>
+                        </div>
+                        <span class="display-5" style="font-size: calc(1em + 1vw);"><i class="fa fa-cogs"
+                                style="color: white;"></i></span>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-4 col-sm-6">
+                <div class="card card-small"
+                    style="border-radius: 15px 3px 15px 3px; height: 50px; background: linear-gradient(to right, #82a382, #000c40);">
+                    <div class="card-body d-flex align-items-center justify-content-between" style="height: 100%;">
+                        <div>
+                            <h3 class="card-title text-white" style="margin-bottom: 5px; font-size: calc(0.1em + 1vw);">
+                                Quantité déjà livrer</h3>
+                            <div class="d-inline-block">
+                                <h2 class="text-white" style="font-size: calc(0.5em + 1vw);">{{ $qte_deja_livrer }}
+                                </h2>
+                            </div>
+                        </div>
+                        <span class="display-5" style="font-size: calc(1em + 1vw);"><i class="fa fa-box"
+                                style="color: white;"></i></span>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-4 col-sm-6">
                 <div class="card card-small"
                     style="border-radius: 15px 3px 15px 3px; height: 50px; background: linear-gradient(to right, #667eea, #764ba2);">
                     <div class="card-body d-flex align-items-center justify-content-between" style="height: 100%;">
@@ -144,7 +184,65 @@
                                 Balance à livrer
                             </h3>
                             <div class="d-inline-block">
-                                <h2 class="text-white" style="font-size: calc(0.5em + 1vw);">7</h2>
+                                <h2 class="text-white" style="font-size: calc(0.5em + 1vw);">{{ $balancealivrer }}
+                                </h2>
+                            </div>
+                        </div>
+                        <span class="display-5" style="font-size: calc(1em + 1vw);"><i class="fa fa-industry"
+                                style="color: white;"></i></span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row" style="margin-top: 0;">
+            <div class="col-lg-4 col-sm-4">
+                <div class="card card-small"
+                    style="border-radius: 15px 3px 15px 3px; height: 50px; background: linear-gradient(to right, #ff6e7f, #556770);">
+                    <div class="card-body d-flex align-items-center justify-content-between" style="height: 100%;">
+                        <div>
+                            <h3 class="card-title text-white"
+                                style="margin-bottom: 5px; font-size: calc(0.1em + 1vw);">
+                                Entrée repassage</h3>
+                            <div class="d-inline-block">
+                                <h2 class="text-white" style="font-size: calc(0.5em + 1vw);">{{ $entree_repassage }}
+                                </h2>
+                            </div>
+                        </div>
+                        <span class="display-5" style="font-size: calc(1em + 1vw);"><i class="fa fa-cogs"
+                                style="color: white;"></i></span>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-4 col-sm-6">
+                <div class="card card-small"
+                    style="border-radius: 15px 3px 15px 3px; height: 50px; background: linear-gradient(to right, #82a382, #000c40);">
+                    <div class="card-body d-flex align-items-center justify-content-between" style="height: 100%;">
+                        <div>
+                            <h3 class="card-title text-white"
+                                style="margin-bottom: 5px; font-size: calc(0.1em + 1vw);">
+                                Sortie repassage</h3>
+                            <div class="d-inline-block">
+                                <h2 class="text-white" style="font-size: calc(0.5em + 1vw);">{{ $sortie_repassage }}
+                                </h2>
+                            </div>
+                        </div>
+                        <span class="display-5" style="font-size: calc(1em + 1vw);"><i class="fa fa-box"
+                                style="color: white;"></i></span>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-4 col-sm-6">
+                <div class="card card-small"
+                    style="border-radius: 15px 3px 15px 3px; height: 50px; background: linear-gradient(to right, #667eea, #764ba2);">
+                    <div class="card-body d-flex align-items-center justify-content-between" style="height: 100%;">
+                        <div>
+                            <h3 class="card-title text-white"
+                                style="margin-bottom: 5px; font-size: calc(0.1em + 1vw);">
+                                Balance repassage
+                            </h3>
+                            <div class="d-inline-block">
+                                <h2 class="text-white" style="font-size: calc(0.5em + 1vw);">{{ $balancerepassage }}
+                                </h2>
                             </div>
                         </div>
                         <span class="display-5" style="font-size: calc(1em + 1vw);"><i class="fa fa-industry"
@@ -159,90 +257,87 @@
                 <h3 class="entete mt-3">LISTE SUIVIS FLUX MES</h3>
             </div>
 
-            {{--  <form action="{{ route('BRODMACHINE.listeBroderieMachine') }}" method="post" autocomplete="off">  --}}
-            {{--  @csrf  --}}
-            {{--  <div class="row">
-                    <div class="col-1">
-                        <div class="input-group">
-                            <input type="text" id="nomSaison" name="nomSaison" class="form-control"
-                                placeholder="Saison" value="">
-                            <input type="hidden" id="idSaison" name="idSaison" value="{{ $idSaison }}">
-                            <ul id="suggestionsListSaison" class="list-group mt-2" style="display: none;">
-                            </ul>
+            <form action="{{ route('MES.suiviFlux') }}" method="post" autocomplete="off">
+                @csrf
+                <div class="row">
+                    <div class="col-3 mr-1">
+                        <div class="row texte">
+                            <label>Date ex-factory</label>
+                        </div>
+                        <div class="row">
+                            <div class="input-group" id="date-range">
+                                <input type="date" class="form-control" name="startEntree" value="">
+                                <span class="input-group-addon b-0 text-white"
+                                    style="width: 20px; text-align: center; justify-content: center; background-color: gray;">à</span>
+                                <input type="date" class="form-control" name="endEntree" value="">
+                            </div>
                         </div>
                     </div>
+
+                    <div class="col-2 mr-1">
+                        <div class="row texte">
+                            <label>OF</label>
+                        </div>
+                        <div class="row">
+                            <div class="input-group">
+                                <input type="text" name="of" class="form-control" value="">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-2 mr-1">
+                        <div class="row texte">
+                            <label>Style</label>
+                        </div>
+                        <div class="row">
+                            <div class="input-group">
+                                <input type="text" name="modele" class="form-control" value="">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-md-2 col-lg-2">
+                        <div class="row texte">
+                            <label>Client</label>
+                        </div>
+                        <div class="row">
+                            <div class="input-group">
+                                <input type="text" id="nomTiers" name="nomTiers" class="form-control" value="">
+                                <input type="hidden" id="idTiers" name="idTiers" value="">
+                                <ul id="suggestionsListTiers" class="list-group mt-2" style="display: none;">
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+
                     <div class="col-2">
-                        <div class="input-group">
-                            <input type="text" id="modele" name="modele" class="form-control"
-                                placeholder="Modele" value="{{ $modele }}">
+                        <div class="row texte">
+                            <label>Designation</label>
                         </div>
-                    </div>
-                    <div class="col-2">
-                        <div class="input-group">
-                            <input type="text" id="nomTiers" name="nomTiers" class="form-control"
-                                placeholder="Nom Client" value="{{ $nomTiers }}">
-                            <input type="hidden" id="idTiers" name="idTiers" value="{{ $idTiers }}">
-                            <ul id="suggestionsListTiers" class="list-group mt-2" style="display: none;">
-                            </ul>
+                        <div class="row">
+                            <div class="input-group">
+                                <input type="text" id="nomStyle" name="nomStyle" class="form-control" value="">
+                                <input type="hidden" id="idStyle" name="idStyle" value="">
+                                <ul id="suggestionsListStyle" class="list-group mt-2" style="display: none;">
+                                </ul>
+                            </div>
                         </div>
-                    </div>
-                    <div class="col-1">
-                        <div class="input-group">
-                            <input type="text" id="nomStyle" name="nomStyle" class="form-control"
-                                placeholder="Style" value="{{ $nomStyle }}">
-                            <input type="hidden" id="idStyle" name="idStyle" value="{{ $idStyle }}">
-                            <ul id="suggestionsListStyle" class="list-group mt-2" style="display: none;">
-                            </ul>
-                        </div>
-                    </div>
-
-                    <div class="col-2">
-
-                        <select class="form-control" name="etatDemande">
-                            @if (!empty($etatDemande))
-                                <option value="{{ $etatDemande }}">{{ $etatDemande }}</option>
-                            @endif
-                            <option value="">Etat</option>
-
-                            @foreach ($etat as $et)
-                                <option value="{{ $et->type_etat }}">
-                                    {{ $et->type_etat }}
-                                </option>
-                            @endforeach
-                        </select>
 
                     </div>
 
-                    <div class="col-2">
-                        <div class="input-group">
-                            <input type="text" id="nomStade" name="nomStade" class="form-control"
-                                placeholder="Stade" value="{{ $nomStade }}">
-                            <input type="hidden" id="idStade" name="idStade" value="{{ $idStade }}">
-                            <ul id="suggestionsListStade" class="list-group mt-2" style="display: none;">
-                            </ul>
-                        </div>
-                    </div>
-                    <div class="col-2">
-                        <div class="input-group" id="date-range">
-                            <input type="date" class="form-control" name="dateDebut"
-                                value="{{ $dateDebut }}">
-                            <span class="input-group-addon b-0 text-white"
-                                style="width: 20px; text-align: center; justify-content: center; background-color: gray;">à</span>
-                            <input type="date" class="form-control" name="dateFin"
-                                value="{{ $dateFin }}">
-                        </div>
-                    </div>
 
-                </div>  --}}
-            {{--  <div class="row mt-2">
+
+
+                </div>
+                <div class="row mt-2">
                     <div class="col-9">
                     </div>
                     <div class="col-3 d-flex justify-content-end">
                         <button class="btn btn-success" style="width: 100px">Filtrer</button>
                     </div>
-                </div>  --}}
+                </div>
 
-            {{--  </form>  --}}
+            </form>
 
             <div class="table-responsive" style="margin-top: -15px;">
                 <table class="table student-data-table m-t-20 table-hover mt-3" style="color: black">
@@ -271,8 +366,7 @@
                         </tr>
                     </thead>
                     <tbody style="cursor: pointer;">
-
-                        <tr>
+                        {{--  <tr>
                             <td>Client 2</td>
                             <td>ColorCode 2</td>
                             <td>Style 2</td>
@@ -310,7 +404,59 @@
                                 </button>
 
                             </td>
-                        </tr>
+                        </tr>  --}}
+                        @for ($i = 0; $i < count($suivi); $i++)
+                            <tr>
+                                <td>{{ $suivi[$i]->nomtier }}</td>
+                                <td>{{ $suivi[$i]->couleur }}</td>
+                                <td>{{ $suivi[$i]->nom_modele }}</td>
+                                <td>{{ $suivi[$i]->numero_commande }}</td>
+                                <td>{{ $suivi[$i]->nom_style }}</td>
+                                <td>{{ $suivi[$i]->unite_taille }}</td>
+                                <td>{{ $suivi[$i]->qte_po }}</td>
+                                <td>{{ $suivi[$i]->qte_coupe }}</td>
+                                <td>{{ $suivi[$i]->qte_entree_chaine }}</td>
+                                <td>{{ $suivi[$i]->qte_transfere }}</td>
+                                <td>{{ $suivi[$i]->balanceatransferer }}</td>
+                                <td>{{ $suivi[$i]->qte_pret_livrer }}</td>
+                                <td>{{ $suivi[$i]->qte_deja_livrer }}</td>
+                                <td>{{ $suivi[$i]->balancealivrer }}</td>
+                                <td>{{ $suivi[$i]->entree_repassage }}</td>
+                                <td>{{ $suivi[$i]->sortie_repassage }}</td>
+                                <td>{{ $suivi[$i]->balancerepassage }}</td>
+                                <td> {{ \Carbon\Carbon::parse($suivi[$i]->ex_factory)->format('d/m/y') }}</td>
+                                <td>
+                                    <?php
+                                    $descriptions = substr($suivi[$i]->commentaire, 0, 20);
+                                    $hasMore = strlen($suivi[$i]->commentaire) > 20;
+                                    ?>
+                                    <button data-toggle="modal" data-target="#commentaire"
+                                        data-commentaires="{{ $suivi[$i]->commentaire }}"
+                                        style="background-color: transparent; border: none;"> {{ $descriptions }}
+                                        @if ($hasMore)
+                                            ...
+                                        @endif
+                                    </button>
+                                </td>
+                                <td>
+                                    <button type="button" class="btn btn-warning btn-finish mt-1 btn-sm"
+                                        style="width: 90px;" data-toggle="modal" data-target="#modifSuiviFlux"
+                                        data-qtepo="{{ $suivi[$i]->qte_po }}"
+                                        data-qtecoupe="{{ $suivi[$i]->qte_coupe }}"
+                                        data-qteentreechaine="{{ $suivi[$i]->qte_entree_chaine }}"
+                                        data-qtetransferes="{{ $suivi[$i]->qte_transfere }}"
+                                        data-pretalivrer="{{ $suivi[$i]->qte_pret_livrer }}"
+                                        data-qtedejalivre="{{ $suivi[$i]->qte_deja_livrer }}"
+                                        data-entreerepassage="{{ $suivi[$i]->entree_repassage }}"
+                                        data-sortierepassage="{{ $suivi[$i]->sortie_repassage }}"
+                                        data-commentaire="{{ $suivi[$i]->commentaire }}"
+                                        data-idsuivi="{{ $suivi[$i]->id }}">
+                                        <i class="fas fa-edit"></i> Modifier
+                                    </button>
+
+                                </td>
+                            </tr>
+                        @endfor
                     </tbody>
                 </table>
             </div>
@@ -368,6 +514,10 @@
                                 <input type="text" class="form-control" id="sortieRepassage"
                                     name="sortieRepassage">
                             </div>
+                            <div class="form-group">
+                                <label for="sortieRepassage">Commentaire</label>
+                                <input type="text" class="form-control" id="commentaires" name="commentaire">
+                            </div>
 
                             <div class="modal-footer mt-3">
                                 <button type="button" class="btn btn-secondary"
@@ -395,7 +545,7 @@
                         </button>
                     </div>
                     <div class="modal-body texte">
-                       <input type="text" class="form-control" id="commentaireModal" disabled>
+                        <input type="text" class="form-control" id="commentaireModal" disabled>
                     </div>
                 </div>
             </div>
@@ -419,6 +569,8 @@
             var qteDejaLivre = button.data('qtedejalivre');
             var entreeRepassage = button.data('entreerepassage');
             var sortieRepassage = button.data('sortierepassage');
+            var commentaire = button.data('commentaire');
+            var idsuivi = button.data('idsuivi');
             console.log(qtePo);
             // Remplir les champs du formulaire
             modal.find('#qtePo1').val(qtePo);
@@ -429,6 +581,8 @@
             modal.find('#qteDejaLivre').val(qteDejaLivre);
             modal.find('#entreeRepassage').val(entreeRepassage);
             modal.find('#sortieRepassage').val(sortieRepassage);
+            modal.find('#commentaires').val(commentaire);
+            modal.find('#idSuivi').val(idsuivi);
         });
     });
 </script>
@@ -446,5 +600,108 @@
         });
     });
 </script>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        var nomTiers = document.getElementById('nomTiers');
+        var idTiers = document.getElementById('idTiers');
+        var suggestionsListTiers = document.getElementById('suggestionsListTiers');
+
+        nomTiers.addEventListener('input', function() {
+            var query = nomTiers.value;
+
+            if (query.length < 1) {
+                suggestionsListTiers.style.display = 'none';
+                return;
+            }
+
+            var xhr1 = new XMLHttpRequest();
+            xhr1.open('GET', '{{ route('recherche-tiers-demande') }}?nomTiers=' + encodeURIComponent(
+                query), true);
+            xhr1.onload = function() {
+                if (xhr1.status === 200) {
+                    var tiers = JSON.parse(xhr1.responseText);
+                    suggestionsListTiers.innerHTML = '';
+                    if (tiers.length > 0) {
+                        tiers.forEach(function(tier) {
+                            var li = document.createElement('li');
+                            li.className = 'list-group-item';
+                            li.textContent = tier.nomtier;
+                            li.addEventListener('click', function() {
+                                nomTiers.value = tier.nomtier;
+                                idTiers.value = tier.id;
+                                suggestionsListTiers.style.display = 'none';
+                            });
+                            suggestionsListTiers.appendChild(li);
+                        });
+                        suggestionsListTiers.style.display = 'block';
+                    } else {
+                        suggestionsListTiers.style.display = 'none';
+                    }
+                }
+            };
+            xhr1.send();
+        });
+
+        document.addEventListener('click', function(event) {
+            if (!nomTiers.contains(event.target) && !suggestionsListTiers.contains(event.target)) {
+                suggestionsListTiers.style.display = 'none';
+            }
+        });
+    });
+</script>
+
+
+{{--  style  --}}
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        var nomSaison = document.getElementById('nomStyle');
+        var idSaison = document.getElementById('idStyle');
+        var suggestionsList = document.getElementById('suggestionsListStyle');
+
+        nomSaison.addEventListener('input', function() {
+            var query = nomSaison.value;
+
+            if (query.length < 1) {
+                suggestionsList.style.display = 'none';
+                return;
+            }
+
+            var xhr = new XMLHttpRequest();
+            xhr.open('GET', '{{ route('recherche-style') }}?nomStyle=' + encodeURIComponent(query),
+                true);
+            xhr.onload = function() {
+                if (xhr.status === 200) {
+                    var saisons = JSON.parse(xhr.responseText);
+                    suggestionsList.innerHTML = '';
+                    if (saisons.length > 0) {
+                        saisons.forEach(function(saison) {
+                            var li = document.createElement('li');
+                            li.className = 'list-group-item';
+                            li.textContent = saison.nom_style;
+                            li.addEventListener('click', function() {
+                                nomSaison.value = saison.nom_style;
+                                idSaison.value = saison.id;
+                                suggestionsList.style.display = 'none';
+                            });
+                            suggestionsList.appendChild(li);
+                        });
+                        suggestionsList.style.display = 'block';
+                    } else {
+                        suggestionsList.style.display = 'none';
+                    }
+                }
+            };
+            xhr.send();
+        });
+
+        document.addEventListener('click', function(event) {
+            if (!nomSaison.contains(event.target) && !suggestionsList.contains(event.target)) {
+                suggestionsList.style.display = 'none';
+            }
+        });
+    });
+</script>
+
 
 @include('CRM.footer')
