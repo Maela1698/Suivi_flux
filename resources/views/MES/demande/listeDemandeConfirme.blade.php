@@ -14,57 +14,38 @@
                     </div>
                     <div class="card-body">
                         <div class="table-responsive">
-                            <table class="table table-hover table-responsive-sm">
-                                <thead>
-                                    <tr>
-                                        <th>SAISON</th>
-                                        <th>DATE ENTRÉE</th>
-                                        <th>DATE LIVRAISON</th>
-                                        <th>CLIENT</th>
-                                        <th>MODÈLE</th>
-                                        <th>STADE</th>
-                                        <th>QUANTITÉ</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <tr onclick="window.location.href='{{ route('MES.fiche-demande') }}'">
-                                        <td>E25</td>
-                                        <td>18/11/24</td>
-                                        <td>18/12/24</td>
-                                        <td>JACADI</td>
-                                        <td>JACADI MODELE A</td>
-                                        <td>PROTO_1</td>
-                                        <td>1000</td>
-                                    </tr>
-                                    <tr onclick="window.location.href='{{ route('MES.fiche-demande') }}'">
-                                        <td>E25</td>
-                                        <td>17/11/24</td>
-                                        <td>28/01/25</td>
-                                        <td>JACADI</td>
-                                        <td>JACADI MODELE Z</td>
-                                        <td>PROTO_1</td>
-                                        <td>1000</td>
-                                    </tr>
-                                    <tr onclick="window.location.href='{{ route('MES.fiche-demande') }}'">
-                                        <td>E25</td>
-                                        <td>17/11/24</td>
-                                        <td>17/01/25</td>
-                                        <td>JACADI</td>
-                                        <td>JACADI MODELE X</td>
-                                        <td>PROTO_1</td>
-                                        <td>1000</td>
-                                    </tr>
-                                    <tr onclick="window.location.href='{{ route('MES.fiche-demande') }}'">
-                                        <td>E24</td>
-                                        <td>17/11/24</td>
-                                        <td>17/12/24</td>
-                                        <td>JACADI</td>
-                                        <td>JACADI MODELE Y</td>
-                                        <td>Non alloue</td>
-                                        <td>1000</td>
-                                    </tr>
-                                </tbody>
-                            </table>
+                            @if($demandesConfirmes->isEmpty())
+                                <p>Aucune demande confirmée disponible pour le moment.</p>
+                            @else
+                                <table class="table table-hover table-responsive-sm">
+                                    <thead>
+                                        <tr>
+                                            <th>id</th>
+                                            <th>SAISON</th>
+                                            <th>DATE ENTRÉE</th>
+                                            <th>DATE LIVRAISON</th>
+                                            <th>CLIENT</th>
+                                            <th>MODÈLE</th>
+                                            <th>STADE</th>
+                                            <th>QUANTITÉ</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        @foreach($demandesConfirmes as $demandeConfirme)
+                                            <tr onclick="window.location.href='{{ route('MES.fiche-demande',['id' => $demandeConfirme->id]) }}'">
+                                                <td>{{ $demandeConfirme->id }}</td>
+                                                <td>{{ $demandeConfirme->type_saison }}</td>
+                                                <td>{{ $demandeConfirme->date_entree }}</td>
+                                                <td>{{ $demandeConfirme->date_livraison }}</td>
+                                                <td>{{ $demandeConfirme->nomtier }}</td>
+                                                <td>{{ $demandeConfirme->nom_modele }}</td>
+                                                <td>{{ $demandeConfirme->type_stade }}</td>
+                                                <td>{{ $demandeConfirme->qte_commande_provisoire }}</td>
+                                            </tr>
+                                        @endforeach
+                                    </tbody>
+                                </table>
+                            @endif
                         </div>
                     </div>
                 </div>
