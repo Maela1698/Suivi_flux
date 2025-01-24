@@ -43,3 +43,5 @@ AS SELECT rc.id AS recap_id,
      LEFT JOIN unitetaille ut ON d.idtaille = ut.id
      JOIN v_demandeclient vd ON rc.iddemandeclient = vd.id;
 
+
+
