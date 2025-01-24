@@ -372,4 +372,5 @@ Route::get('/transit',[ControllerTransit::class,'acceuil'])->name('TRANSIT.acceu
 /*----------------------MES--------------------------*/
 Route::get('/mes-suiviFlux',[MESControllerSuiviFlux::class,'suiviFlux'])->name('MES.suiviFlux');
 Route::get('/mes-demande',[MESControllerDemande::class,'getDemandeConfirme'])->name('MES.demande');
-Route::get('/mes-fiche-demande',[MESControllerDemande::class,'getFicheDemandeConfirme'])->name('MES.fiche-demande');
+Route::get('/mes-fiche-demande/{id}',[MESControllerDemande::class,'getFicheDemandeConfirme'])->name('MES.fiche-demande');
+Route::get('/mes-destinations-of/{recap_id}/{numerocommande}',[MESControllerDemande::class,'getDestinationByOF'])->name('MES.destinations-of');
