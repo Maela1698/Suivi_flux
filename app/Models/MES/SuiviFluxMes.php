@@ -10,6 +10,19 @@ class SuiviFluxMes extends Model
 {
     use HasFactory;
 
+    protected $table = 'suivifluxmes';
+
+    protected $fillable = [
+        'date_operaton',
+        'id_demande_client',
+        'numero_commande',
+        'id_taille',
+        'qte_po',
+        'couleur',
+    ];
+
+    public $timestamps = false;
+
     public static function updateSuiviFluxMes($date_operaton, $qte_coupe, $qte_entree_chaine,$qte_transfere,$qte_pret_livrer,$qte_deja_livrer,$entree_repassage,$sortie_repassage,$commentaire,$id){
         DB::select('update suivifluxmes set date_operaton=?, qte_coupe=?, qte_entree_chaine=?, qte_transfere=?, qte_pret_livrer=?, qte_deja_livrer=?, entree_repassage=?, sortie_repassage=?, commentaire=?  where id=?',[$date_operaton, $qte_coupe, $qte_entree_chaine,$qte_transfere,$qte_pret_livrer,$qte_deja_livrer,$entree_repassage,$sortie_repassage,$commentaire,$id]);
     }
@@ -88,6 +101,17 @@ class SuiviFluxMes extends Model
         return $select[0]->sommeQte_po ?? 0;
     }
 
+    public function insertSuiviFlux($date_operaton,$id_demande_client,$numero_commande,$qte_po,$couleur,$id_taille)
+    {
+        DB::table($this->table)->insert([
+            'date_operaton' => $date_operaton,
+            'id_demande_client' =>$id_demande_client,
+            'numero_commande' => $numero_commande,
+            'qte_po' => $qte_po,
+            'couleur' => $couleur,
+            'id_taille' => $id_taille
+        ]);
+    }
 
 
 }

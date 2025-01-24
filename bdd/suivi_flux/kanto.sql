@@ -45,38 +45,3 @@ JOIN
     recapcommande ON recapcommande.iddemandeclient = suiviFluxMes.id_demande_client;
 
 
-lter table destination add column idtaille int;
-alter table destination add foreign key(idtaille) references unitetaille(id);
-
-
-create or REPLACE VIEW v_dest_recap AS(
-    SELECT
-        rc.id AS recap_id,
-        rc.idDemandeClient,
-        rc.etdRevise,
-        rc.etdPropose,
-        rc.receptionBC,
-        rc.bcClient,
-        rc.date_bc_tissu,
-        rc.date_bc_access,
-        rc.etat AS recap_etat,
-        d.id AS destination_id,
-        d.numeroCommande,
-        d.etdInitial,
-        d.dateLivraisonExacte,
-        d.dateInspection,
-        d.qteOF,
-        d.etat AS destination_etat,
-        ds.id AS destStd_id,
-        ds.designation AS destStd_designation,
-        ut.unite_taille,
-        ut.id AS uniteTailleId
-    FROM
-        recapCommande rc
-    LEFT JOIN
-        destination d ON rc.id = d.idRecapCommande
-    LEFT JOIN
-        destStd ds ON d.idDestStd = ds.id
-    LEFT JOIN
-        unitetaille ut ON d.idtaille = ut.id
-);
