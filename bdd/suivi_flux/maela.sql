@@ -1,4 +1,4 @@
---view pour lister par destinations(OF) les destinations d'une commande 
+--view pour lister par destinations(OF) les destinations d'une commande
 CREATE OR REPLACE VIEW public.v_liste_of
 AS SELECT vdr.recap_id,
     vdr.iddemandeclient,
@@ -42,3 +42,4 @@ AS SELECT rc.id AS recap_id,
      LEFT JOIN deststd ds ON d.iddeststd = ds.id
      LEFT JOIN unitetaille ut ON d.idtaille = ut.id
      JOIN v_demandeclient vd ON rc.iddemandeclient = vd.id;
+
