@@ -48,6 +48,6 @@ class VDemande extends Model
     public function getHasOFAttribute()
     {
         // Vérifier si l'id existe dans la table VListOF
-        return VListeOF::where('iddemandeclient', $this->id)->exists();
+        return VListeOF::where('iddemandeclient', $this->id)->whereNotNull('qteof')->exists();
     }
 }
