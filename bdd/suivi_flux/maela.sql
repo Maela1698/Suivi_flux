@@ -84,7 +84,7 @@ AS SELECT rc.id AS recap_id,
      LEFT JOIN destination d ON rc.id = d.idrecapcommande
      LEFT JOIN deststd ds ON d.iddeststd = ds.id
      LEFT JOIN unitetaille ut ON d.idtaille = ut.id
-     JOIN v_demandeclient vd ON rc.iddemandeclient = vd.id;
+     LEFT JOIN v_demandeclient vd ON rc.iddemandeclient = vd.id;
 
 
 --ajout colonne id_destination dans la table suivi flux pour anticiper les evenements dans le cas ou on a besoin de l'id_destination au futur
