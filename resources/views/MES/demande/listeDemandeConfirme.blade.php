@@ -9,12 +9,12 @@
         <div class="row">
             <div class="col-lg-12">
                 <div class="card">
-                    <div class="card-header titre">
-                        <h4 class="card-title">LISTE DEMANDES CONFIRMÉS</h4>
+                    <div class="card-header d-flex justify-center">
+                        <h4 class="card-title titre">LISTE DEMANDES CONFIRMÉS</h4>
                     </div>
                     <div class="card-body">
                         <div class="basic-form">
-                            <form action="" method="">
+                            <form action="{{ route('MES.demande') }}" method="GET">
                                 <div class="form-row">
                                     <div class="col-sm-0">
                                         <label class="control-label">SAISON</label>
@@ -41,12 +41,12 @@
                                     </div>
                                     <div class="col mt-2 mt-sm-0">
                                         <label class="control-label">CLIENT</label>
-                                        <select class="form-control" name="id_tier">
-                                            <option selected>--</option>
+                                        <input class="form-control" list="tiersList" name="id_tier" placeholder="CLIENT">
+                                        <datalist id="tiersList">
                                             @foreach ($tiers as $tier)
-                                                <option value = "{{ $tier->id }}">{{ $tier->nomtier }}</option>
+                                                <option value="{{ $tier->nomtier }}">{{ $tier->nomtier }}</option>
                                             @endforeach
-                                        </select>
+                                        </datalist>
                                     </div>
                                     <div class="col mt-2 mt-sm-0">
                                         <label class="control-label">MODÈLE</label>
@@ -61,7 +61,7 @@
                                         </select>
                                     </div>
                                     <div class="col mt-2 mt-sm-0">
-                                        <label class="control-label" style="color: white">------------------------------------</label>
+                                        <label class="control-label" style="color: white">---------------------------------------------------------------</label>
                                         <button type="submit" class="btn btn-success">Filtrer</button>
                                     </div>
                                 </div>

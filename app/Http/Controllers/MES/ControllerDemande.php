@@ -15,7 +15,7 @@ class ControllerDemande extends Controller
 {
     //
     public function getDemandeConfirme(){
-        $tiers = Tiers::all();
+        $tiers = Tiers::where('idacteur',1)->get();
         $demandesConfirmes = VDemande::where('id_etat',2)->orderBy('id')->get();
         return view('MES.demande.listeDemandeConfirme',compact('demandesConfirmes','tiers'));
     }
@@ -60,6 +60,7 @@ class ControllerDemande extends Controller
                 );
             }
         }
-       return redirect()->route('MES.suiviFlux');
+        return redirect()->back();
+        // return redirect()->route('MES.suiviFlux');
     }
 }

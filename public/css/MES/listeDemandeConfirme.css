@@ -18,8 +18,8 @@ tr{
 }
 
 .titre{
-    display: flex; 
-    align-items: center;
+    color : black;
+    font-size : 150%;
 }
 
 .code {
