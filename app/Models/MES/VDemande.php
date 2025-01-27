@@ -40,6 +40,14 @@ class VDemande extends Model
         'type_stade',
         'id_stade',
         'type_etat',
-        'id_etat',
+        'id_etat'
     ];
+
+    protected $appends = ['hasOF'];
+
+    public function getHasOFAttribute()
+    {
+        // Vérifier si l'id existe dans la table VListOF
+        return VListeOF::where('iddemandeclient', $this->id)->exists();
+    }
 }

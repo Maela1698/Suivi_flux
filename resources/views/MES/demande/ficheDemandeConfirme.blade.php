@@ -41,6 +41,11 @@
                         <h4 class="card-title">LISTE COMMANDES (NUM OF)</h4>
                     </div>
                     <div class="card-body">
+                        @if($listeOF->isEmpty())
+                            <div class="alert alert-warning">
+                                <strong>Aucun OF disponible pour le moment</strong> 
+                            </div>
+                        @else
                         <div class="table-responsive">
                             <table class="table table-hover table-responsive-sm hover-table">
                                 <thead>
@@ -70,6 +75,7 @@
                                 </tbody>
                             </table>
                         </div>
+                        @endif
                     </div>
                 </div>
             </div>
@@ -83,7 +89,7 @@
     <div class="modal-dialog modal-lg">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title"></h5>
+                <h5 class="modal-title">ENVOYE VERS LE SUIVI FLUX</h5>
                 <button type="button" class="close" data-dismiss="modal"><span>&times;</span>
                 </button>
             </div>
@@ -120,15 +126,13 @@
                                 <td>389</td>
                                 <td>
                                     <div class="basic-form">
-                                       
-                                            <div class="form-group">
-                                                <div class="form-check form-check-inline">
-                                                    <label class="form-check-label">
-                                                        <input type="checkbox" class="form-check-input" value="">
-                                                    </label>
-                                                </div>
+                                        <div class="form-group">
+                                            <div class="form-check form-check-inline">
+                                                <label class="form-check-label">
+                                                    <input type="checkbox" class="form-check-input" value="" disabled>
+                                                </label>
                                             </div>
-                                       
+                                        </div>
                                     </div>
                                 </td>
                             </tr>
@@ -162,14 +166,14 @@
                     // Ajouter les données dynamiquement
                     response.forEach(destination => {
                         modalBody.append(`
-                            <tr>
+                            <tr class="${destination.istracked ? 'modal-tr' : ''}">
                                 <td>${destination.nomtier}</td>
-                                
-                                    <input type="hidden" value="${destination.numerocommande}" name="numerocommande[]">
-                                    <input type="hidden" value="${destination.unitetailleid}" name="uniteTaille[]">
-                                    <input type="hidden" value="${destination.qteof}" name="qteof[]">
-                                    <input type="hidden" value="${destination.iddemandeclient}" name="iddemandeclient[]">
-                                
+                                <input type="hidden" value="${destination.numerocommande}" name="numerocommande[${destination.id_destination}]">
+                                <input type="hidden" value="${destination.unitetailleid}" name="uniteTaille[${destination.id_destination}]">
+                                <input type="hidden" value="${destination.qteof}" name="qteof[${destination.id_destination}]">
+                                <input type="hidden" value="${destination.iddemandeclient}" name="iddemandeclient[${destination.id_destination}]">
+                                <input type="hidden" value="${destination.id_destination}" name="id_destination[${destination.id_destination}]">
+
                                 <td>${destination.nom_modele}</td>
                                 <td>${destination.numerocommande}</td>
                                 <td>${destination.nom_style}</td>
@@ -177,15 +181,19 @@
                                 <td>${destination.qteof}</td>
                                 <td>
                                     <div class="basic-form">
-                                     
-                                            <div class="form-group">
-                                                <div class="form-check form-check-inline">
-                                                    <label class="form-check-label">
-                                                        <input type="checkbox" class="form-check-input modal-checkbox" value="">
-                                                    </label>
-                                                </div>
+                                        <div class="form-group">
+                                            <div class="form-check form-check-inline">
+                                                <label class="form-check-label">
+                                                    <input 
+                                                        type="checkbox" 
+                                                        class="form-check-input modal-checkbox" 
+                                                        value="${destination.id_destination}" 
+                                                        name="${destination.istracked ? '' : 'checkbox[]'}" 
+                                                        ${destination.istracked ? 'disabled' : ''}
+                                                    >
+                                                </label>
                                             </div>
-                                      
+                                        </div>
                                     </div>
                                 </td>
                             </tr>

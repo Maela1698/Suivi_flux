@@ -5,6 +5,7 @@ namespace App\Models\MES;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 
 class SuiviFluxMes extends Model
 {
@@ -19,6 +20,7 @@ class SuiviFluxMes extends Model
         'id_taille',
         'qte_po',
         'couleur',
+        'id_destination'
     ];
 
     public $timestamps = false;
@@ -101,16 +103,28 @@ class SuiviFluxMes extends Model
         return $select[0]->sommeQte_po ?? 0;
     }
 
-    public function insertSuiviFlux($date_operaton,$id_demande_client,$numero_commande,$qte_po,$couleur,$id_taille)
+    public function insertSuiviFlux($date_operaton,$id_demande_client,$numero_commande,$qte_po,$couleur,$id_taille,$id_destination)
     {
-        DB::table($this->table)->insert([
-            'date_operaton' => $date_operaton,
-            'id_demande_client' =>$id_demande_client,
-            'numero_commande' => $numero_commande,
-            'qte_po' => $qte_po,
-            'couleur' => $couleur,
-            'id_taille' => $id_taille
-        ]);
+        try {
+            // Met à jour la table `destination` pour marquer l'enregistrement comme suivi
+            DB::update('UPDATE destination SET istracked = true WHERE id = ?', [$id_destination]);
+        
+            // Insère les données dans la table spécifiée
+            DB::table($this->table)->insert([
+                'date_operaton' => $date_operaton,
+                'id_demande_client' => $id_demande_client,
+                'numero_commande' => $numero_commande,
+                'qte_po' => $qte_po,
+                'couleur' => $couleur,
+                'id_taille' => $id_taille,
+                'id_destination' => $id_destination,
+            ]);
+        } catch (\Exception $e) {
+            // Capture les exceptions et affiche un message ou effectue un traitement personnalisé
+            Log::error('Erreur lors de l\'opération : ' . $e->getMessage());
+            return response()->json(['message' => 'Une erreur s\'est produite lors de l\'opération.'], 500);
+        }
+        
     }
 
 

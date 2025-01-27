@@ -13,7 +13,8 @@ class Tiers extends Model
     public $timestamps = false;
 
     protected $fillable = [
-        'nomtier', 'idacteur', 'adresse', 'ville', 'codepostal',
+
+        'id','nomtier', 'idacteur', 'adresse', 'ville', 'codepostal',
         'idpays', 'numphone', 'emailtier', 'website', 'idunite',
         'idqualite', 'idetat', 'merchsenior', 'contactmerchsenior',
         'emailmerchsenior', 'merchjunior', 'contactmerchjunior',
