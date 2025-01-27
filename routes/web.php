@@ -375,3 +375,4 @@ Route::get('/mes-fiche-demande/{id}',[MESControllerDemande::class,'getFicheDeman
 Route::get('/mes-destinations-of/{recap_id}/{numerocommande}',[MESControllerDemande::class,'getDestinationByOF'])->name('MES.destinations-of');
 Route::match(['get', 'post'],'/mes-suiviFlux',[MESControllerSuiviFlux::class,'suiviFlux'])->name('MES.suiviFlux');
 Route::post('/mes-suivre-flux',[MESControllerDemande::class,'suivreFlux'])->name('MES.suivreFlux');
+Route::match(['get', 'post'],'/mes-modificationSuiviMes',[MESControllerSuiviFlux::class,'modificationSuiviMes'])->name('MES.modificationSuiviMes');

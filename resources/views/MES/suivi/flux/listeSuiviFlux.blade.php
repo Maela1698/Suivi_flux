@@ -476,7 +476,7 @@
                         </button>
                     </div>
                     <div class="modal-body texte">
-                        <form action="" method="POST" autocomplete="off">
+                        <form action="{{ route('MES.modificationSuiviMes') }}" method="POST" autocomplete="off">
                             @csrf
                             <div class="form-group">
                                 <input type="hidden" name="idSuivi" id="idSuivi">

@@ -25,6 +25,8 @@ class SuiviFluxMes extends Model
 
     public $timestamps = false;
 
+    use HasFactory;
+
     public static function updateSuiviFluxMes($date_operaton, $qte_coupe, $qte_entree_chaine,$qte_transfere,$qte_pret_livrer,$qte_deja_livrer,$entree_repassage,$sortie_repassage,$commentaire,$id){
         DB::select('update suivifluxmes set date_operaton=?, qte_coupe=?, qte_entree_chaine=?, qte_transfere=?, qte_pret_livrer=?, qte_deja_livrer=?, entree_repassage=?, sortie_repassage=?, commentaire=?  where id=?',[$date_operaton, $qte_coupe, $qte_entree_chaine,$qte_transfere,$qte_pret_livrer,$qte_deja_livrer,$entree_repassage,$sortie_repassage,$commentaire,$id]);
     }
@@ -38,77 +40,81 @@ class SuiviFluxMes extends Model
 
     public static function sommeQteCoupe($condition)
     {
-        $select = DB::select("select sum(qte_coupe) as sommeQte_coupe from v_suiviFluxMes where 1=1 ".$condition);
-        return $select[0]->sommeQte_coupe ?? 0;
+        $select = DB::select("select sum(qte_coupe) as somme from v_suiviFluxMes where 1=1 ".$condition);
+        return $select[0]->somme ?? 0;
     }
 
     public static function sommeQteEntreeChaine($condition)
     {
-        $select = DB::select("select sum(qte_entree_chaine) as sommeQte_entree_chaine from v_suiviFluxMes where 1=1 ".$condition);
-        return $select[0]->sommeQte_entree_chaine ?? 0;
+        $select = DB::select("select sum(qte_entree_chaine) as somme from v_suiviFluxMes where 1=1 ".$condition);
+        return $select[0]->somme ?? 0;
     }
 
     public static function sommeQteTransferer($condition)
     {
-        $select = DB::select("select sum(qte_transfere) as sommeQte_transfere from v_suiviFluxMes where 1=1 ".$condition);
-        return $select[0]->sommeQte_transfere ?? 0;
+        $select = DB::select("select sum(qte_transfere) as somme from v_suiviFluxMes where 1=1 ".$condition);
+        return $select[0]->somme ?? 0;
     }
 
     public static function sommeQtePretLivrer($condition)
     {
-        $select = DB::select("select sum(qte_pret_livrer) as sommeQte_pret_livrer from v_suiviFluxMes where 1=1 ".$condition);
-        return $select[0]->sommeQte_pret_livrer ?? 0;
+        $select = DB::select("select sum(qte_pret_livrer) as somme from v_suiviFluxMes where 1=1 ".$condition);
+        return $select[0]->somme ?? 0;
     }
 
     public static function sommeQteDejaLivrer($condition)
     {
-        $select = DB::select("select sum(qte_deja_livrer) as sommeQte_deja_livrer from v_suiviFluxMes where 1=1 ".$condition);
-        return $select[0]->sommeQte_deja_livrer ?? 0;
+        $select = DB::select("select sum(qte_deja_livrer) as somme from v_suiviFluxMes where 1=1 ".$condition);
+        return $select[0]->somme ?? 0;
     }
 
     public static function sommeEntreeRepassage($condition)
     {
-        $select = DB::select("select sum(entree_repassage) as sommeEntree_repassage from v_suiviFluxMes where 1=1 ".$condition);
-        return $select[0]->sommeEntree_repassage ?? 0;
+        $select = DB::select("select sum(entree_repassage) as somme from v_suiviFluxMes where 1=1 ".$condition);
+        return $select[0]->somme ?? 0;
     }
 
     public static function sommeSortieRepassage($condition)
     {
-        $select = DB::select("select sum(sortie_repassage) as sommeSortie_repassage from v_suiviFluxMes where 1=1 ".$condition);
-        return $select[0]->sommeSortie_repassage ?? 0;
+        $select = DB::select("select sum(sortie_repassage) as somme from v_suiviFluxMes where 1=1 ".$condition);
+        return $select[0]->somme ?? 0;
     }
 
     public static function sommeBalanceATransferer($condition)
     {
-        $select = DB::select("select sum(balanceatransferer) as sommeBalanceatransferer from v_suivifluxmes where 1=1 ".$condition);
-        return $select[0]->sommeBalanceatransferer ?? 0;
+        $select = DB::select("select sum(balanceatransferer) as somme from v_suivifluxmes where 1=1 ".$condition);
+        return $select[0]->somme ?? 0;
     }
 
     public static function sommeBalanceALivrer($condition)
     {
-        $select = DB::select("select sum(balancealivrer) as sommeBalancealivrer from v_suivifluxmes  where 1=1 ".$condition);
-        return $select[0]->sommeBalancealivrer ?? 0;
+        $select = DB::select("select sum(balancealivrer) as somme from v_suivifluxmes  where 1=1 ".$condition);
+        return $select[0]->somme ?? 0;
     }
 
     public static function sommeBalanceRepassage($condition)
     {
-        $select = DB::select("select sum(balancerepassage) as sommeBalancerepassage from v_suivifluxmes where 1=1 ".$condition);
-        return $select[0]->sommeBalancerepassage ?? 0;
+        $select = DB::select("select sum(balancerepassage) as somme from v_suivifluxmes where 1=1 ".$condition);
+        return $select[0]->somme ?? 0;
     }
 
     public static function sommeQtePo($condition)
     {
-        $select = DB::select("select sum(qte_po) as sommeQte_po from suivifluxmes w
-        ");
-        return $select[0]->sommeQte_po ?? 0;
+        $select = DB::select("select sum(qte_po) as somme from v_suivifluxmes where 1=1 ".$condition);
+        return $select[0]->somme ?? 0;
     }
 
+
+<<<<<<< Updated upstream
     public function insertSuiviFlux($date_operaton,$id_demande_client,$numero_commande,$qte_po,$couleur,$id_taille,$id_destination)
+=======
+    public function insertSuiviFlux($date_operaton,$id_demande_client,$numero_commande,$qte_po,$couleur,$id_taille)
+>>>>>>> Stashed changes
     {
         try {
             // Met à jour la table `destination` pour marquer l'enregistrement comme suivi
             DB::update('UPDATE destination SET istracked = true WHERE id = ?', [$id_destination]);
-        
+
             // Insère les données dans la table spécifiée
             DB::table($this->table)->insert([
                 'date_operaton' => $date_operaton,
@@ -124,7 +130,7 @@ class SuiviFluxMes extends Model
             Log::error('Erreur lors de l\'opération : ' . $e->getMessage());
             return response()->json(['message' => 'Une erreur s\'est produite lors de l\'opération.'], 500);
         }
-        
+
     }
 
 

@@ -32,10 +32,10 @@ class ControllerSuiviFlux extends Controller
             $condition = " and ex_factory BETWEEN '".$startEntree."'  AND '".$endEntree."'";
         }
         if($of != null){
-            $condition = $condition." and numero_commande LIKE '%".$of."%'";
+            $condition = $condition." and numero_commande ILIKE '%".$of."%'";
         }
         if($modele != null){
-            $condition = $condition." and nom_modele LIKE '%".$of."%'";
+            $condition = $condition." and nom_modele ILIKE '%".$modele."%'";
         }
         if($idTiers != null){
             $condition = $condition." and id_tiers = ".$idTiers;
@@ -54,7 +54,7 @@ class ControllerSuiviFlux extends Controller
         $balanceatransferer=SuiviFluxMes::sommeBalanceATransferer($condition);
         $balancealivrer = SuiviFluxMes::sommeBalanceALivrer($condition);
         $balancerepassage = SuiviFluxMes::sommeBalanceRepassage($condition);
-
+        $qte_po = SuiviFluxMes::sommeQtePo($condition);
         if($condition == ""){
             $condition = " order by id desc limit 100";
         }else{
@@ -62,11 +62,11 @@ class ControllerSuiviFlux extends Controller
         }
         $suivi = SuiviFluxMes::getAllSuiviFluxMes($condition);
 
-        $qte_po = SuiviFluxMes::sommeQtePo($condition);
+
         return view('MES.suivi.flux.listeSuiviFlux',compact('idStyle','idTiers','modele','of','endEntree','startEntree','suivi','qte_po','qte_coupe','qte_entree_chaine','qte_transfere','qte_pret_livrer','qte_deja_livrer','entree_repassage','sortie_repassage','balanceatransferer','balancealivrer','balancerepassage'));
     }
 
-    public function modificationStadeRAD(Request $request)
+    public function modificationSuiviMes(Request $request)
     {
         $qteCoupe = $request->input('qteCoupe');
         $qteEntreeChaine = $request->input('qteEntreeChaine');
@@ -81,4 +81,5 @@ class ControllerSuiviFlux extends Controller
         SuiviFluxMes::updateSuiviFluxMes($dateActuelle, $qteCoupe, $qteEntreeChaine, $qteTransferes, $pretALivrer, $qteDejaLivre, $entreeRepassage, $sortieRepassage, $commentaire, $idSuivi);
         return redirect()->route('MES.suiviFlux');
     }
+
 }
