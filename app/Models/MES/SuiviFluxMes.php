@@ -105,11 +105,7 @@ class SuiviFluxMes extends Model
     }
 
 
-<<<<<<< Updated upstream
     public function insertSuiviFlux($date_operaton,$id_demande_client,$numero_commande,$qte_po,$couleur,$id_taille,$id_destination)
-=======
-    public function insertSuiviFlux($date_operaton,$id_demande_client,$numero_commande,$qte_po,$couleur,$id_taille)
->>>>>>> Stashed changes
     {
         try {
             // Met à jour la table `destination` pour marquer l'enregistrement comme suivi
