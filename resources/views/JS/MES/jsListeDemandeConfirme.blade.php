@@ -12,10 +12,8 @@
                 found = true;
             }
         });
-
         if (!found) {
             hiddenInput.value = '';
         }
     });
 </script>
-

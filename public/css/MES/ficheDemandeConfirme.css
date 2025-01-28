@@ -24,3 +24,19 @@
 .modal-tr td{
     color: #d7d7d7;
 }
+
+.card-title-cin {
+    font-size: 1.25rem;
+}
+
+.grand-titre{
+    font-size: 150%;
+}
+
+.petit-titre{
+    font-size: 125%;
+}
+
+.img-fluid-cin {
+    object-fit: cover;
+}

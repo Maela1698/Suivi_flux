@@ -11,22 +11,40 @@
             <div class="col-lg-12">
                 <div class="card">
                     <div class="card-header">
-                        <h4 class="card-title">FICHE DEMANDE CONFIRMÉ</h4>
+                        <h4 class="card-title grand-titre">FICHE DEMANDE CONFIRMÉ</h4>
                     </div>
                     <div class="card-body">
-                        <div class="table-responsive">
-                            <table class="table table-hover table-responsive-sm hover-table">
-                                <thead>
-                                    <th>{{ $demandeConfirme->id }}</th>
-                                    <th>{{ $demandeConfirme->type_saison }}</th>
-                                    <th>{{ $demandeConfirme->date_entree }}</th>
-                                    <th>{{ $demandeConfirme->date_livraison }}</th>
-                                    <th>{{ $demandeConfirme->nomtier }}</th>
-                                    <th>{{ $demandeConfirme->nom_modele }}</th>
-                                    <th>{{ $demandeConfirme->type_stade }}</th>
-                                    <th>{{ $demandeConfirme->qte_commande_provisoire }}</th>
-                                </thead>
-                            </table>
+                        <div class="row">
+                            <div class="col-md-4 text-center">
+                                <img src="data:image/png;base64,{{ $demandeConfirme->photo_commande }}" alt="Photo du commande" class="img-fluid-cin rounded shadow-sm" style="max-height: 200px;">
+                            </div>
+                            <div class="col-md-8">
+                                <h5 class="card-title text-primary">Détails Demande</h5>
+                                <hr>
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <ul class="list-unstyled">
+                                            <li><strong>Date entrée :</strong> {{ $demandeConfirme->date_entree }}</li>
+                                            <li><strong>Client :</strong> {{ $demandeConfirme->nomtier }}</li>
+                                            <li><strong>Période :</strong> {{ $demandeConfirme->periode }}</li>
+                                            <li><strong>Modèle :</strong> {{ $demandeConfirme->nom_modele }}</li>
+                                            <li><strong>Désignation :</strong> {{ $demandeConfirme->nom_style }}</li>
+                                            <li><strong>Thème :</strong> {{ $demandeConfirme->theme }}</li>
+                                            <li><strong>Quantité prévisionnel :</strong> {{ $demandeConfirme->qte_commande_provisoire }}</li>
+                                        </ul>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <ul class="list-unstyled">
+                                            <li><strong>ETD :</strong>  --</li>
+                                            <li><strong>Stade :</strong> {{ $demandeConfirme->type_stade }}</li>
+                                            <li><strong>Grille de taille :</strong> {{ $demandeConfirme->taillemin }} -- {{ $demandeConfirme->taillemax }}</li>
+                                            <li><strong>Taille de base :</strong> {{ $demandeConfirme->taille_base }}</li>
+                                            <li><strong>Inconterm :</strong> {{ $demandeConfirme->type_incontern }}</li>
+                                            <li><strong>Phase :</strong> {{ $demandeConfirme->type_phase }}</li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -38,12 +56,12 @@
             <div class="col-lg-12">
                 <div class="card">
                     <div class="card-header">
-                        <h4 class="card-title">LISTE COMMANDES (NUM OF)</h4>
+                        <h4 class="card-title petit-titre">LISTE COMMANDES (NUM OF)</h4>
                     </div>
                     <div class="card-body">
                         @if($listeOF->isEmpty())
                             <div class="alert alert-warning">
-                                <strong>Aucun OF disponible pour le moment</strong> 
+                                <strong>Aucun OF disponible</strong>
                             </div>
                         @else
                         <div class="table-responsive">

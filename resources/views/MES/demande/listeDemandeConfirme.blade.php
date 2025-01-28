@@ -54,24 +54,18 @@
                                         <input type="text" class="form-control" placeholder="" name="nom_modele" value="{{ request('nom_modele') }}">
                                     </div>
                                     <div class="col mt-2 mt-sm-0">
-                                        <label class="control-label">STADE</label>
-                                        <select class="form-control">
-                                            <option selected>--</option>
-                                            <option>En cours de nego</option>
-                                            <option>Proto 1</option>
-                                        </select>
-                                    </div>
-                                    <div class="col mt-2 mt-sm-0">
                                         <label class="control-label" style="color: white">---------------------------------------------------------------</label>
                                         <button type="submit" class="btn btn-success">Filtrer</button>
                                     </div>
                                 </div>
                             </form>
                         </div>
-                        <div class="table-responsive">
-                            @if($demandesConfirmes->isEmpty())
-                                <p>Aucune demande confirmée disponible.</p>
-                            @else
+                        @if($demandesConfirmes->isEmpty())
+                            <div class="alert alert-warning" style="margin-top: 3%">
+                                <p>Aucune commande confirmée</p> 
+                            </div>
+                        @else
+                            <div class="table-responsive">
                                 <table class="table table-hover table-responsive-sm">
                                     <thead>
                                         <tr>
@@ -105,8 +99,8 @@
                                         @endforeach
                                     </tbody>
                                 </table>
-                            @endif
-                        </div>
+                            </div>
+                        @endif
                     </div>
                 </div>
             </div>
