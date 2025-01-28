@@ -13,6 +13,7 @@
                     <div class="card-header">
                         <h4 class="card-title grand-titre">FICHE DEMANDE CONFIRMÉ</h4>
                     </div>
+                    <hr>
                     <div class="card-body">
                         <div class="row">
                             <div class="col-md-4 text-center">
