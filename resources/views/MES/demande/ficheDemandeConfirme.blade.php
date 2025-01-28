@@ -36,7 +36,7 @@
                                     </div>
                                     <div class="col-md-6">
                                         <ul class="list-unstyled">
-                                            <li><strong>ETD :</strong>  --</li>
+                                            <li><strong>ETD :</strong>  {{ $demandeConfirme->date_livraison }}</li>
                                             <li><strong>Stade :</strong> {{ $demandeConfirme->type_stade }}</li>
                                             <li><strong>Grille de taille :</strong> {{ $demandeConfirme->taillemin }} -- {{ $demandeConfirme->taillemax }}</li>
                                             <li><strong>Taille de base :</strong> {{ $demandeConfirme->taille_base }}</li>

@@ -7,6 +7,7 @@ use App\Models\MES\SuiviFluxMes;
 use App\Models\MES\VDemande;
 use App\Models\MES\VDestRecap;
 use App\Models\MES\VListeOF;
+use App\Models\Saison;
 use App\Models\Tiers;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
@@ -14,30 +15,36 @@ use Illuminate\Http\Request;
 class ControllerDemande extends Controller
 {
     // 
-    public function getDemandeConfirme(Request $request){
+    public function getDemandeConfirme(Request $request) {
         // on prend seulemnent les clients et non tous les tiers
         $tiers = Tiers::where('idacteur', 1)->get();
+
+        $saisons = Saison::where('etat', 0)->get();
 
         // where = 2 puisque les demande dont l'etat = 2 
         // sont consideres comme confirmee
         $demandesConfirmes = VDemande::where('id_etat', 2)->orderBy('id');
-
+        
         $selectedTier = null;
-        $selectedModele = $request->nom_modele ?? '';
-
         if ($request->has('id_tier') && $request->id_tier != '') {
             $selectedTier = Tiers::where('id', $request->id_tier)->first();
-            if ($selectedTier){
+            if ($selectedTier) {
                 $demandesConfirmes = $demandesConfirmes->where('id_tiers', $selectedTier->id);
             }
         }
 
+        $selectedModele = $request->nom_modele ?? '';
         if (!empty($selectedModele)) {
-            $demandesConfirmes = $demandesConfirmes->where('nom_modele', 'like', '%' . $selectedModele . '%');
+            $demandesConfirmes = $demandesConfirmes->where('nom_modele', 'ilike', '%' . $selectedModele . '%');
+        }
+
+        $selectedSaison = $request->id_saison ?? null;
+        if (!empty($selectedSaison)) {
+            $demandesConfirmes = $demandesConfirmes->where('id_saison', $selectedSaison);
         }
 
         $demandesConfirmes = $demandesConfirmes->get();
-        return view('MES.demande.listeDemandeConfirme', compact('demandesConfirmes', 'tiers', 'selectedTier','selectedModele'));
+        return view('MES.demande.listeDemandeConfirme', compact('demandesConfirmes', 'tiers', 'selectedTier','selectedModele','saisons'));
     }
 
     public function getFicheDemandeConfirme($id){

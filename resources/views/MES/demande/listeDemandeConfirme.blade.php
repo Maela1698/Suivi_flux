@@ -17,28 +17,17 @@
                                 <div class="form-row">
                                     <div class="col-sm-0">
                                         <label class="control-label">SAISON</label>
-                                        <select class="form-control">
-                                            <option selected>--</option>
-                                            <option>H24</option>
-                                            <option>E24</option>
-                                            <option>H25</option>
-                                            <option>E25</option>
+                                        <select class="form-control" name="id_saison">
+                                            <option value="">Tout</option>
+                                            @foreach ($saisons as $saison)
+                                                <option value="{{ $saison->id }}" 
+                                                    {{ request('id_saison') == $saison->id ? 'selected' : '' }}>
+                                                    {{ $saison->type_saison }}
+                                                </option>                                                
+                                            @endforeach
                                         </select>
                                     </div>
-                                    <div class="col mt-2 mt-sm-0">
-                                        <label class="control-label">DATE ENTRÉE</label>
-                                        <div class="input-group" id="date-range">
-                                            <input type="date" class="form-control" name="startEmmission">
-                                            <span class="input-group-addon b-0 text-white"
-                                                style="width: 20px; text-align: center; justify-content: center; background-color: gray;">à</span>
-                                            <input type="date" class="form-control" name="endEmmission">
-                                        </div>
-                                    </div>
-                                    <div class="col mt-2 mt-sm-0">
-                                        <label class="control-label">DATE LIVRAISON</label>
-                                        <input type="text" class="form-control" placeholder="">
-                                    </div>
-                                    <div class="col mt-2 mt-sm-0">
+                                    <div class="col mt-0 mt-sm-0">
                                         <label class="control-label">CLIENT</label>
                                         <input class="form-control" list="tiersList" id="clientInput" placeholder="CLIENT" value="{{ $selectedTier ? $selectedTier->nomtier : '' }}">
                                         <input type="hidden" name="id_tier" id="clientIdInput" value="{{ request('id_tier') }}">
@@ -49,11 +38,11 @@
                                             @endforeach
                                         </datalist>
                                     </div>
-                                    <div class="col mt-2 mt-sm-0">
+                                    <div class="col mt-0 mt-sm-0">
                                         <label class="control-label">MODÈLE</label>
                                         <input type="text" class="form-control" placeholder="" name="nom_modele" value="{{ request('nom_modele') }}">
                                     </div>
-                                    <div class="col mt-2 mt-sm-0">
+                                    <div class="col mt-0 mt-sm-0">
                                         <label class="control-label" style="color: white">---------------------------------------------------------------</label>
                                         <button type="submit" class="btn btn-success">Filtrer</button>
                                     </div>
@@ -71,11 +60,9 @@
                                         <tr>
                                             <th>CODE</th>
                                             <th>SAISON</th>
-                                            <th>DATE ENTRÉE</th>
                                             <th>DATE LIVRAISON</th>
                                             <th>CLIENT</th>
                                             <th>MODÈLE</th>
-                                            <th>STADE</th>
                                             <th>QUANTITÉ</th>
                                         </tr>
                                     </thead>
@@ -93,7 +80,6 @@
                                                 <td>{{ $demandeConfirme->date_livraison }}</td>
                                                 <td>{{ $demandeConfirme->nomtier }}</td>
                                                 <td>{{ $demandeConfirme->nom_modele }}</td>
-                                                <td>{{ $demandeConfirme->type_stade }}</td>
                                                 <td>{{ $demandeConfirme->qte_commande_provisoire }}</td>
                                             </tr>
                                         @endforeach
@@ -110,6 +96,3 @@
 </div>
 @include('JS.MES.jsListeDemandeConfirme')
 @include('CRM.footer')
-
-
-
