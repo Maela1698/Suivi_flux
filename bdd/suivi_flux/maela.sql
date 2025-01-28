@@ -91,3 +91,7 @@ AS SELECT rc.id AS recap_id,
 ALTER TABLE suivifluxmes 
 ADD COLUMN id_destination INTEGER REFERENCES destination(id);
 
+--28/01/205
+ALTER TABLE tiers ADD CONSTRAINT unique_nom_tier UNIQUE (nomtier);
+
+

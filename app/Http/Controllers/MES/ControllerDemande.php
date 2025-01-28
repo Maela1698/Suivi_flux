@@ -13,11 +13,31 @@ use Illuminate\Http\Request;
 
 class ControllerDemande extends Controller
 {
-    //
-    public function getDemandeConfirme(){
-        $tiers = Tiers::where('idacteur',1)->get();
-        $demandesConfirmes = VDemande::where('id_etat',2)->orderBy('id')->get();
-        return view('MES.demande.listeDemandeConfirme',compact('demandesConfirmes','tiers'));
+    // 
+    public function getDemandeConfirme(Request $request){
+        // on prend seulemnent les clients et non tous les tiers
+        $tiers = Tiers::where('idacteur', 1)->get();
+
+        // where = 2 puisque les demande dont l'etat = 2 
+        // sont consideres comme confirmee
+        $demandesConfirmes = VDemande::where('id_etat', 2)->orderBy('id');
+
+        $selectedTier = null;
+        $selectedModele = $request->nom_modele ?? '';
+
+        if ($request->has('id_tier') && $request->id_tier != '') {
+            $selectedTier = Tiers::where('id', $request->id_tier)->first();
+            if ($selectedTier){
+                $demandesConfirmes = $demandesConfirmes->where('id_tiers', $selectedTier->id);
+            }
+        }
+
+        if (!empty($selectedModele)) {
+            $demandesConfirmes = $demandesConfirmes->where('nom_modele', 'like', '%' . $selectedModele . '%');
+        }
+
+        $demandesConfirmes = $demandesConfirmes->get();
+        return view('MES.demande.listeDemandeConfirme', compact('demandesConfirmes', 'tiers', 'selectedTier','selectedModele'));
     }
 
     public function getFicheDemandeConfirme($id){

@@ -2,7 +2,6 @@
 @include('CRM.sidebar')
 @include('STYLE.MES.styleListeDemandeConfirme')
 
-
 <div class="content-body">
     <div class="container-fluid">
         @include('MES.headerMES')
@@ -41,16 +40,18 @@
                                     </div>
                                     <div class="col mt-2 mt-sm-0">
                                         <label class="control-label">CLIENT</label>
-                                        <input class="form-control" list="tiersList" name="id_tier" placeholder="CLIENT">
+                                        <input class="form-control" list="tiersList" id="clientInput" placeholder="CLIENT" value="{{ $selectedTier ? $selectedTier->nomtier : '' }}">
+                                        <input type="hidden" name="id_tier" id="clientIdInput" value="{{ request('id_tier') }}">
+                                        
                                         <datalist id="tiersList">
                                             @foreach ($tiers as $tier)
-                                                <option value="{{ $tier->nomtier }}">{{ $tier->nomtier }}</option>
+                                                <option data-id="{{ $tier->id }}" value="{{ $tier->nomtier }}"></option>
                                             @endforeach
                                         </datalist>
                                     </div>
                                     <div class="col mt-2 mt-sm-0">
                                         <label class="control-label">MODÈLE</label>
-                                        <input type="text" class="form-control" placeholder="">
+                                        <input type="text" class="form-control" placeholder="" name="nom_modele" value="{{ request('nom_modele') }}">
                                     </div>
                                     <div class="col mt-2 mt-sm-0">
                                         <label class="control-label">STADE</label>
@@ -69,7 +70,7 @@
                         </div>
                         <div class="table-responsive">
                             @if($demandesConfirmes->isEmpty())
-                                <p>Aucune demande confirmée disponible pour le moment.</p>
+                                <p>Aucune demande confirmée disponible.</p>
                             @else
                                 <table class="table table-hover table-responsive-sm">
                                     <thead>
@@ -87,7 +88,6 @@
                                     <tbody>
                                         @foreach($demandesConfirmes as $demandeConfirme)
                                             <tr onclick="window.location.href='{{ route('MES.fiche-demande',['id' => $demandeConfirme->id]) }}'">
-                                                {{-- <td>{{ $demandeConfirme->id }}</td> --}}
                                                 <td>
                                                     <div class="code">
                                                         <div class="circle{{ $demandeConfirme->hasOF ? ' hasOF' : ' noOF' }}"></div>
@@ -114,4 +114,8 @@
         <!-- row -->
     </div>
 </div>
+@include('JS.MES.jsListeDemandeConfirme')
 @include('CRM.footer')
+
+
+
