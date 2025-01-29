@@ -63,11 +63,20 @@ class ControllerSuiviFlux extends Controller
         $suivi = SuiviFluxMes::getAllSuiviFluxMes($condition);
 
 
-        return view('MES.suivi.flux.listeSuiviFlux',compact('idStyle','idTiers','modele','of','endEntree','startEntree','suivi','qte_po','qte_coupe','qte_entree_chaine','qte_transfere','qte_pret_livrer','qte_deja_livrer','entree_repassage','sortie_repassage','balanceatransferer','balancealivrer','balancerepassage'));
+        return view('MES.suivi.flux.listeSuiviFlux',compact('nomStyle','nomTiers','idStyle','idTiers','modele','of','endEntree','startEntree','suivi','qte_po','qte_coupe','qte_entree_chaine','qte_transfere','qte_pret_livrer','qte_deja_livrer','entree_repassage','sortie_repassage','balanceatransferer','balancealivrer','balancerepassage'));
     }
 
     public function modificationSuiviMes(Request $request)
     {
+        $startEntree = $request->input('startEntree');
+        $endEntree = $request->input('endEntree');
+        $of = $request->input('of');
+        $modele = $request->input('modele');
+        $idTiers = $request->input('idTiers');
+        $idStyle = $request->input('idStyle');
+        $nomTiers = $request->input('nomTiers');
+        $nomStyle = $request->input('nomStyle');
+
         $qteCoupe = $request->input('qteCoupe');
         $qteEntreeChaine = $request->input('qteEntreeChaine');
         $qteTransferes = $request->input('qteTransferes');
@@ -77,9 +86,40 @@ class ControllerSuiviFlux extends Controller
         $sortieRepassage = $request->input('sortieRepassage');
         $idSuivi = $request->input('idSuivi');
         $commentaire = $request->input('commentaire');
+        $rejetChaine = $request->input('rejetChaine');
+        $rejetCoupe = $request->input('rejetCoupe');
         $dateActuelle = Carbon::now()->format('Y-m-d');
-        SuiviFluxMes::updateSuiviFluxMes($dateActuelle, $qteCoupe, $qteEntreeChaine, $qteTransferes, $pretALivrer, $qteDejaLivre, $entreeRepassage, $sortieRepassage, $commentaire, $idSuivi);
-        return redirect()->route('MES.suiviFlux');
+        $coupeFinal = $request->input('coupeFinal');
+
+        $erreur ="";
+        if($qteCoupe<$qteEntreeChaine){
+            $erreur = $erreur." -La quantité entree chaine ne doit pas etre superieur à la quantité coupée de ".$qteCoupe."|";
+        }
+        if($qteEntreeChaine<$qteTransferes){
+            $erreur =  $erreur."-La quantité transferee ne doit pas etre superieur à la quantité entree de ".$qteEntreeChaine."|";
+        }
+        if($qteCoupe<$pretALivrer){
+            $erreur =  $erreur."-La quantité pret a livrer doit ne doit pas etre superieur à la quantité coupée de ".$qteCoupe."|";
+        }
+        if($pretALivrer<$qteDejaLivre){
+            $erreur =  $erreur."-La quantité deja livrer doit ne doit pas etre superieur à la quantité pret a livrer de ".$pretALivrer."|";
+        }
+        if($qteCoupe<$entreeRepassage){
+            $erreur =  $erreur."La quantité entree repassage doit ne doit pas etre superieur à la quantité coupée de ".$qteCoupe."|";
+        }
+        if($entreeRepassage<$sortieRepassage){
+            $erreur =  $erreur."-La quantité sortie repassage doit ne doit pas etre superieur à la quantité entree repassage de ".$entreeRepassage."|";
+        }
+        if(empty($coupeFinal)){
+            $coupeFinal=0;
+        }
+        if(empty($erreur)){
+            SuiviFluxMes::updateSuiviFluxMes($dateActuelle, $qteCoupe, $qteEntreeChaine, $qteTransferes, $pretALivrer, $qteDejaLivre, $entreeRepassage, $sortieRepassage, $commentaire, $rejetCoupe,$rejetChaine,$coupeFinal,$idSuivi);
+            return redirect()->route('MES.suiviFlux', compact('startEntree', 'endEntree', 'of', 'modele', 'idTiers', 'idStyle', 'nomTiers', 'nomStyle'));
+        }else{
+            return redirect()->route('MES.suiviFlux', compact('startEntree', 'endEntree', 'of', 'modele', 'idTiers', 'idStyle', 'nomTiers', 'nomStyle'))->with('error', $erreur);
+        }
+
     }
 
 }

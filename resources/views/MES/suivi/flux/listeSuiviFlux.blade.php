@@ -251,8 +251,30 @@
                 </div>
             </div>
         </div>
-        <div class="card col-12">
 
+        <div class="col-md-3">
+            <div class="card">
+                <div class="card-header d-block center">
+                    <center><h4 class="card-title">QUANTITE PO </h4></center>
+                </div>
+                <div class="card-body">
+                    <center><p style="font-size: 17px">2000</p>
+
+                  <p>12%</p></center>
+                    <h6>
+                        <span class="pull-right">85%</span>
+                    </h6>
+                    <div class="progress ">
+                        <div class="progress-bar bg-danger progress-animated" style="width: 85%; height:6px;" role="progressbar">
+                            <span class="sr-only">60% Complete</span>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+
+        <div class="card col-12">
             <div class="justify-content-center align-items-center entete">
                 <h3 class="entete mt-3">LISTE SUIVIS FLUX MES</h3>
             </div>
@@ -266,10 +288,12 @@
                         </div>
                         <div class="row">
                             <div class="input-group" id="date-range">
-                                <input type="date" class="form-control" name="startEntree" value="">
+                                <input type="date" class="form-control" name="startEntree"
+                                    value="{{ $startEntree }}">
                                 <span class="input-group-addon b-0 text-white"
                                     style="width: 20px; text-align: center; justify-content: center; background-color: gray;">à</span>
-                                <input type="date" class="form-control" name="endEntree" value="">
+                                <input type="date" class="form-control" name="endEntree"
+                                    value="{{ $endEntree }}">
                             </div>
                         </div>
                     </div>
@@ -280,7 +304,8 @@
                         </div>
                         <div class="row">
                             <div class="input-group">
-                                <input type="text" name="of" class="form-control" value="">
+                                <input type="text" name="of" class="form-control"
+                                    value="{{ $of }}">
                             </div>
                         </div>
                     </div>
@@ -291,7 +316,8 @@
                         </div>
                         <div class="row">
                             <div class="input-group">
-                                <input type="text" name="modele" class="form-control" value="">
+                                <input type="text" name="modele" class="form-control"
+                                    value="{{ $modele }}">
                             </div>
                         </div>
                     </div>
@@ -302,8 +328,9 @@
                         </div>
                         <div class="row">
                             <div class="input-group">
-                                <input type="text" id="nomTiers" name="nomTiers" class="form-control" value="">
-                                <input type="hidden" id="idTiers" name="idTiers" value="">
+                                <input type="text" id="nomTiers" name="nomTiers" class="form-control"
+                                    value="{{ $nomTiers }}">
+                                <input type="hidden" id="idTiers" name="idTiers" value="{{ $idTiers }}">
                                 <ul id="suggestionsListTiers" class="list-group mt-2" style="display: none;">
                                 </ul>
                             </div>
@@ -316,8 +343,9 @@
                         </div>
                         <div class="row">
                             <div class="input-group">
-                                <input type="text" id="nomStyle" name="nomStyle" class="form-control" value="">
-                                <input type="hidden" id="idStyle" name="idStyle" value="">
+                                <input type="text" id="nomStyle" name="nomStyle" class="form-control"
+                                    value="{{ $nomStyle }}">
+                                <input type="hidden" id="idStyle" name="idStyle" value="{{ $idStyle }}">
                                 <ul id="suggestionsListStyle" class="list-group mt-2" style="display: none;">
                                 </ul>
                             </div>
@@ -353,13 +381,13 @@
                             <th>Qte Coupe</th>
                             <th>Qte Entree chaine</th>
                             <th>Qte transferes(sortie chaine)</th>
+                            <th>Entree repassage</th>
+                            <th>Sortie repassage</th>
+                            <th>Balance repassage</th>
                             <th>Balance a transfere</th>
                             <th>Pret a livrer(BOXING)</th>
                             <th>Qte deja livre(Expediee)</th>
                             <th>Balance a livrer(Expediee)</th>
-                            <th>Entree repassage</th>
-                            <th>Sortie repassage</th>
-                            <th>Balance repassage</th>
                             <th>Ex-Factory</th>
                             <th>Commentaire</th>
                             <th></th>
@@ -417,13 +445,13 @@
                                 <td>{{ $suivi[$i]->qte_coupe }}</td>
                                 <td>{{ $suivi[$i]->qte_entree_chaine }}</td>
                                 <td>{{ $suivi[$i]->qte_transfere }}</td>
+                                <td>{{ $suivi[$i]->entree_repassage }}</td>
+                                <td>{{ $suivi[$i]->sortie_repassage }}</td>
+                                <td>{{ $suivi[$i]->balancerepassage }}</td>
                                 <td>{{ $suivi[$i]->balanceatransferer }}</td>
                                 <td>{{ $suivi[$i]->qte_pret_livrer }}</td>
                                 <td>{{ $suivi[$i]->qte_deja_livrer }}</td>
                                 <td>{{ $suivi[$i]->balancealivrer }}</td>
-                                <td>{{ $suivi[$i]->entree_repassage }}</td>
-                                <td>{{ $suivi[$i]->sortie_repassage }}</td>
-                                <td>{{ $suivi[$i]->balancerepassage }}</td>
                                 <td> {{ \Carbon\Carbon::parse($suivi[$i]->ex_factory)->format('d/m/y') }}</td>
                                 <td>
                                     <?php
@@ -450,7 +478,10 @@
                                         data-entreerepassage="{{ $suivi[$i]->entree_repassage }}"
                                         data-sortierepassage="{{ $suivi[$i]->sortie_repassage }}"
                                         data-commentaire="{{ $suivi[$i]->commentaire }}"
-                                        data-idsuivi="{{ $suivi[$i]->id }}">
+                                        data-idsuivi="{{ $suivi[$i]->id }}"
+                                        data-rejetcoupe="{{ $suivi[$i]->qte_rejet_coupe }}"
+                                        data-rejetchaine="{{ $suivi[$i]->qte_rejet_chaine }}"
+                                        data-etat="{{ $suivi[$i]->etat }}">
                                         <i class="fas fa-edit"></i> Modifier
                                     </button>
 
@@ -478,11 +509,28 @@
                     <div class="modal-body texte">
                         <form action="{{ route('MES.modificationSuiviMes') }}" method="POST" autocomplete="off">
                             @csrf
+                            <div id="checkboxContainer" class="mr-3" style="display: none; margin-top: 10px;">
+                                <label for="checkboxCondition">Coupe final</label>
+                                <input type="checkbox" id="checkboxCondition" value="1" name="coupeFinal">
+                            </div>
                             <div class="form-group">
+                                <input type="hidden" class="form-control" name="startEntree"
+                                    value="{{ $startEntree }}">
+                                <input type="hidden" class="form-control" name="endEntree"
+                                    value="{{ $endEntree }}">
+                                <input type="hidden" name="of" class="form-control"
+                                    value="{{ $of }}">
+                                <input type="hidden" name="modele" class="form-control"
+                                    value="{{ $modele }}">
+                                <input type="hidden" name="nomTiers" value="{{ $nomTiers }}">
+                                <input type="hidden" name="idTiers" value="{{ $idTiers }}">
+                                <input type="hidden" name="nomStyle" value="{{ $nomStyle }}">
+                                <input type="hidden" name="idStyle" value="{{ $idStyle }}">
                                 <input type="hidden" name="idSuivi" id="idSuivi">
                                 <label for="qtePo">Qte P.O</label>
                                 <input type="text" class="form-control" id="qtePo1" name="qtePo" disabled>
                             </div>
+
                             <div class="form-group">
                                 <label for="qteCoupe">Qte Coupe</label>
                                 <input type="text" class="form-control" id="qteCoupe" name="qteCoupe">
@@ -513,6 +561,14 @@
                                 <label for="sortieRepassage">Sortie Repassage</label>
                                 <input type="text" class="form-control" id="sortieRepassage"
                                     name="sortieRepassage">
+                            </div>
+                            <div class="form-group">
+                                <label for="rejetCoupe">Qte rejet coupe</label>
+                                <input type="text" class="form-control" id="rejetCoupe" name="rejetCoupe">
+                            </div>
+                            <div class="form-group">
+                                <label for="rejetChaine">Qte rejet chaine</label>
+                                <input type="text" class="form-control" id="rejetChaine" name="rejetChaine">
                             </div>
                             <div class="form-group">
                                 <label for="sortieRepassage">Commentaire</label>
@@ -551,6 +607,36 @@
             </div>
         </div>
 
+
+        @if (session('error'))
+            <div class="modal fade" id="errorModal" tabindex="-1" role="dialog" aria-labelledby="errorModalLabel"
+                aria-hidden="true">
+                <div class="modal-dialog" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="errorModalLabel">⚠️Attention!</h5>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                        <div class="modal-body">
+                            @if (session('error'))
+                                <ul style="color: red;">
+                                    @foreach (explode('|', session('error')) as $message)
+                                        <li>{{ $message }}</li>
+                                    @endforeach
+                                </ul>
+                            @endif
+                        </div>
+
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Fermer</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        @endif
+
     </div>
 </div>
 
@@ -571,7 +657,10 @@
             var sortieRepassage = button.data('sortierepassage');
             var commentaire = button.data('commentaire');
             var idsuivi = button.data('idsuivi');
-            console.log(qtePo);
+            var rejetcoupe = button.data('rejetcoupe');
+            var rejetchaine = button.data('rejetchaine');
+            var etat = button.data('etat');
+            console.log(etat);
             // Remplir les champs du formulaire
             modal.find('#qtePo1').val(qtePo);
             modal.find('#qteCoupe').val(qteCoupe);
@@ -582,7 +671,27 @@
             modal.find('#entreeRepassage').val(entreeRepassage);
             modal.find('#sortieRepassage').val(sortieRepassage);
             modal.find('#commentaires').val(commentaire);
+            modal.find('#rejetCoupe').val(rejetcoupe);
+            modal.find('#rejetChaine').val(rejetchaine);
             modal.find('#idSuivi').val(idsuivi);
+
+            const checkboxContainer = document.getElementById('checkboxContainer');
+
+            if (qtePo <= qteCoupe) {
+                checkboxContainer.style.display = 'block'; // Show the checkbox
+            } else {
+                checkboxContainer.style.display = 'none'; // Hide the checkbox
+            }
+
+            const inputQteCoupe = document.getElementById('qteCoupe');
+            const checkboxCondition = document.getElementById('checkboxCondition');
+            if (etat == 1) {
+                inputQteCoupe.disabled = true; // Désactive l'input
+                checkboxCondition.checked = true;
+                checkboxCondition.disabled = true;
+            } else {
+                inputQteCoupe.disabled = false; // Active l'input
+            }
         });
     });
 </script>
@@ -700,6 +809,15 @@
                 suggestionsList.style.display = 'none';
             }
         });
+    });
+</script>
+
+<script>
+    // Afficher automatiquement le modal si une erreur est présente
+    document.addEventListener('DOMContentLoaded', function() {
+        @if (session('error'))
+            $('#errorModal').modal('show');
+        @endif
     });
 </script>
 
