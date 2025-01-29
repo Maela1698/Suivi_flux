@@ -1,5 +1,9 @@
 <?php
 
+use App\Http\Controllers\COMPLIANCECONTROLLER\ControllerCompliance;
+use App\Http\Controllers\COMPLIANCECONTROLLER\ControllerComplianceBudget;
+use App\Http\Controllers\COMPLIANCECONTROLLER\ControllerComplianceExterne;
+use App\Http\Controllers\COMPLIANCECONTROLLER\ControlleurComplianceNotia;
 use App\Http\Controllers\ControllerMatierePremiere;
 use App\Http\Controllers\ControllerSdc;
 use App\Http\Controllers\ControllerSmv;
@@ -376,3 +380,46 @@ Route::get('/mes-destinations-of/{recap_id}/{numerocommande}',[MESControllerDema
 Route::match(['get', 'post'],'/mes-suiviFlux',[MESControllerSuiviFlux::class,'suiviFlux'])->name('MES.suiviFlux');
 Route::post('/mes-suivre-flux',[MESControllerDemande::class,'suivreFlux'])->name('MES.suivreFlux');
 Route::match(['get', 'post'],'/mes-modificationSuiviMes',[MESControllerSuiviFlux::class,'modificationSuiviMes'])->name('MES.modificationSuiviMes');
+
+/*------------------------------------------------COMPLIANCE NOTIA------------------------------------------------------*/
+Route::match(['get', 'post'],'/COMPLIANCE.listePerimetre',[ControlleurComplianceNotia::class,'listePerimetre'])->name('COMPLIANCE.listePerimetre');
+Route::match(['get', 'post'],'/COMPLIANCE.listeQuestionnaire',action: [ControlleurComplianceNotia::class,'listeQuestionnaire'])->name('COMPLIANCE.listeQuestionnaire');
+Route::match(['get', 'post'],'/COMPLIANCE.listeConstatProcedure',[ControlleurComplianceNotia::class,'listeConstatProcedure'])->name('COMPLIANCE.listeConstatProcedure');
+Route::match(['get', 'post'],'/COMPLIANCE.detailQuestionnaire',[ControlleurComplianceNotia::class,'detailQuestionnaire'])->name('COMPLIANCE.detailQuestionnaire');
+Route::match(['get', 'post'],'/COMPLIANCE.detailQuestionnaireProcedure',action: [ControlleurComplianceNotia::class,'detailQuestionnaireProcedure'])->name('COMPLIANCE.detailQuestionnaireProcedure');
+Route::match(['get', 'post'],'/COMPLIANCE.ajoutQuestionnaire',action: [ControlleurComplianceNotia::class,'ajoutQuestionnaire'])->name('COMPLIANCE.ajoutQuestionnaire');
+Route::match(['get', 'post'],'/COMPLIANCE.ajoutQuestionnaireProcedure',action: [ControlleurComplianceNotia::class,'ajoutQuestionnaireProcedure'])->name('COMPLIANCE.ajoutQuestionnaireProcedure');
+Route::match(['get', 'post'],'/COMPLIANCE.ajoutConstatPerimetre',action: [ControlleurComplianceNotia::class,'ajoutConstatPerimetre'])->name('COMPLIANCE.ajoutConstatPerimetre');
+Route::match(['get', 'post'],'/COMPLIANCE.ajoutConstatProcedure',action: [ControlleurComplianceNotia::class,'ajoutConstatProcedure'])->name('COMPLIANCE.ajoutConstatProcedure');
+Route::match(['get', 'post'],'/COMPLIANCE.listeConstatPerimetre',action: [ControlleurComplianceNotia::class,'listeConstatPerimetre'])->name('COMPLIANCE.listeConstatPerimetre');
+Route::match(['get', 'post'],'/COMPLIANCE.detailConstatPerimetre',action: [ControlleurComplianceNotia::class,'detailConstatPerimetre'])->name('COMPLIANCE.detailConstatPerimetre');
+Route::get('/get-types/{departementId}', [ControlleurComplianceNotia::class, 'getTypes']);
+
+
+/*------------------COMPLIANCE--------------------------------*/
+Route::match(['get', 'post'],'/COMPLIANCE.listeConstat',[ControllerCompliance::class,'listeConstat'])->name('COMPLIANCE.listeConstat');
+Route::match(['get', 'post'],'/COMPLIANCE.ajoutConstat',[ControllerCompliance::class,'ajoutConstat'])->name('COMPLIANCE.ajoutConstat');
+Route::match(['get', 'post'],'/COMPLIANCE.detailConstat',[ControllerCompliance::class,'detailConstat'])->name('COMPLIANCE.detailConstat');
+Route::get('/COMPLIANCE.rechercheEmployeByNomPrenom', [ControllerCompliance::class, 'rechercheEmployeByNomPrenom'])->name('COMPLIANCE.rechercheEmployeByNomPrenom');
+Route::match(['get', 'post'],'/COMPLIANCE.ajoutPlanAction',[ControllerCompliance::class,'ajoutPlanAction'])->name('COMPLIANCE.ajoutPlanAction');
+Route::match(['get', 'post'],'/COMPLIANCE.listePlanAction',[ControllerCompliance::class,'listePlanAction'])->name('COMPLIANCE.listePlanAction');
+Route::match(['get', 'post'],'/COMPLIANCE.ajoutAvancement',[ControllerCompliance::class,'ajoutAvancement'])->name('COMPLIANCE.ajoutAvancement');
+Route::match(['get', 'post'],'/COMPLIANCE.detailPlanAction',[ControllerCompliance::class,'detailPlanAction'])->name('COMPLIANCE.detailPlanAction');
+Route::match(['get', 'post'],'/COMPLIANCE.modifConstatInterne',[ControllerCompliance::class,'modifConstatInterne'])->name('COMPLIANCE.modifConstatInterne');
+
+
+/*------------------COMPLIANCE EXTERNE-------------------------------*/
+Route::match(['get', 'post'],'/COMPLIANCEEXTERNE.listeAuditExterne',[ControllerComplianceExterne::class,'listeAuditExterne'])->name('COMPLIANCEEXTERNE.listeAuditExterne');
+Route::match(['get', 'post'],'/COMPLIANCEEXTERNE.ajoutAuditExterne',[ControllerComplianceExterne::class,'ajoutAuditExterne'])->name('COMPLIANCEEXTERNE.ajoutAuditExterne');
+Route::match(['get', 'post'],'/COMPLIANCEEXTERNE.detailAuditExterne',[ControllerComplianceExterne::class,'detailAuditExterne'])->name('COMPLIANCEEXTERNE.detailAuditExterne');
+Route::match(['get', 'post'],'/COMPLIANCEEXTERNE.ajoutPlanActionExterne',[ControllerComplianceExterne::class,'ajoutPlanActionExterne'])->name('COMPLIANCEEXTERNE.ajoutPlanActionExterne');
+Route::match(['get', 'post'],'/COMPLIANCEEXTERNE.listePlanActionExterne',[ControllerComplianceExterne::class,'listePlanActionExterne'])->name('COMPLIANCEEXTERNE.listePlanActionExterne');
+Route::match(['get', 'post'],'/COMPLIANCEEXTERNE.ajoutAvancementExterne',[ControllerComplianceExterne::class,'ajoutAvancementExterne'])->name('COMPLIANCEEXTERNE.ajoutAvancementExterne');
+
+
+
+/*------------------COMPLIANCE BUDGET-------------------------------*/
+Route::match(['get', 'post'],'/COMPLIANCEBUDGET.listeBudgetCompliance',action: [ControllerComplianceBudget::class,'listeBudgetCompliance'])->name('COMPLIANCEBUDGET.listeBudgetCompliance');
+Route::match(['get', 'post'],'/COMPLIANCEBUDGET.ajoutBudgetCompliance',[ControllerComplianceBudget::class,'ajoutBudgetCompliance'])->name('COMPLIANCEBUDGET.ajoutBudgetCompliance');
+Route::match(['get', 'post'],'/COMPLIANCEBUDGET.detailBudgetNorme',[ControllerComplianceBudget::class,'detailBudgetNorme'])->name('COMPLIANCEBUDGET.detailBudgetNorme');
+Route::match(['get', 'post'],'/COMPLIANCEBUDGET.modifBudgetReel',[ControllerComplianceBudget::class,'modifBudgetReel'])->name('COMPLIANCEBUDGET.modifBudgetReel');
