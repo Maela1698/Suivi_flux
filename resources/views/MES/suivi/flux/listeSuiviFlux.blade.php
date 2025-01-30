@@ -1,5 +1,7 @@
 @include('CRM.header')
 @include('CRM.sidebar')
+@include('STYLE.MES.suiviFlux.styleListeSuiviFlux')
+
 <style>
     .table th {
         color: #000000;
@@ -53,204 +55,6 @@
     <!-- row -->
     <div class="container-fluid">
         @include('MES.headerMES')
-        {{--  <div class="row" style="margin-bottom: -20px;margin-top: -10px;">
-            <div class="col-lg-6 col-sm-4">
-                <div class="card card-small"
-                    style="border-radius: 15px 3px 15px 3px; height: 50px; background: linear-gradient(to right, #3a7bd5, #3a6073);">
-                    <div class="card-body d-flex align-items-center justify-content-between" style="height: 100%;">
-                        <div>
-                            <h3 class="card-title text-white" style="margin-bottom: 5px; font-size: calc(0.1em + 1vw);">
-                                Quantité PO</h3>
-                            <div class="d-inline-block">
-                                <h2 class="text-white" style="font-size: calc(0.5em + 1vw);">{{ $qte_po }}</h2>
-                            </div>
-                        </div>
-                        <span class="display-5" style="font-size: calc(1em + 1vw);"><i class="fa fa-list"
-                                style="color: white;"></i></span>
-                    </div>
-                </div>
-            </div>
-            <div class="col-lg-6 col-sm-6">
-                <div class="card card-small"
-                    style="border-radius: 15px 3px 15px 3px; height: 50px; background: linear-gradient(to right, #f3904f, #3b4371);">
-                    <div class="card-body d-flex align-items-center justify-content-between" style="height: 100%;">
-                        <div>
-                            <h3 class="card-title text-white" style="margin-bottom: 5px; font-size: calc(0.1em + 1vw);">
-                                Quantité Coupé</h3>
-                            <div class="d-inline-block">
-                                <h2 class="text-white" style="font-size: calc(0.5em + 1vw);">{{ $qte_coupe }}</h2>
-                            </div>
-                        </div>
-                        <span class="display-5" style="font-size: calc(1em + 1vw);"><i class="fa fa-times-circle"
-                                style="color: white;"></i></span>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div class="row" style="margin-top: 0;margin-top: -10px;">
-            <div class="col-lg-4 col-sm-4">
-                <div class="card card-small"
-                    style="border-radius: 15px 3px 15px 3px; height: 50px; background: linear-gradient(to right, #ff6e7f, #556770);">
-                    <div class="card-body d-flex align-items-center justify-content-between" style="height: 100%;">
-                        <div>
-                            <h3 class="card-title text-white" style="margin-bottom: 5px; font-size: calc(0.1em + 1vw);">
-                                Quantité Entrée Chaine</h3>
-                            <div class="d-inline-block">
-                                <h2 class="text-white" style="font-size: calc(0.5em + 1vw);">{{ $qte_entree_chaine }}
-                                </h2>
-                            </div>
-                        </div>
-                        <span class="display-5" style="font-size: calc(1em + 1vw);"><i class="fa fa-cogs"
-                                style="color: white;"></i></span>
-                    </div>
-                </div>
-            </div>
-            <div class="col-lg-4 col-sm-6">
-                <div class="card card-small"
-                    style="border-radius: 15px 3px 15px 3px; height: 50px; background: linear-gradient(to right, #82a382, #000c40);">
-                    <div class="card-body d-flex align-items-center justify-content-between" style="height: 100%;">
-                        <div>
-                            <h3 class="card-title text-white" style="margin-bottom: 5px; font-size: calc(0.1em + 1vw);">
-                                Quantité Transferé</h3>
-                            <div class="d-inline-block">
-                                <h2 class="text-white" style="font-size: calc(0.5em + 1vw);">{{ $qte_transfere }}</h2>
-                            </div>
-                        </div>
-                        <span class="display-5" style="font-size: calc(1em + 1vw);"><i class="fa fa-box"
-                                style="color: white;"></i></span>
-                    </div>
-                </div>
-            </div>
-            <div class="col-lg-4 col-sm-6">
-                <div class="card card-small"
-                    style="border-radius: 15px 3px 15px 3px; height: 50px; background: linear-gradient(to right, #667eea, #764ba2);">
-                    <div class="card-body d-flex align-items-center justify-content-between" style="height: 100%;">
-                        <div>
-                            <h3 class="card-title text-white" style="margin-bottom: 5px; font-size: calc(0.1em + 1vw);">
-                                Balance à transferer
-                            </h3>
-                            <div class="d-inline-block">
-                                <h2 class="text-white" style="font-size: calc(0.5em + 1vw);">{{ $balanceatransferer }}
-                                </h2>
-                            </div>
-                        </div>
-                        <span class="display-5" style="font-size: calc(1em + 1vw);"><i class="fa fa-industry"
-                                style="color: white;"></i></span>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div class="row" style="margin-top: 0;">
-            <div class="col-lg-4 col-sm-4">
-                <div class="card card-small"
-                    style="border-radius: 15px 3px 15px 3px; height: 50px; background: linear-gradient(to right, #ff6e7f, #556770);">
-                    <div class="card-body d-flex align-items-center justify-content-between" style="height: 100%;">
-                        <div>
-                            <h3 class="card-title text-white" style="margin-bottom: 5px; font-size: calc(0.1em + 1vw);">
-                                Quantité Prêt à livrer</h3>
-                            <div class="d-inline-block">
-                                <h2 class="text-white" style="font-size: calc(0.5em + 1vw);">{{ $qte_pret_livrer }}</h2>
-                            </div>
-                        </div>
-                        <span class="display-5" style="font-size: calc(1em + 1vw);"><i class="fa fa-cogs"
-                                style="color: white;"></i></span>
-                    </div>
-                </div>
-            </div>
-            <div class="col-lg-4 col-sm-6">
-                <div class="card card-small"
-                    style="border-radius: 15px 3px 15px 3px; height: 50px; background: linear-gradient(to right, #82a382, #000c40);">
-                    <div class="card-body d-flex align-items-center justify-content-between" style="height: 100%;">
-                        <div>
-                            <h3 class="card-title text-white" style="margin-bottom: 5px; font-size: calc(0.1em + 1vw);">
-                                Quantité déjà livrer</h3>
-                            <div class="d-inline-block">
-                                <h2 class="text-white" style="font-size: calc(0.5em + 1vw);">{{ $qte_deja_livrer }}
-                                </h2>
-                            </div>
-                        </div>
-                        <span class="display-5" style="font-size: calc(1em + 1vw);"><i class="fa fa-box"
-                                style="color: white;"></i></span>
-                    </div>
-                </div>
-            </div>
-            <div class="col-lg-4 col-sm-6">
-                <div class="card card-small"
-                    style="border-radius: 15px 3px 15px 3px; height: 50px; background: linear-gradient(to right, #667eea, #764ba2);">
-                    <div class="card-body d-flex align-items-center justify-content-between" style="height: 100%;">
-                        <div>
-                            <h3 class="card-title text-white"
-                                style="margin-bottom: 5px; font-size: calc(0.1em + 1vw);">
-                                Balance à livrer
-                            </h3>
-                            <div class="d-inline-block">
-                                <h2 class="text-white" style="font-size: calc(0.5em + 1vw);">{{ $balancealivrer }}
-                                </h2>
-                            </div>
-                        </div>
-                        <span class="display-5" style="font-size: calc(1em + 1vw);"><i class="fa fa-industry"
-                                style="color: white;"></i></span>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div class="row" style="margin-top: 0;">
-            <div class="col-lg-4 col-sm-4">
-                <div class="card card-small"
-                    style="border-radius: 15px 3px 15px 3px; height: 50px; background: linear-gradient(to right, #ff6e7f, #556770);">
-                    <div class="card-body d-flex align-items-center justify-content-between" style="height: 100%;">
-                        <div>
-                            <h3 class="card-title text-white"
-                                style="margin-bottom: 5px; font-size: calc(0.1em + 1vw);">
-                                Entrée repassage</h3>
-                            <div class="d-inline-block">
-                                <h2 class="text-white" style="font-size: calc(0.5em + 1vw);">{{ $entree_repassage }}
-                                </h2>
-                            </div>
-                        </div>
-                        <span class="display-5" style="font-size: calc(1em + 1vw);"><i class="fa fa-cogs"
-                                style="color: white;"></i></span>
-                    </div>
-                </div>
-            </div>
-            <div class="col-lg-4 col-sm-6">
-                <div class="card card-small"
-                    style="border-radius: 15px 3px 15px 3px; height: 50px; background: linear-gradient(to right, #82a382, #000c40);">
-                    <div class="card-body d-flex align-items-center justify-content-between" style="height: 100%;">
-                        <div>
-                            <h3 class="card-title text-white"
-                                style="margin-bottom: 5px; font-size: calc(0.1em + 1vw);">
-                                Sortie repassage</h3>
-                            <div class="d-inline-block">
-                                <h2 class="text-white" style="font-size: calc(0.5em + 1vw);">{{ $sortie_repassage }}
-                                </h2>
-                            </div>
-                        </div>
-                        <span class="display-5" style="font-size: calc(1em + 1vw);"><i class="fa fa-box"
-                                style="color: white;"></i></span>
-                    </div>
-                </div>
-            </div>
-            <div class="col-lg-4 col-sm-6">
-                <div class="card card-small"
-                    style="border-radius: 15px 3px 15px 3px; height: 50px; background: linear-gradient(to right, #667eea, #764ba2);">
-                    <div class="card-body d-flex align-items-center justify-content-between" style="height: 100%;">
-                        <div>
-                            <h3 class="card-title text-white"
-                                style="margin-bottom: 5px; font-size: calc(0.1em + 1vw);">
-                                Balance repassage
-                            </h3>
-                            <div class="d-inline-block">
-                                <h2 class="text-white" style="font-size: calc(0.5em + 1vw);">{{ $balancerepassage }}
-                                </h2>
-                            </div>
-                        </div>
-                        <span class="display-5" style="font-size: calc(1em + 1vw);"><i class="fa fa-industry"
-                                style="color: white;"></i></span>
-                    </div>
-                </div>
-            </div>
-        </div>  --}}
         <div class="row">
             <div class="col-3">
                 <div class="card" style="height: 150px">
@@ -380,6 +184,69 @@
             </div>
 
 
+        </div>
+
+        <div class="row">
+            <div class="col-left">
+                <h3 class="title"><strong>DELIVERY DATE</strong></h3>
+                <div class="table-container">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>STYLE</th>
+                                <th>OF</th>
+                                <th>SIZE</th>
+                                <th>COLOR</th>
+                                <th>CONFIRMÉ</th>
+                                <th>LIVRAISON</th>
+                                <th>STADE</th>
+                                <th>JOUR RESTANT</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @for ($i = 0; $i < count($suivi); $i++)
+                                <tr>
+                                    <td>{{ $suivi[$i]->nom_modele }}</td>
+                                    <td>{{ $suivi[$i]->numero_commande }}</td>
+                                    <td>{{ $suivi[$i]->unite_taille }}</td>
+                                    <td>{{ $suivi[$i]->couleur }}</td>
+                                    <td>{{ $suivi[$i]->date_livraison_confirme }}</td>
+                                    <td>{{ $suivi[$i]->ex_factory }}</td>
+                                    @if( $suivi[$i]->diff_date['diff'] <= 3 && $suivi[$i]->diff_date['etat'] == true )
+                                        <td class="progress-td">
+                                            <div class="progress">
+                                                <div class="progress-bar bg-danger progress-animated" style="width: {{ $suivi[$i]->pourcentage }}%; height:6px;" role="progressbar">
+                                                    <span class="sr-only"></span>
+                                                </div>
+                                            </div>
+                                        </td>
+                                    @elseif( $suivi[$i]->diff_date['diff'] > 0 && $suivi[$i]->diff_date['etat'] == false )
+                                        <td class="progress-td">
+                                            <div class="progress">
+                                                <div class="progress-bar bg-danger progress-animated" style="width: {{ $suivi[$i]->pourcentage }}%; height:6px;" role="progressbar">
+                                                    <span class="sr-only"></span>
+                                                </div>
+                                            </div>
+                                        </td>
+                                    @else
+                                        <td class="progress-td">
+                                            <div class="progress">
+                                                <div class="progress-bar bg-success progress-animated" style="width: {{ $suivi[$i]->pourcentage }}%; height:6px;" role="progressbar">
+                                                    <span class="sr-only"></span>
+                                                </div>
+                                            </div>
+                                        </td>
+                                    @endif
+                                    <td>J {{ $suivi[$i]->diff_date['etat'] ? '-' : '+' }}{{ $suivi[$i]->diff_date['diff'] }}</td>
+                                </tr>
+                            @endfor
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <div class="col-right">
+                --
+            </div>
         </div>
 
         <div class="card col-12">
@@ -558,123 +425,9 @@
 
                                 </td>
                             </tr>
-                        @endfor
+                            @endfor
                     </tbody>
                 </table>
-            </div>
-
-
-        </div>
-
-        <!-- Modification suiviFlux -->
-        <div class="modal fade" id="modifSuiviFlux" tabindex="-1" role="dialog"
-            aria-labelledby="choixEtapeModalLabel" aria-hidden="true">
-            <div class="modal-dialog modal-dialog-centered modal-lg-custom" role="document">
-                <div class="modal-content modal-content-custom">
-                    <div class="modal-header">
-                        <h5 class="modal-title" id="choixEtapeModalLabel">Modification suivi flux</h5>
-                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                            <span aria-hidden="true">&times;</span>
-                        </button>
-                    </div>
-                    <div class="modal-body texte">
-                        <form action="{{ route('MES.modificationSuiviMes') }}" method="POST" autocomplete="off">
-                            @csrf
-                            <div id="checkboxContainer" class="mr-3" style="display: none; margin-top: 10px;">
-                                <label for="checkboxCondition">Coupe final</label>
-                                <input type="checkbox" id="checkboxCondition" value="1" name="coupeFinal">
-                            </div>
-                            <div class="form-group">
-                                <input type="hidden" class="form-control" name="startEntree"
-                                    value="{{ $startEntree }}">
-                                <input type="hidden" class="form-control" name="endEntree"
-                                    value="{{ $endEntree }}">
-                                <input type="hidden" name="of" class="form-control"
-                                    value="{{ $of }}">
-                                <input type="hidden" name="modele" class="form-control"
-                                    value="{{ $modele }}">
-                                <input type="hidden" name="nomTiers" value="{{ $nomTiers }}">
-                                <input type="hidden" name="idTiers" value="{{ $idTiers }}">
-                                <input type="hidden" name="nomStyle" value="{{ $nomStyle }}">
-                                <input type="hidden" name="idStyle" value="{{ $idStyle }}">
-                                <input type="hidden" name="idSuivi" id="idSuivi">
-                                <label for="qtePo">Qte P.O</label>
-                                <input type="text" class="form-control" id="qtePo1" name="qtePo" disabled>
-                            </div>
-
-                            <div class="form-group">
-                                <label for="qteCoupe">Qte Coupe</label>
-                                <input type="text" class="form-control" id="qteCoupe" name="qteCoupe">
-                            </div>
-                            <div class="form-group">
-                                <label for="qteEntreeChaine">Qte Entree chaine</label>
-                                <input type="text" class="form-control" id="qteEntreeChaine"
-                                    name="qteEntreeChaine">
-                            </div>
-                            <div class="form-group">
-                                <label for="qteTransferes">Qte transferes (sortie chaine)</label>
-                                <input type="text" class="form-control" id="qteTransferes" name="qteTransferes">
-                            </div>
-                            <div class="form-group">
-                                <label for="pretALivrer">Pret a livrer (BOXING)</label>
-                                <input type="text" class="form-control" id="pretALivrer" name="pretALivrer">
-                            </div>
-                            <div class="form-group">
-                                <label for="qteDejaLivre">Qte deja livree (Expediee)</label>
-                                <input type="text" class="form-control" id="qteDejaLivre" name="qteDejaLivre">
-                            </div>
-                            <div class="form-group">
-                                <label for="entreeRepassage">Entree Repassage</label>
-                                <input type="text" class="form-control" id="entreeRepassage"
-                                    name="entreeRepassage">
-                            </div>
-                            <div class="form-group">
-                                <label for="sortieRepassage">Sortie Repassage</label>
-                                <input type="text" class="form-control" id="sortieRepassage"
-                                    name="sortieRepassage">
-                            </div>
-                            <div class="form-group">
-                                <label for="rejetCoupe">Qte rejet coupe</label>
-                                <input type="text" class="form-control" id="rejetCoupe" name="rejetCoupe">
-                            </div>
-                            <div class="form-group">
-                                <label for="rejetChaine">Qte rejet chaine</label>
-                                <input type="text" class="form-control" id="rejetChaine" name="rejetChaine">
-                            </div>
-                            <div class="form-group">
-                                <label for="sortieRepassage">Commentaire</label>
-                                <input type="text" class="form-control" id="commentaires" name="commentaire">
-                            </div>
-
-                            <div class="modal-footer mt-3">
-                                <button type="button" class="btn btn-secondary"
-                                    data-dismiss="modal">Annuler</button>
-                                <button type="submit" class="btn btn-success">Enregistrer</button>
-                            </div>
-                        </form>
-                    </div>
-
-
-                </div>
-            </div>
-        </div>
-
-
-        <!-- Commentaire -->
-        <div class="modal fade" id="commentaire" tabindex="-1" role="dialog"
-            aria-labelledby="choixEtapeModalLabel" aria-hidden="true">
-            <div class="modal-dialog modal-dialog-centered modal-lg-custom" role="document">
-                <div class="modal-content modal-content-custom">
-                    <div class="modal-header">
-                        <h5 class="modal-title" id="choixEtapeModalLabel">Commentaire</h5>
-                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                            <span aria-hidden="true">&times;</span>
-                        </button>
-                    </div>
-                    <div class="modal-body texte">
-                        <input type="text" class="form-control" id="commentaireModal" disabled>
-                    </div>
-                </div>
             </div>
         </div>
 

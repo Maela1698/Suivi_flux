@@ -8,7 +8,7 @@
         @include('MES.headerMES')
 
         <div class="row">
-            <div class="col-lg-12">
+            <div class="card col-12">
                 <div class="card">
                     <div class="card-header">
                         <h4 class="card-title grand-titre">FICHE DEMANDE CONFIRMÉ</h4>
@@ -26,6 +26,7 @@
                                     <div class="col-md-6">
                                         <ul class="list-unstyled">
                                             <li><strong>Date entrée :</strong> {{ $demandeConfirme->date_entree }}</li>
+                                            <li><strong>Date confirmation :</strong> {{ $demandeConfirme->type_phase }}</li>
                                             <li><strong>Client :</strong> {{ $demandeConfirme->nomtier }}</li>
                                             <li><strong>Période :</strong> {{ $demandeConfirme->periode }}</li>
                                             <li><strong>Modèle :</strong> {{ $demandeConfirme->nom_modele }}</li>
@@ -42,6 +43,7 @@
                                             <li><strong>Taille de base :</strong> {{ $demandeConfirme->taille_base }}</li>
                                             <li><strong>Inconterm :</strong> {{ $demandeConfirme->type_incontern }}</li>
                                             <li><strong>Phase :</strong> {{ $demandeConfirme->type_phase }}</li>
+                                            <li><strong>Reception BC :</strong> {{ $demandeConfirme->receptionbc }}</li>  
                                         </ul>
                                     </div>
                                 </div>
@@ -54,7 +56,7 @@
         <!-- row -->
 
         <div class="row">
-            <div class="col-lg-12">
+            <div class="card col-12">
                 <div class="card">
                     <div class="card-header">
                         <h4 class="card-title petit-titre">LISTE COMMANDES (NUM OF)</h4>
@@ -130,6 +132,7 @@
                                 <th>NUM COMMANDE</th>
                                 <th>DESIGNATION</th>
                                 <th>SIZE</th>
+                                <th>DATE LIVRAISON</th>
                                 <th>QUANTITÉ</th>
                                 <th>ACTION</th>
                             </tr>
@@ -192,11 +195,13 @@
                                 <input type="hidden" value="${destination.qteof}" name="qteof[${destination.id_destination}]">
                                 <input type="hidden" value="${destination.iddemandeclient}" name="iddemandeclient[${destination.id_destination}]">
                                 <input type="hidden" value="${destination.id_destination}" name="id_destination[${destination.id_destination}]">
+                                <input type="hidden" value="${destination.date_livraison_confirme}" name="date_livraison_confirme[${destination.id_destination}]">
 
                                 <td>${destination.nom_modele}</td>
                                 <td>${destination.numerocommande}</td>
                                 <td>${destination.nom_style}</td>
                                 <td>${destination.unite_taille}</td>
+                                <td>${destination.date_livraison_confirme}</td>
                                 <td>${destination.qteof}</td>
                                 <td>
                                     <div class="basic-form">

@@ -91,7 +91,45 @@ AS SELECT rc.id AS recap_id,
 ALTER TABLE suivifluxmes 
 ADD COLUMN id_destination INTEGER REFERENCES destination(id);
 
---28/01/205
+--28/01/2025
 ALTER TABLE tiers ADD CONSTRAINT unique_nom_tier UNIQUE (nomtier);
 
+--30/01/2025
 
+CREATE OR REPLACE VIEW public.v_dest_recap
+AS SELECT rc.id AS recap_id,
+    rc.iddemandeclient,
+    rc.etdrevise,
+    rc.etdpropose,
+    rc.receptionbc,
+    rc.bcclient,
+    rc.date_bc_tissu,
+    rc.date_bc_access,
+    rc.etat AS recap_etat,
+    d.id AS destination_id,
+    d.numerocommande,
+    d.etdinitial,
+    d.datelivraisonexacte,
+    d.dateinspection,
+    d.qteof,
+    d.etat AS destination_etat,
+    ds.id AS deststd_id,
+    ds.designation AS deststd_designation,
+    ut.unite_taille,
+    ut.id AS unitetailleid,
+    vd.nomtier,
+    vd.id_tiers,
+    vd.nom_modele,
+    vd.nom_style,
+    vd.id_style,
+    d.id as id_destination,
+    d.isTracked,
+    COALESCE(vgfr.receptionbc, vgfr.date_entree) AS date_livraison_confirme
+   FROM recapcommande rc
+     LEFT JOIN destination d ON rc.id = d.idrecapcommande
+     LEFT JOIN deststd ds ON d.iddeststd = ds.id
+     LEFT JOIN unitetaille ut ON d.idtaille = ut.id
+     LEFT JOIN v_demandeclient vd ON rc.iddemandeclient = vd.id
+     LEFT JOIN v_general_final_recap vgfr ON vgfr.id = rc.iddemandeclient;
+
+ALTER TABLE suivifluxmes ADD COLUMN date_livraison_confirme DATE NOT NULL;

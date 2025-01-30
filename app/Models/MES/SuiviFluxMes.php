@@ -20,7 +20,8 @@ class SuiviFluxMes extends Model
         'id_taille',
         'qte_po',
         'couleur',
-        'id_destination'
+        'id_destination',
+        'date_livraison_confirme'
     ];
 
     public $timestamps = false;
@@ -34,7 +35,6 @@ class SuiviFluxMes extends Model
     public static function getAllSuiviFluxMes($condition)
     {
         $select = DB::select("select * from v_suiviFluxMes where 1=1 ".$condition);
-
         return self::hydrate($select);
     }
 
@@ -105,12 +105,14 @@ class SuiviFluxMes extends Model
     }
 
 
-    public function insertSuiviFlux($date_operaton,$id_demande_client,$numero_commande,$qte_po,$couleur,$id_taille,$id_destination)
+    public function insertSuiviFlux($date_operaton,$id_demande_client,$numero_commande,$qte_po,$couleur,$id_taille,$id_destination,$date_livraison_confirme)
     {
         try {
+            DB::beginTransaction(); // Démarre la transaction
+        
             // Met à jour la table `destination` pour marquer l'enregistrement comme suivi
             DB::update('UPDATE destination SET istracked = true WHERE id = ?', [$id_destination]);
-
+        
             // Insère les données dans la table spécifiée
             DB::table($this->table)->insert([
                 'date_operaton' => $date_operaton,
@@ -120,9 +122,12 @@ class SuiviFluxMes extends Model
                 'couleur' => $couleur,
                 'id_taille' => $id_taille,
                 'id_destination' => $id_destination,
+                'date_livraison_confirme' => $date_livraison_confirme
             ]);
+        
+            DB::commit(); // Valide la transaction si tout s'est bien passé
         } catch (\Exception $e) {
-            // Capture les exceptions et affiche un message ou effectue un traitement personnalisé
+            DB::rollBack(); // Annule la transaction en cas d'erreur
             Log::error('Erreur lors de l\'opération : ' . $e->getMessage());
             return response()->json(['message' => 'Une erreur s\'est produite lors de l\'opération.'], 500);
         }
