@@ -53,7 +53,7 @@
     <!-- row -->
     <div class="container-fluid">
         @include('MES.headerMES')
-        <div class="row" style="margin-bottom: -20px;margin-top: -10px;">
+        {{--  <div class="row" style="margin-bottom: -20px;margin-top: -10px;">
             <div class="col-lg-6 col-sm-4">
                 <div class="card card-small"
                     style="border-radius: 15px 3px 15px 3px; height: 50px; background: linear-gradient(to right, #3a7bd5, #3a6073);">
@@ -250,28 +250,136 @@
                     </div>
                 </div>
             </div>
-        </div>
-
-        <div class="col-md-3">
-            <div class="card">
-                <div class="card-header d-block center">
-                    <center><h4 class="card-title">QUANTITE PO </h4></center>
-                </div>
-                <div class="card-body">
-                    <center><p style="font-size: 17px">2000</p>
-
-                  <p>12%</p></center>
-                    <h6>
-                        <span class="pull-right">85%</span>
-                    </h6>
-                    <div class="progress ">
-                        <div class="progress-bar bg-danger progress-animated" style="width: 85%; height:6px;" role="progressbar">
-                            <span class="sr-only">60% Complete</span>
-                        </div>
+        </div>  --}}
+        <div class="row">
+            <div class="col-3">
+                <div class="card" style="height: 150px">
+                    <div class="card-header d-block center">
+                        <center>
+                            <h4 class="card-title">QUANTITE PO </h4>
+                        </center>
                     </div>
-
+                    <div class="card-body">
+                        <center>
+                            <p style="font-size: 17px; color: #000000;">{{ $qte_po }}</p>
+                            <span style="color: white">Rejet: {{ number_format($pourcentageRejetCoupe, 0) }}%</span>
+                        </center>
+                    </div>
                 </div>
             </div>
+
+            <div class="col-3">
+                <div class="card" style="height: 150px">
+                    <div class="card-header d-block center">
+                        <center>
+                            <h4 class="card-title">QUANTITE COUPE </h4>
+                        </center>
+                    </div>
+                    <div class="card-body">
+                        <center>
+                            <p style="font-size: 17px; color: #000000;">{{ $qte_coupe }}</p>
+
+                            <span style="color: #000000">Rejet: {{ number_format($pourcentageRejetCoupe, 0) }}%</span>
+                        </center>
+                        <h6>
+                            <span class="pull-right">{{ number_format($pourcentageCoupe, 0) }}%</span>
+                        </h6>
+                        <div class="progress ">
+                            <div class="progress-bar  progress-animated"
+                                style="width: {{ number_format($pourcentageCoupe, 0) }}%; height:6px;"
+                                role="progressbar">
+
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+
+
+            <div class="col-2">
+                <div class="card" style="height: 150px; cursor: pointer;"
+                    onclick="ouvrirModal('{{ $entree_repassage }}', '{{ $sortie_repassage }}', '{{ $balancerepassage }}')">
+
+                    <div class="card-header d-block center">
+                        <center>
+                            <h4 class="card-title">REPASSAGE</h4>
+                        </center>
+                    </div>
+                    <div class="card-body">
+                        <center>
+                            <p style="font-size: 17px; color: #000000;">{{ $sortie_repassage }}</p>
+                            <span style="color: white">Rejet: </span>
+                        </center>
+                        <h6>
+                            <span class="pull-right">{{ number_format($pourcentageRepassage, 0) }}%</span>
+                        </h6>
+                        <div class="progress">
+                            <div class="progress-bar progress-animated"
+                                style="width: {{ number_format($pourcentageRepassage, 0) }}%; height:6px;">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-2">
+                <div class="card" style="height: 150px" onclick="ouvrirModalBalance('{{ $balancealivrer }}')">
+                    <div class="card-header d-block center">
+                        <center>
+                            <h4 class="card-title">BOXING </h4>
+                        </center>
+                    </div>
+                    <div class="card-body">
+                        <center>
+                            <p style="font-size: 17px; color: #000000;">{{ $qte_pret_livrer }}</p>
+
+                            <span style="color: #000000">Rejet: {{ number_format($pourcentageRejetChaine, 0) }}%</span>
+                        </center>
+                        <h6>
+                            <span class="pull-right">{{ number_format($pourcentageBoxing, 0) }}%</span>
+                        </h6>
+                        <div class="progress ">
+                            <div class="progress-bar  progress-animated"
+                                style="width: {{ number_format($pourcentageBoxing, 0) }}%; height:6px;"
+                                role="progressbar">
+
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-2">
+                <div class="card" style="height: 150px" onclick="ouvrirModalBalance('{{ $balancealivrer }}')">
+                    <div class="card-header d-block center">
+                        <center>
+                            <h4 class="card-title">EXPEDIEE </h4>
+                        </center>
+                    </div>
+                    <div class="card-body">
+                        <center>
+                            <p style="font-size: 17px; color: #000000;">{{ $qte_deja_livrer }}</p>
+
+                            <span style="color: white">Rejet: {{ number_format($pourcentageRejetChaine, 0) }}%</span>
+                        </center>
+                        <h6>
+                            <span class="pull-right">{{ number_format($pourcentageExpediee, 0) }}%</span>
+                        </h6>
+                        <div class="progress ">
+                            <div class="progress-bar  progress-animated"
+                                style="width: {{ number_format($pourcentageExpediee, 0) }}%; height:6px;"
+                                role="progressbar">
+
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+
+
         </div>
 
         <div class="card col-12">
@@ -304,8 +412,7 @@
                         </div>
                         <div class="row">
                             <div class="input-group">
-                                <input type="text" name="of" class="form-control"
-                                    value="{{ $of }}">
+                                <input type="text" name="of" class="form-control" value="{{ $of }}">
                             </div>
                         </div>
                     </div>
@@ -381,10 +488,11 @@
                             <th>Qte Coupe</th>
                             <th>Qte Entree chaine</th>
                             <th>Qte transferes(sortie chaine)</th>
+                            <th>Balance a transfere</th>
                             <th>Entree repassage</th>
                             <th>Sortie repassage</th>
                             <th>Balance repassage</th>
-                            <th>Balance a transfere</th>
+
                             <th>Pret a livrer(BOXING)</th>
                             <th>Qte deja livre(Expediee)</th>
                             <th>Balance a livrer(Expediee)</th>
@@ -394,45 +502,7 @@
                         </tr>
                     </thead>
                     <tbody style="cursor: pointer;">
-                        {{--  <tr>
-                            <td>Client 2</td>
-                            <td>ColorCode 2</td>
-                            <td>Style 2</td>
-                            <td>OF NO 2</td>
-                            <td>Designation 2</td>
-                            <td>Size 2</td>
-                            <td>Qte P.O 2</td>
-                            <td>Qte Coupe 2</td>
-                            <td>Qte Entree chaine 2</td>
-                            <td>Qte transferes(sortie chaine) 2</td>
-                            <td>Balance a transfere 2</td>
-                            <td>Pret a livrer(BOXING) 2</td>
-                            <td>Qte deja livre(Expediee) 2</td>
-                            <td>Balance a livrer(Expediee) 2</td>
-                            <td>Entree repassage 2</td>
-                            <td>Sortie repassage 2</td>
-                            <td>Balance repassage 2</td>
-                            <td>Ex-Factory 2</td>
-                            <td>
-                                <button data-toggle="modal" data-target="#commentaire"
-                                    data-commentaires="Commentaire 2"
-                                    style="background-color: transparent; border: none;"> Commentaire 2</button>
-                            </td>
-                            <td>
-                                <button type="button" class="btn btn-warning btn-finish mt-1 btn-sm"
-                                    style="width: 90px;" data-toggle="modal" data-target="#modifSuiviFlux"
-                                    data-qtepo="Qte P.O 2" data-qtecoupe="Qte Coupe 2"
-                                    data-qteentreechaine="Qte Entree chaine 2"
-                                    data-qtetransferes="Qte transferes(sortie chaine) 2"
-                                    data-pretalivrer="Pret a livrer(BOXING) 2"
-                                    data-qtedejalivre="Qte deja livre(Expediee) 2"
-                                    data-entreerepassage="Entree repassage 2"
-                                    data-sortierepassage="Sortie repassage 2">
-                                    <i class="fas fa-edit"></i> Modifier
-                                </button>
 
-                            </td>
-                        </tr>  --}}
                         @for ($i = 0; $i < count($suivi); $i++)
                             <tr>
                                 <td>{{ $suivi[$i]->nomtier }}</td>
@@ -445,10 +515,11 @@
                                 <td>{{ $suivi[$i]->qte_coupe }}</td>
                                 <td>{{ $suivi[$i]->qte_entree_chaine }}</td>
                                 <td>{{ $suivi[$i]->qte_transfere }}</td>
+                                <td>{{ $suivi[$i]->balanceatransferer }}</td>
                                 <td>{{ $suivi[$i]->entree_repassage }}</td>
                                 <td>{{ $suivi[$i]->sortie_repassage }}</td>
                                 <td>{{ $suivi[$i]->balancerepassage }}</td>
-                                <td>{{ $suivi[$i]->balanceatransferer }}</td>
+
                                 <td>{{ $suivi[$i]->qte_pret_livrer }}</td>
                                 <td>{{ $suivi[$i]->qte_deja_livrer }}</td>
                                 <td>{{ $suivi[$i]->balancealivrer }}</td>
@@ -607,6 +678,45 @@
             </div>
         </div>
 
+        <!-- Modal -->
+        <div class="modal fade" id="repassageModal" tabindex="-1" aria-labelledby="repassageModalLabel"
+            aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="repassageModalLabel">Détails du Repassage</h5>
+
+                    </div>
+                    <div class="modal-body texte">
+                        <p><strong>Entrée Repassage :</strong> <span id="modalEntreeRepassage"></span></p>
+                        <p><strong>Sortie Repassage :</strong> <span id="modalSortieRepassage"></span></p>
+                        <p><strong>Balance Repassage :</strong> <span id="modalBalanceRepassage"></span></p>
+                    </div>
+                    <div class="modal-footer mt-3">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Annuler</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Modal -->
+        <div class="modal fade" id="balanceLivrer" tabindex="-1" aria-labelledby="repassageModalLabel"
+            aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="repassageModalLabel">Détails du Transfert</h5>
+
+                    </div>
+                    <div class="modal-body texte">
+                        <p><strong>Balance a livrer :</strong> <span id="balancealivrer"></span></p>
+                    </div>
+                    <div class="modal-footer mt-3">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Annuler</button>
+                    </div>
+                </div>
+            </div>
+        </div>
 
         @if (session('error'))
             <div class="modal fade" id="errorModal" tabindex="-1" role="dialog" aria-labelledby="errorModalLabel"
@@ -819,6 +929,30 @@
             $('#errorModal').modal('show');
         @endif
     });
+</script>
+
+<!-- Script JavaScript -->
+<script>
+    function ouvrirModal(entree, sortie, balance) {
+        document.getElementById('modalEntreeRepassage').textContent = entree;
+        document.getElementById('modalSortieRepassage').textContent = sortie;
+        document.getElementById('modalBalanceRepassage').textContent = balance;
+
+        // Ouvrir la modal
+        var modal = new bootstrap.Modal(document.getElementById('repassageModal'));
+        modal.show();
+    }
+</script>
+
+<!-- Script JavaScript -->
+<script>
+    function ouvrirModalBalance(balance) {
+        document.getElementById('balancealivrer').textContent = balance;
+
+        // Ouvrir la modal
+        var modal = new bootstrap.Modal(document.getElementById('balanceLivrer'));
+        modal.show();
+    }
 </script>
 
 
