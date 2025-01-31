@@ -10,7 +10,8 @@ use Illuminate\Http\Request;
 class ControllerSuiviFlux extends Controller
 {
 
-    public function suiviFlux(Request $request){
+    public function suiviFlux(Request $request)
+    {
         $startEntree = $request->input('startEntree');
         $endEntree = $request->input('endEntree');
         $of = $request->input('of');
@@ -19,54 +20,74 @@ class ControllerSuiviFlux extends Controller
         $idStyle = $request->input('idStyle');
         $nomTiers = $request->input('nomTiers');
         $nomStyle = $request->input('nomStyle');
-        $condition="";
+        $condition = "";
 
-        if($nomTiers == null){
+        if ($nomTiers == null) {
             $idTiers = "";
         }
 
-        if($nomStyle == null){
+        if ($nomStyle == null) {
             $idStyle = "";
         }
-        if($startEntree != null && $endEntree != null){
-            $condition = " and ex_factory BETWEEN '".$startEntree."'  AND '".$endEntree."'";
+        if ($startEntree != null && $endEntree != null) {
+            $condition = " and ex_factory BETWEEN '" . $startEntree . "'  AND '" . $endEntree . "'";
         }
-        if($of != null){
-            $condition = $condition." and numero_commande ILIKE '%".$of."%'";
+        if ($of != null) {
+            $condition = $condition . " and numero_commande ILIKE '%" . $of . "%'";
         }
-        if($modele != null){
-            $condition = $condition." and nom_modele ILIKE '%".$modele."%'";
+        if ($modele != null) {
+            $condition = $condition . " and nom_modele ILIKE '%" . $modele . "%'";
         }
-        if($idTiers != null){
-            $condition = $condition." and id_tiers = ".$idTiers;
+        if ($idTiers != null) {
+            $condition = $condition . " and id_tiers = " . $idTiers;
         }
-        if($idStyle != null){
-            $condition = $condition." and id_style = ".$idStyle;
+        if ($idStyle != null) {
+            $condition = $condition . " and id_style = " . $idStyle;
         }
 
         $qte_coupe = SuiviFluxMes::sommeQteCoupe($condition);
         $qte_entree_chaine = SuiviFluxMes::sommeQteEntreeChaine($condition);
         $qte_transfere = SuiviFluxMes::sommeQteTransferer($condition);
-        $qte_pret_livrer= SuiviFluxMes::sommeQtePretLivrer($condition);
+        $qte_pret_livrer = SuiviFluxMes::sommeQtePretLivrer($condition);
         $qte_deja_livrer = SuiviFluxMes::sommeQteDejaLivrer($condition);
         $entree_repassage = SuiviFluxMes::sommeEntreeRepassage($condition);
         $sortie_repassage = SuiviFluxMes::sommeSortieRepassage($condition);
-        $balanceatransferer=SuiviFluxMes::sommeBalanceATransferer($condition);
+        $balanceatransferer = SuiviFluxMes::sommeBalanceATransferer($condition);
         $balancealivrer = SuiviFluxMes::sommeBalanceALivrer($condition);
         $balancerepassage = SuiviFluxMes::sommeBalanceRepassage($condition);
         $qte_po = SuiviFluxMes::sommeQtePo($condition);
         $qteRejetChaine = SuiviFluxMes::sommeRejetChaine($condition);
         $qteRejetCoupe = SuiviFluxMes::sommeRejetCoupe($condition);
-        $pourcentageCoupe = ($qte_coupe/$qte_po)*100;
-        $pourcentageExpediee = ($qte_deja_livrer/$qte_coupe)*100;
-        $pourcentageBoxing = ($qte_pret_livrer/$qte_coupe)*100;
-        $pourcentageRepassage = ($sortie_repassage/$qte_coupe)*100;
-        $pourcentageRejetCoupe = ($qteRejetCoupe/$qte_coupe)*100;
-        $pourcentageRejetChaine = ($qteRejetChaine/$qte_coupe)*100;
-        if($condition == ""){
+        $nombreOf  = SuiviFluxMes::sommeNombreOf($condition);
+        $nombreSuivi = SuiviFluxMes::sommeNombreSuiviFux($condition);
+        $sommeEtat = SuiviFluxMes::sommeEtat($condition);
+        $etat=0;
+        if($nombreSuivi==$sommeEtat){
+            $etat=1;
+        }
+
+        $pourcentageCoupe=0;
+        if($qte_po!=0){
+            $pourcentageCoupe = ($qte_coupe / $qte_po) * 100;
+        }
+
+        $pourcentageExpediee=0;
+        $pourcentageBoxing=0;
+        $pourcentageRepassage=0;
+        $pourcentageRejetCoupe=0;
+        $pourcentageRejetChaine=0;
+        if ($qte_coupe != 0) {
+            $pourcentageExpediee = ($qte_deja_livrer / $qte_coupe) * 100;
+            $pourcentageBoxing = ($qte_pret_livrer / $qte_coupe) * 100;
+            $pourcentageRepassage = ($sortie_repassage / $qte_coupe) * 100;
+            $pourcentageRejetCoupe = ($qteRejetCoupe / $qte_coupe) * 100;
+            $pourcentageRejetChaine = ($qteRejetChaine / $qte_coupe) * 100;
+        }
+
+        if ($condition == "") {
             $condition = " order by id desc limit 100";
-        }else{
-            $condition = $condition." order by id desc";
+        } else {
+            $condition = $condition . " order by id desc";
         }
         $suivi = SuiviFluxMes::getAllSuiviFluxMes($condition);
         $now = now();
@@ -75,11 +96,9 @@ class ControllerSuiviFlux extends Controller
             $s->diff_date = self::diff_date($now, $s->ex_factory);
             $s->pourcentage = self::getPourcentageByDifferenceDate($s->date_livraison_confirme, $s->ex_factory, $now);
         }
-
-        
-
-        return view('MES.suivi.flux.listeSuiviFlux',compact('pourcentageExpediee','pourcentageRepassage','pourcentageRejetChaine','pourcentageRejetCoupe','pourcentageBoxing','pourcentageCoupe','nomStyle','nomTiers','idStyle','idTiers','modele','of','endEntree','startEntree','suivi','qte_po','qte_coupe','qte_entree_chaine','qte_transfere','qte_pret_livrer','qte_deja_livrer','entree_repassage','sortie_repassage','balanceatransferer','balancealivrer','balancerepassage'));
+        return view('MES.suivi.flux.listeSuiviFlux', compact('etat','nombreOf','pourcentageExpediee', 'pourcentageRepassage', 'pourcentageRejetChaine', 'pourcentageRejetCoupe', 'pourcentageBoxing', 'pourcentageCoupe', 'nomStyle', 'nomTiers', 'idStyle', 'idTiers', 'modele', 'of', 'endEntree', 'startEntree', 'suivi', 'qte_po', 'qte_coupe', 'qte_entree_chaine', 'qte_transfere', 'qte_pret_livrer', 'qte_deja_livrer', 'entree_repassage', 'sortie_repassage', 'balanceatransferer', 'balancealivrer', 'balancerepassage'));
     }
+
 
     public function modificationSuiviMes(Request $request)
     {
@@ -159,7 +178,7 @@ class ControllerSuiviFlux extends Controller
         $dateReste = $today->diffInDays($dateLivrason);
         $dateVita = $diff - $dateReste;
 
-        $pourcentage = 100; 
+        $pourcentage = 100;
         if($diff != 0){
             $pourcentage = ($dateVita / $diff) * 100;
         }
