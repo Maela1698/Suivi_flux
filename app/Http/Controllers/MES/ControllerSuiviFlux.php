@@ -160,11 +160,23 @@ class ControllerSuiviFlux extends Controller
         $date1 = Carbon::parse($date1);
         $date2 = Carbon::parse($date2);
 
+
         $diff = $date1->diffInDays($date2); // Différence en jours (toujours positive)
-        $etat = $date2 >= $date1; // true si la deuxième date est après ou égale à la première
+        $etat = 0;
+        $jourJ = false;
+        if($date2 >= $date1){
+            $etat = 1;
+        }
+        if($etat == 1){
+            $diff++;
+        }
+        if($diff == 0){
+            $jourJ = true;
+        }
         return [
             'diff' => $diff,
-            'etat' => $etat
+            'etat' => $etat,
+            'jourJ' => $jourJ
         ];
     }
 
@@ -173,14 +185,18 @@ class ControllerSuiviFlux extends Controller
         $dateLivrason = Carbon::parse($dateLivrason);
         $today = Carbon::parse($today);
 
-        $diff = $dateConfirmeDemande->diffInDays($dateLivrason);
-        // dump($diff);
-        $dateReste = $today->diffInDays($dateLivrason);
-        $dateVita = $diff - $dateReste;
-
+        // $diff = $dateConfirmeDemande->diffInDays($dateLivrason);
+        $diff = self::diff_date($dateConfirmeDemande,$dateLivrason);
+        // $dateReste = $today->diffInDays($dateLivrason);
+        $dateReste = self::diff_date($today,$dateLivrason);
+        // $dateVita = $diff - $dateReste;
+        $dateVita = $diff['diff'] - $dateReste['diff'];
+        if($dateVita < 0){
+            $dateVita = $dateVita * -1;
+        }
         $pourcentage = 100;
         if($diff != 0){
-            $pourcentage = ($dateVita / $diff) * 100;
+            $pourcentage = ($dateVita / $diff['diff']) * 100;
         }
         return $pourcentage;
     }
