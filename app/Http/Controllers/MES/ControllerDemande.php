@@ -5,6 +5,7 @@ namespace App\Http\Controllers\MES;
 use App\Http\Controllers\Controller;
 use App\Models\MES\SuiviFluxMes;
 use App\Models\MES\VDemande;
+use App\Models\MES\VDemandeConfirmees;
 use App\Models\MES\VDestRecap;
 use App\Models\MES\VGeneralFinalRecap;
 use App\Models\MES\VListeOF;
@@ -24,7 +25,7 @@ class ControllerDemande extends Controller
 
         // where = 2 puisque les demande dont l'etat = 2 
         // sont consideres comme confirmee
-        $demandesConfirmes = VDemande::where('id_etat', 2)->where('etat',0)->orderBy('id');
+        $demandesConfirmes = VDemandeConfirmees::orderBy('id');
         
         $selectedTier = null;
         if ($request->has('id_tier') && $request->id_tier != '') {
