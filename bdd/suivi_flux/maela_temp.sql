@@ -34,62 +34,61 @@ AS SELECT rc.id AS recap_id,
      LEFT JOIN v_demandeclient vd ON rc.iddemandeclient = vd.id
      LEFT JOIN v_general_final_recap vgfr ON vgfr.id = rc.iddemandeclient;
 
-ALTER TABLE suivifluxmes ADD COLUMN date_livraison_confirme DATE;
+CREATE OR REPLACE VIEW v_demandeclient_confirmees
+AS SELECT demandeclient.id,
+    demandeclient.date_entree,
+    demandeclient.date_livraison,
+    demandeclient.nom_modele,
+    demandeclient.theme,
+    demandeclient.qte_commande_provisoire,
+    demandeclient.taille_base,
+    demandeclient.requete_client,
+    demandeclient.commentaire_merch,
+    demandeclient.photo_commande,
+    demandeclient.etat,
+    demandeclient.id_unite_taille_min,
+    demandeclient.id_unite_taille_max,
+    tiers.nomtier,
+    tiers.id AS id_tiers,
+    style.nom_style,
+    style.id AS id_style,
+    incontern.type_incontern,
+    incontern.id AS id_incontern,
+    phase.type_phase,
+    phase.id AS id_phase,
+    saison.type_saison,
+    saison.id AS id_saison,
+    ut_min.unite_taille AS taillemin,
+    ut_max.unite_taille AS taillemax,
+    stadedemandeclient.type_stade,
+    stadedemandeclient.id AS id_stade,
+    etatdemandeclient.type_etat,
+    periode.periode,
+    periode.id AS id_periode,
+    etatdemandeclient.id AS id_etat,
+    ( SELECT count(*) AS count
+           FROM generate_series(demandeclient.date_entree::timestamp with time zone, demandeclient.date_livraison::timestamp with time zone, '1 day'::interval) jours(date_jour)
+          WHERE date_part('isodow'::text, jours.date_jour) <> 7::double precision AND NOT (EXISTS ( SELECT 1
+                   FROM jours_feries
+                  WHERE jours_feries.jour = date_part('day'::text, jours.date_jour)::smallint AND jours_feries.mois = date_part('month'::text, jours.date_jour)::smallint AND (jours_feries.annee IS NULL OR jours_feries.annee = date_part('year'::text, jours.date_jour)::integer)))) AS leadtimereel,
+    EXISTS (
+        SELECT 1
+        FROM v_liste_of
+        WHERE v_liste_of.iddemandeclient = demandeclient.id
+        AND v_liste_of.qteof IS NOT NULL
+    ) AS hasOF
+   FROM demandeclient
+     JOIN tiers ON tiers.id = demandeclient.id_client
+     JOIN periode ON periode.id = demandeclient.id_periode
+     JOIN style ON style.id = demandeclient.id_style
+     JOIN incontern ON incontern.id = demandeclient.id_incontern
+     JOIN phase ON phase.id = demandeclient.id_phase
+     JOIN saison ON saison.id = demandeclient.id_saison
+     JOIN unitetaille ut_min ON ut_min.id = demandeclient.id_unite_taille_min
+     JOIN unitetaille ut_max ON ut_max.id = demandeclient.id_unite_taille_max
+     JOIN stadedemandeclient ON stadedemandeclient.id = demandeclient.id_stade
+     JOIN etatdemandeclient ON etatdemandeclient.id = demandeclient.id_etat
+    WHERE id_etat = 2 AND demandeclient.etat = 0;
 
-CREATE OR REPLACE VIEW public.v_suivifluxmes
-AS SELECT suivifluxmes.id,
-    suivifluxmes.date_operaton,
-    suivifluxmes.id_demande_client,
-    suivifluxmes.numero_commande,
-    COALESCE(suivifluxmes.qte_coupe, 0::double precision) AS qte_coupe,
-    COALESCE(suivifluxmes.qte_entree_chaine, 0::double precision) AS qte_entree_chaine,
-    COALESCE(suivifluxmes.qte_transfere, 0::double precision) AS qte_transfere,
-    COALESCE(suivifluxmes.qte_pret_livrer, 0::double precision) AS qte_pret_livrer,
-    COALESCE(suivifluxmes.qte_deja_livrer, 0::double precision) AS qte_deja_livrer,
-    suivifluxmes.id_taille,
-    COALESCE(suivifluxmes.qte_po, 0::double precision) AS qte_po,
-        CASE
-            WHEN COALESCE(suivifluxmes.qte_po, 0::double precision) = 0::double precision THEN 0::double precision
-            ELSE COALESCE(suivifluxmes.qte_coupe, 0::double precision) / COALESCE(suivifluxmes.qte_po, 0::double precision) * 100::double precision
-        END AS pourcentagecoupe,
-        CASE
-            WHEN COALESCE(suivifluxmes.qte_coupe, 0::double precision) = 0::double precision THEN 0::double precision
-            ELSE COALESCE(suivifluxmes.qte_transfere, 0::double precision) / COALESCE(suivifluxmes.qte_coupe, 0::double precision) * 100::double precision
-        END AS pourcentagetransferer,
-        CASE
-            WHEN COALESCE(suivifluxmes.qte_coupe, 0::double precision) = 0::double precision THEN 0::double precision
-            ELSE COALESCE(suivifluxmes.qte_rejet_chaine, 0::double precision) / COALESCE(suivifluxmes.qte_coupe, 0::double precision) * 100::double precision
-        END AS pourcentagerejetchaine,
-        CASE
-            WHEN COALESCE(suivifluxmes.qte_coupe, 0::double precision) = 0::double precision THEN 0::double precision
-            ELSE COALESCE(suivifluxmes.qte_rejet_coupe, 0::double precision) / COALESCE(suivifluxmes.qte_coupe, 0::double precision) * 100::double precision
-        END AS pourcentagerejetcoupe,
-    suivifluxmes.couleur,
-    COALESCE(suivifluxmes.entree_repassage, 0::double precision) AS entree_repassage,
-    COALESCE(suivifluxmes.sortie_repassage, 0::double precision) AS sortie_repassage,
-    suivifluxmes.commentaire,
-    suivifluxmes.id_destination,
-    suivifluxmes.qte_rejet_chaine,
-    suivifluxmes.qte_rejet_coupe,
-    suivifluxmes.etat,
-    v_demandeclient.nomtier,
-    v_demandeclient.id_tiers,
-    v_demandeclient.nom_style,
-    v_demandeclient.id_style,
-    v_demandeclient.nom_modele,
-    unitetaille.unite_taille,
-    COALESCE(suivifluxmes.qte_transfere, 0::double precision) - COALESCE(suivifluxmes.qte_coupe, 0::double precision) AS balanceatransferer,
-    COALESCE(suivifluxmes.qte_deja_livrer, 0::double precision) - COALESCE(suivifluxmes.qte_coupe, 0::double precision) AS balancealivrer,
-    COALESCE(suivifluxmes.sortie_repassage, 0::double precision) - COALESCE(suivifluxmes.qte_coupe, 0::double precision) AS balancerepassage,
-    v_destinationrecap.datelivraisonexacte,
-    v_destinationrecap.etdrevise,
-    v_destinationrecap.etdpropose,
-    v_destinationrecap.etdinitial,
-    v_demandeclient.date_livraison,
-    COALESCE(v_destinationrecap.datelivraisonexacte, v_destinationrecap.etdrevise, v_destinationrecap.etdpropose, v_destinationrecap.etdinitial, v_demandeclient.date_livraison) AS ex_factory,
-    vdr.date_livraison_confirme
-   FROM suivifluxmes
-     JOIN v_demandeclient ON suivifluxmes.id_demande_client = v_demandeclient.id
-     JOIN unitetaille ON unitetaille.id = suivifluxmes.id_taille
-     LEFT JOIN v_destinationrecap ON v_destinationrecap.id = suivifluxmes.id_destination
-     LEFT JOIN v_dest_recap vdr ON vdr.id_destination = suivifluxmes.id_destination;
+
+
