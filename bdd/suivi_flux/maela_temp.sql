@@ -55,4 +55,6 @@ AS SELECT demandeclient.id,
      JOIN stadedemandeclient ON stadedemandeclient.id = demandeclient.id_stade
      JOIN etatdemandeclient ON etatdemandeclient.id = demandeclient.id_etat
     WHERE id_etat = 2 AND demandeclient.etat = 0;
-    
+
+
+
