@@ -6,7 +6,7 @@
     <div class="container-fluid">
         @include('MES.headerMES')
         <div class="row">
-            <div class="col-lg-12">
+            <div class="card col-12">
                 <div class="card">
                     <div class="card-header d-flex justify-center">
                         <h4 class="card-title titre">LISTE DEMANDES CONFIRMÉS</h4>
@@ -71,7 +71,7 @@
                                             <tr onclick="window.location.href='{{ route('MES.fiche-demande',['id' => $demandeConfirme->id]) }}'">
                                                 <td>
                                                     <div class="code">
-                                                        <div class="circle{{ $demandeConfirme->hasOF ? ' hasOF' : ' noOF' }}"></div>
+                                                        <div class="circle{{ $demandeConfirme->hasof ? ' hasOF' : ' noOF' }}"></div>
                                                         </div>
                                                     </div>
                                                 </td>
