@@ -25,7 +25,7 @@ class ControllerDemande extends Controller
 
         // where = 2 puisque les demande dont l'etat = 2 
         // sont consideres comme confirmee
-        $demandesConfirmes = VDemandeConfirmees::orderBy('id');
+        $demandesConfirmes = VDemandeConfirmees::orderBy('id')->limit(100);
         
         $selectedTier = null;
         if ($request->has('id_tier') && $request->id_tier != '') {
