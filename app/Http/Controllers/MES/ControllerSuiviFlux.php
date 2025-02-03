@@ -128,22 +128,40 @@ class ControllerSuiviFlux extends Controller
         $erreur ="";
         if($qteCoupe<$qteEntreeChaine){
             $erreur = $erreur." -La quantité entree chaine ne doit pas etre superieur à la quantité coupée de ".$qteCoupe."|";
+        }elseif($qteCoupe>=$qteEntreeChaine){
+            $erreur = $erreur."";
         }
+
         if($qteEntreeChaine<$qteTransferes){
             $erreur =  $erreur."-La quantité transferee ne doit pas etre superieur à la quantité entree de ".$qteEntreeChaine."|";
+        }elseif($qteEntreeChaine>=$qteTransferes){
+            $erreur = $erreur."";
         }
+
         if($qteCoupe<$pretALivrer){
             $erreur =  $erreur."-La quantité pret a livrer doit ne doit pas etre superieur à la quantité coupée de ".$qteCoupe."|";
+        }elseif($qteCoupe>=$pretALivrer){
+            $erreur = $erreur."";
         }
+
         if($pretALivrer<$qteDejaLivre){
             $erreur =  $erreur."-La quantité deja livrer doit ne doit pas etre superieur à la quantité pret a livrer de ".$pretALivrer."|";
+        }elseif($pretALivrer>=$qteDejaLivre){
+            $erreur = $erreur."";
         }
+
         if($qteCoupe<$entreeRepassage){
             $erreur =  $erreur."La quantité entree repassage doit ne doit pas etre superieur à la quantité coupée de ".$qteCoupe."|";
+        }elseif($qteCoupe>=$entreeRepassage){
+            $erreur = $erreur."";
         }
+
         if($entreeRepassage<$sortieRepassage){
             $erreur =  $erreur."-La quantité sortie repassage doit ne doit pas etre superieur à la quantité entree repassage de ".$entreeRepassage."|";
+        }elseif($entreeRepassage>=$sortieRepassage){
+            $erreur = $erreur."";
         }
+
         if(empty($coupeFinal)){
             $coupeFinal=0;
         }
@@ -200,5 +218,4 @@ class ControllerSuiviFlux extends Controller
         }
         return $pourcentage;
     }
-
 }

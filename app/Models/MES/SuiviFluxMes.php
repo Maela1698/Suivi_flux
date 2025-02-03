@@ -109,10 +109,10 @@ class SuiviFluxMes extends Model
     {
         try {
             DB::beginTransaction(); // Démarre la transaction
-        
+
             // Met à jour la table `destination` pour marquer l'enregistrement comme suivi
             DB::update('UPDATE destination SET istracked = true WHERE id = ?', [$id_destination]);
-        
+
             // Insère les données dans la table spécifiée
             DB::table($this->table)->insert([
                 'date_operaton' => $date_operaton,
@@ -124,7 +124,7 @@ class SuiviFluxMes extends Model
                 'id_destination' => $id_destination,
                 'date_livraison_confirme' => $date_livraison_confirme
             ]);
-        
+
             DB::commit(); // Valide la transaction si tout s'est bien passé
         } catch (\Exception $e) {
             DB::rollBack(); // Annule la transaction en cas d'erreur
@@ -144,6 +144,24 @@ class SuiviFluxMes extends Model
     public static function sommeRejetCoupe($condition)
     {
         $select = DB::select("select sum(qte_rejet_coupe) as somme from v_suiviFluxMes where 1=1 ".$condition);
+        return $select[0]->somme ?? 0;
+    }
+
+    public static function sommeNombreOf($condition)
+    {
+        $select = DB::select("select count(distinct(numero_commande)) as somme from v_suiviFluxMes where 1=1 ".$condition);
+        return $select[0]->somme ?? 0;
+    }
+
+    public static function sommeNombreSuiviFux($condition)
+    {
+        $select = DB::select("select count(*) as somme from v_suiviFluxMes where 1=1 ".$condition);
+        return $select[0]->somme ?? 0;
+    }
+
+    public static function sommeEtat($condition)
+    {
+        $select = DB::select("select sum(etat) as somme from v_suiviFluxMes where 1=1 ".$condition);
         return $select[0]->somme ?? 0;
     }
 }
