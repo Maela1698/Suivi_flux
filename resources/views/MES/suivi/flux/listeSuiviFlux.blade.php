@@ -55,8 +55,8 @@
     <!-- row -->
     <div class="container-fluid">
         @include('MES.headerMES')
-        <div class="row">
-            <div class="col-3" style="margin-top: -30px;">
+        <div class="row kpi">
+            <div class="col-3">
                 <div class="card" style="height: 150px">
                     <div class="card-header d-block center">
                         <center>
@@ -71,8 +71,7 @@
                     </div>
                 </div>
             </div>
-
-            <div class="col-3" style="margin-top: -30px;">
+            <div class="col-3">
                 <div class="card" style="height: 150px">
                     <div class="card-header d-block center">
                         <center>
@@ -104,9 +103,7 @@
                     </div>
                 </div>
             </div>
-
-
-            <div class="col-3" style="margin-top: -30px;">
+            <div class="col-3">
                 <div class="card" style="height: 150px; cursor: pointer;"
                     onclick="ouvrirModal('{{ $qte_entree_chaine }}', '{{ $qte_transfere }}', '{{ $balanceatransferer }}')">
 
@@ -132,8 +129,7 @@
                     </div>
                 </div>
             </div>
-
-            <div class="col-3" style="margin-top: -30px;">
+            <div class="col-3">
                 <div class="card" style="height: 150px" onclick="ouvrirModalBalance('{{ $balancealivrer }}')">
                     <div class="card-header d-block center">
                         <center>
@@ -162,14 +158,12 @@
                     </div>
                 </div>
             </div>
-
         </div>
 
         <div class="row gep mt-1">
             @include('MES.suivi.flux.deliveryDate')
             <div class="col-right">
-
-                <div class="card" style="height: 150px;margin-top:-30px;" onclick="ouvrirModalBalance('{{ $balancealivrer }}')">
+                <div class="card" onclick="ouvrirModalBalance('{{ $balancealivrer }}')">
                     <div class="card-header d-block center">
                         <center>
                             <h4 class="card-title">EXPEDIEE </h4>
@@ -178,7 +172,6 @@
                     <div class="card-body">
                         <center>
                             <p style="font-size: 17px; color: #000000;">{{ $qte_deja_livrer }}</p>
-
                             <span style="color: white">Rejet: {{ number_format($pourcentageRejetChaine, 0) }}%</span>
                         </center>
                         <h6>
@@ -191,173 +184,172 @@
 
                             </div>
                         </div>
-
                     </div>
                 </div>
-
             </div>
         </div>
-
-        <div class="card col-12">
-            <div style="display: flex;justify-content:space-between;">
-                <h3 class="entete mt-3">LISTE SUIVIS FLUX MES</h3>
-                <form action="{{ route('exportCSV') }}" method="get">
-                    @csrf
-                    <button type="submit" class="btn btn-primary mt-3">
-                        <i class="fas fa-file-csv"></i>Télécharger CSV
-                    </button>
-                </form>
-            </div>
-            <br>
-            <div>
-                <form action="{{ route('MES.suiviFlux') }}" method="post" autocomplete="off">
-                    @csrf
-                    <div class="row g-3">
-                        <!-- Date ex-factory -->
-                        <div class="col-md-3">
-                            <label class="form-label fw-bold" style="color:rgb(122, 121, 121);">Date ex-factory</label>
-                            <div class="input-group">
-                                <input type="date" class="form-control" name="startEntree"
-                                    value="{{ $startEntree }}">
-                                <span class="input-group-text">à</span>
-                                <input type="date" class="form-control" name="endEntree"
-                                    value="{{ $endEntree }}">
+        <div class="row">
+            <div class="card col-12">
+                <div style="display: flex;justify-content:space-between;">
+                    <h3 class="entete mt-3">LISTE SUIVIS FLUX MES</h3>
+                    <form action="{{ route('exportCSV') }}" method="get">
+                        @csrf
+                        <button type="submit" class="btn btn-primary mt-3">
+                            <i class="fas fa-file-csv"></i>Télécharger CSV
+                        </button>
+                    </form>
+                </div>
+                <br>
+                <div>
+                    <form action="{{ route('MES.suiviFlux') }}" method="post" autocomplete="off">
+                        @csrf
+                        <div class="row g-3">
+                            <!-- Date ex-factory -->
+                            <div class="col-md-3">
+                                <label class="form-label fw-bold" style="color:rgb(122, 121, 121);">Date ex-factory</label>
+                                <div class="input-group">
+                                    <input type="date" class="form-control" name="startEntree"
+                                        value="{{ $startEntree }}">
+                                    <span class="input-group-text">à</span>
+                                    <input type="date" class="form-control" name="endEntree"
+                                        value="{{ $endEntree }}">
+                                </div>
                             </div>
-                        </div>
-
-                        <!-- OF -->
-                        <div class="col-md-2">
-                            <label class="form-label fw-bold" style="color:rgb(122, 121, 121);">OF</label>
-                            <div class="input-group">
-                                <span class="input-group-text"><i class="fas fa-barcode"></i></span>
-                                <input type="text" name="of" class="form-control"
-                                    value="{{ $of }}">
+    
+                            <!-- OF -->
+                            <div class="col-md-2">
+                                <label class="form-label fw-bold" style="color:rgb(122, 121, 121);">OF</label>
+                                <div class="input-group">
+                                    <span class="input-group-text"><i class="fas fa-barcode"></i></span>
+                                    <input type="text" name="of" class="form-control"
+                                        value="{{ $of }}">
+                                </div>
                             </div>
-                        </div>
-
-                        <!-- Style -->
-                        <div class="col-md-2">
-                            <label class="form-label fw-bold" style="color:rgb(122, 121, 121);">Style</label>
-                            <div class="input-group">
-                                <span class="input-group-text"><i class="fas fa-tshirt"></i></span>
-                                <input type="text" name="modele" class="form-control"
-                                    value="{{ $modele }}">
+    
+                            <!-- Style -->
+                            <div class="col-md-2">
+                                <label class="form-label fw-bold" style="color:rgb(122, 121, 121);">Style</label>
+                                <div class="input-group">
+                                    <span class="input-group-text"><i class="fas fa-tshirt"></i></span>
+                                    <input type="text" name="modele" class="form-control"
+                                        value="{{ $modele }}">
+                                </div>
                             </div>
-                        </div>
-
-                        <!-- Client -->
-                        <div class="col-md-2">
-                            <label class="form-label fw-bold" style="color:rgb(122, 121, 121);">Client</label>
-                            <div class="input-group">
-                                <span class="input-group-text"><i class="fas fa-user"></i></span>
-                                <input type="text" id="nomTiers" name="nomTiers" class="form-control"
-                                    value="{{ $nomTiers }}">
-                                <input type="hidden" id="idTiers" name="idTiers" value="{{ $idTiers }}">
-                                <ul id="suggestionsListTiers" class="list-group mt-2" style="display: none;"></ul>
+    
+                            <!-- Client -->
+                            <div class="col-md-2">
+                                <label class="form-label fw-bold" style="color:rgb(122, 121, 121);">Client</label>
+                                <div class="input-group">
+                                    <span class="input-group-text"><i class="fas fa-user"></i></span>
+                                    <input type="text" id="nomTiers" name="nomTiers" class="form-control"
+                                        value="{{ $nomTiers }}">
+                                    <input type="hidden" id="idTiers" name="idTiers" value="{{ $idTiers }}">
+                                    <ul id="suggestionsListTiers" class="list-group mt-2" style="display: none;"></ul>
+                                </div>
                             </div>
-                        </div>
-
-                        <!-- Designation -->
-                        <div class="col-md-3">
-                            <label class="form-label fw-bold" style="color:rgb(122, 121, 121);">Designation</label>
-                            <div class="input-group">
-                                <span class="input-group-text"><i class="fas fa-tag"></i></span>
-                                <input type="text" id="nomStyle" name="nomStyle" class="form-control"
-                                    value="{{ $nomStyle }}">
-                                <input type="hidden" id="idStyle" name="idStyle" value="{{ $idStyle }}">
-                                <ul id="suggestionsListStyle" class="list-group mt-2" style="display: none;"></ul>
+    
+                            <!-- Designation -->
+                            <div class="col-md-3">
+                                <label class="form-label fw-bold" style="color:rgb(122, 121, 121);">Designation</label>
+                                <div class="input-group">
+                                    <span class="input-group-text"><i class="fas fa-tag"></i></span>
+                                    <input type="text" id="nomStyle" name="nomStyle" class="form-control"
+                                        value="{{ $nomStyle }}">
+                                    <input type="hidden" id="idStyle" name="idStyle" value="{{ $idStyle }}">
+                                    <ul id="suggestionsListStyle" class="list-group mt-2" style="display: none;"></ul>
+                                </div>
                             </div>
+                            <!-- Boutons -->
+                                <button type="submit"  class="btn btn-success" style="margin-left:13px;margin-top: 15px;justify-content: flex-end;">
+                                    <i class="fas fa-filter"></i> Filtrer
+                                </button>
                         </div>
-                        <!-- Boutons -->
-                            <button type="submit"  class="btn btn-success" style="margin-left:13px;margin-top: 15px;justify-content: flex-end;">
-                                <i class="fas fa-filter"></i> Filtrer
-                            </button>
-                    </div>
-                </form>
-            </div>
-
-            <div class="table-responsive" style="margin-top: -15px;">
-                <table class="table student-data-table m-t-20 table-hover mt-3" style="color: black">
-                    <thead class="thead-dark">
-                        <tr>
-                            <th>Client</th>
-                            <th>ColorCode</th>
-                            <th>Style</th>
-                            <th>OF NO</th>
-                            <th>Designation</th>
-                            <th>Size</th>
-                            <th>Qte P.O</th>
-                            <th>Qte Coupe</th>
-                            <th>Qte Entree chaine</th>
-                            <th>Qte transferes(sortie chaine)</th>
-                            <th>Balance a transfere</th>
-                            <th>Entree repassage</th>
-                            <th>Sortie repassage</th>
-                            <th>Balance repassage</th>
-
-                            <th>Pret a livrer(BOXING)</th>
-                            <th>Qte deja livre(Expediee)</th>
-                            <th>Balance a livrer(Expediee)</th>
-                            <th>Ex-Factory</th>
-                            <th>Commentaire</th>
-                            <th></th>
-                        </tr>
-                    </thead>
-                    <tbody style="cursor: pointer;">
-
-                        @for ($i = 0; $i < count($suivi); $i++)
-                            <tr data-qtepo="{{ $suivi[$i]->qte_po }}" data-qtecoupe="{{ $suivi[$i]->qte_coupe }}"
-                                data-qteentreechaine="{{ $suivi[$i]->qte_entree_chaine }}"
-                                data-qtetransferes="{{ $suivi[$i]->qte_transfere }}"
-                                data-pretalivrer="{{ $suivi[$i]->qte_pret_livrer }}"
-                                data-qtedejalivre="{{ $suivi[$i]->qte_deja_livrer }}"
-                                data-entreerepassage="{{ $suivi[$i]->entree_repassage }}"
-                                data-sortierepassage="{{ $suivi[$i]->sortie_repassage }}"
-                                data-commentaire="{{ $suivi[$i]->commentaire }}" data-idsuivi="{{ $suivi[$i]->id }}"
-                                data-rejetcoupe="{{ $suivi[$i]->qte_rejet_coupe }}"
-                                data-rejetchaine="{{ $suivi[$i]->qte_rejet_chaine }}"
-                                data-etat="{{ $suivi[$i]->etat }}" onclick="ouvrirModifSuiviFlux(this)">
-                                <td>
-                                    {{ $suivi[$i]->nomtier }}
-                                </td>
-                                <td>{{ $suivi[$i]->couleur }}</td>
-                                <td>{{ $suivi[$i]->nom_modele }}</td>
-                                <td>{{ $suivi[$i]->numero_commande }}</td>
-                                <td>{{ $suivi[$i]->nom_style }}</td>
-                                <td>{{ $suivi[$i]->unite_taille }}</td>
-                                <td>{{ $suivi[$i]->qte_po }}</td>
-                                <td>{{ $suivi[$i]->qte_coupe }}</td>
-                                <td>{{ $suivi[$i]->qte_entree_chaine }}</td>
-                                <td>{{ $suivi[$i]->qte_transfere }}</td>
-                                <td>{{ $suivi[$i]->balanceatransferer }}</td>
-                                <td>{{ $suivi[$i]->entree_repassage }}</td>
-                                <td>{{ $suivi[$i]->sortie_repassage }}</td>
-                                <td>{{ $suivi[$i]->balancerepassage }}</td>
-                                <td>{{ $suivi[$i]->qte_pret_livrer }}</td>
-                                <td>{{ $suivi[$i]->qte_deja_livrer }}</td>
-                                <td>{{ $suivi[$i]->balancealivrer }}</td>
-                                <td> {{ \Carbon\Carbon::parse($suivi[$i]->ex_factory)->format('d/m/y') }}</td>
-                                <td onclick="event.stopPropagation();">
-                                    <?php
-                                    $descriptions = substr($suivi[$i]->commentaire, 0, 20);
-                                    $hasMore = strlen($suivi[$i]->commentaire) > 20;
-                                    ?>
-                                    <button data-toggle="modal" data-target="#commentaireSuivi"
-                                        data-commentaires="{{ $suivi[$i]->commentaire }}"
-                                        style="background-color: transparent; border: none;">
-                                        {{ $descriptions }}
-                                        @if ($hasMore)
-                                            ...
-                                        @endif
-                                    </button>
-                                </td>
+                    </form>
+                </div>
+    
+                <div class="table-responsive" style="margin-top: -15px;">
+                    <table class="table student-data-table m-t-20 table-hover mt-3" style="color: black">
+                        <thead class="thead-dark">
+                            <tr>
+                                <th>Client</th>
+                                <th>ColorCode</th>
+                                <th>Style</th>
+                                <th>OF NO</th>
+                                <th>Designation</th>
+                                <th>Size</th>
+                                <th>Qte P.O</th>
+                                <th>Qte Coupe</th>
+                                <th>Qte Entree chaine</th>
+                                <th>Qte transferes(sortie chaine)</th>
+                                <th>Balance a transfere</th>
+                                <th>Entree repassage</th>
+                                <th>Sortie repassage</th>
+                                <th>Balance repassage</th>
+    
+                                <th>Pret a livrer(BOXING)</th>
+                                <th>Qte deja livre(Expediee)</th>
+                                <th>Balance a livrer(Expediee)</th>
+                                <th>Ex-Factory</th>
+                                <th>Commentaire</th>
+                                <th></th>
                             </tr>
-                        @endfor
-                    </tbody>
-                </table>
+                        </thead>
+                        <tbody style="cursor: pointer;">
+    
+                            @for ($i = 0; $i < count($suivi); $i++)
+                                <tr data-qtepo="{{ $suivi[$i]->qte_po }}" data-qtecoupe="{{ $suivi[$i]->qte_coupe }}"
+                                    data-qteentreechaine="{{ $suivi[$i]->qte_entree_chaine }}"
+                                    data-qtetransferes="{{ $suivi[$i]->qte_transfere }}"
+                                    data-pretalivrer="{{ $suivi[$i]->qte_pret_livrer }}"
+                                    data-qtedejalivre="{{ $suivi[$i]->qte_deja_livrer }}"
+                                    data-entreerepassage="{{ $suivi[$i]->entree_repassage }}"
+                                    data-sortierepassage="{{ $suivi[$i]->sortie_repassage }}"
+                                    data-commentaire="{{ $suivi[$i]->commentaire }}" data-idsuivi="{{ $suivi[$i]->id }}"
+                                    data-rejetcoupe="{{ $suivi[$i]->qte_rejet_coupe }}"
+                                    data-rejetchaine="{{ $suivi[$i]->qte_rejet_chaine }}"
+                                    data-etat="{{ $suivi[$i]->etat }}" onclick="ouvrirModifSuiviFlux(this)">
+                                    <td>
+                                        {{ $suivi[$i]->nomtier }}
+                                    </td>
+                                    <td>{{ $suivi[$i]->couleur }}</td>
+                                    <td>{{ $suivi[$i]->nom_modele }}</td>
+                                    <td>{{ $suivi[$i]->numero_commande }}</td>
+                                    <td>{{ $suivi[$i]->nom_style }}</td>
+                                    <td>{{ $suivi[$i]->unite_taille }}</td>
+                                    <td>{{ $suivi[$i]->qte_po }}</td>
+                                    <td>{{ $suivi[$i]->qte_coupe }}</td>
+                                    <td>{{ $suivi[$i]->qte_entree_chaine }}</td>
+                                    <td>{{ $suivi[$i]->qte_transfere }}</td>
+                                    <td>{{ $suivi[$i]->balanceatransferer }}</td>
+                                    <td>{{ $suivi[$i]->entree_repassage }}</td>
+                                    <td>{{ $suivi[$i]->sortie_repassage }}</td>
+                                    <td>{{ $suivi[$i]->balancerepassage }}</td>
+                                    <td>{{ $suivi[$i]->qte_pret_livrer }}</td>
+                                    <td>{{ $suivi[$i]->qte_deja_livrer }}</td>
+                                    <td>{{ $suivi[$i]->balancealivrer }}</td>
+                                    <td> {{ \Carbon\Carbon::parse($suivi[$i]->ex_factory)->format('d/m/y') }}</td>
+                                    <td onclick="event.stopPropagation();">
+                                        <?php
+                                        $descriptions = substr($suivi[$i]->commentaire, 0, 20);
+                                        $hasMore = strlen($suivi[$i]->commentaire) > 20;
+                                        ?>
+                                        <button data-toggle="modal" data-target="#commentaireSuivi"
+                                            data-commentaires="{{ $suivi[$i]->commentaire }}"
+                                            style="background-color: transparent; border: none;">
+                                            {{ $descriptions }}
+                                            @if ($hasMore)
+                                                ...
+                                            @endif
+                                        </button>
+                                    </td>
+                                </tr>
+                            @endfor
+                        </tbody>
+                    </table>
+                </div>
             </div>
         </div>
-
+        
         <!-- Modal -->
         <div class="modal fade" id="repassageModal" tabindex="-1" aria-labelledby="repassageModalLabel"
             aria-hidden="true">

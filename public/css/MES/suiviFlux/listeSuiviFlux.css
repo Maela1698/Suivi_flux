@@ -1,13 +1,16 @@
-.row {
-    display: flex;
-    /* gap: 1%; */
-    margin-bottom: 2%;
+.kpi{
+    width: 105%;
+    margin-left: -32.5px;
 }
 
+.deliveryDate{
+    margin-bottom: 1.875rem;
+}
 .gep{
-    gap : 1%;
+    gap: 2.5%;
+    margin-bottom: 2.5%;
+    margin-top: 0% !important;
 }
-
 
 .col-left {
     flex: 2;
@@ -18,13 +21,13 @@
     align-items: center; /* Centrer horizontalement le titre */
     height: 200px; /* Hauteur fixe */
     overflow: hidden; /* Empêche l'extension du div */
-    border-radius: 5px  ;
+    border-radius: 5px;
 }
 
 .col-right {
     flex: 1;
     background-color: white;
-    border-radius: 5px  ;
+    border-radius: 5px;
 }
 
 .col-left .table-container {
