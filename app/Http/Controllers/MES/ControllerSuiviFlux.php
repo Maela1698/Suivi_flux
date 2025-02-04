@@ -6,6 +6,8 @@ use App\Http\Controllers\Controller;
 use App\Models\MES\SuiviFluxMes;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
+use Symfony\Component\HttpFoundation\StreamedResponse;
 
 class ControllerSuiviFlux extends Controller
 {
@@ -220,5 +222,63 @@ class ControllerSuiviFlux extends Controller
             $pourcentage = ($dateVita / $diff['diff']) * 100;
         }
         return $pourcentage;
+    }
+
+    public function exportCSVFlux()
+    {
+        $fileName = 'suivi_flux_' . Carbon::now()->format('d_m_Y') . '.csv';
+
+        $response = new StreamedResponse(function () {
+            $handle = fopen('php://output', 'w');
+
+            // Ajouter l'entête du fichier CSV
+            fputcsv($handle, [
+            'Client',
+            'Style',
+            'OF N°',
+            'Designation',
+            'size',
+            'qte P.O',
+            'Qte coupe',
+            'Qte entree chaine',
+            'Qte transferes(sortie chaine)',
+            'Balance a transfere',
+            'Pret a livrer(BOXING)',
+            'Qte deja livre(Expediee)',
+            'Balance a livrer(Expediee)',
+            'Ex-Factory',
+            'Commentaire'],separator: ';');
+
+            // Récupérer les données de la base
+            $demandes = DB::table('v_suivifluxmes')->get();
+
+            // Insérer les données dans le CSV
+            foreach ($demandes as $demande) {
+                fputcsv($handle, [
+            $demande->nomtier ,
+            $demande->nom_modele ,
+            $demande->numero_commande ,
+            $demande->nom_style ,
+            $demande->unite_taille ,
+            $demande->qte_po ,
+            $demande->qte_coupe ,
+            $demande->qte_entree_chaine ,
+            $demande->qte_transfere ,
+            $demande->balanceatransferer ,
+            $demande->qte_pret_livrer ,
+            $demande->qte_deja_livrer ,
+            $demande->balancealivrer,
+            $demande->ex_factory,
+            $demande->commentaire
+            ],';');
+            }
+
+            fclose($handle);
+        });
+
+        $response->headers->set('Content-Type', 'text/csv');
+        $response->headers->set('Content-Disposition', 'attachment; filename="'.$fileName.'"');
+
+        return $response;
     }
 }

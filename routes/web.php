@@ -380,6 +380,7 @@ Route::get('/mes-destinations-of/{recap_id}/{numerocommande}',[MESControllerDema
 Route::match(['get', 'post'],'/mes-suiviFlux',[MESControllerSuiviFlux::class,'suiviFlux'])->name('MES.suiviFlux');
 Route::post('/mes-suivre-flux',[MESControllerDemande::class,'suivreFlux'])->name('MES.suivreFlux');
 Route::match(['get', 'post'],'/mes-modificationSuiviMes',[MESControllerSuiviFlux::class,'modificationSuiviMes'])->name('MES.modificationSuiviMes');
+Route::get('/export-csv', [MESControllerSuiviFlux::class, 'exportCSVFlux'])->name('exportCSV');
 
 /*------------------------------------------------COMPLIANCE NOTIA------------------------------------------------------*/
 Route::match(['get', 'post'],'/COMPLIANCE.listePerimetre',[ControlleurComplianceNotia::class,'listePerimetre'])->name('COMPLIANCE.listePerimetre');
