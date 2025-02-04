@@ -56,7 +56,7 @@
     <div class="container-fluid">
         @include('MES.headerMES')
         <div class="row">
-            <div class="col-3">
+            <div class="col-3" style="margin-top: -30px;">
                 <div class="card" style="height: 150px">
                     <div class="card-header d-block center">
                         <center>
@@ -72,7 +72,7 @@
                 </div>
             </div>
 
-            <div class="col-3">
+            <div class="col-3" style="margin-top: -30px;">
                 <div class="card" style="height: 150px">
                     <div class="card-header d-block center">
                         <center>
@@ -106,7 +106,7 @@
             </div>
 
 
-            <div class="col-3">
+            <div class="col-3" style="margin-top: -30px;">
                 <div class="card" style="height: 150px; cursor: pointer;"
                     onclick="ouvrirModal('{{ $qte_entree_chaine }}', '{{ $qte_transfere }}', '{{ $balanceatransferer }}')">
 
@@ -133,7 +133,7 @@
                 </div>
             </div>
 
-            <div class="col-3">
+            <div class="col-3" style="margin-top: -30px;">
                 <div class="card" style="height: 150px" onclick="ouvrirModalBalance('{{ $balancealivrer }}')">
                     <div class="card-header d-block center">
                         <center>
@@ -169,7 +169,7 @@
             @include('MES.suivi.flux.deliveryDate')
             <div class="col-right">
 
-                <div class="card" style="height: 150px" onclick="ouvrirModalBalance('{{ $balancealivrer }}')">
+                <div class="card" style="height: 150px;margin-top:-30px;" onclick="ouvrirModalBalance('{{ $balancealivrer }}')">
                     <div class="card-header d-block center">
                         <center>
                             <h4 class="card-title">EXPEDIEE </h4>
@@ -199,103 +199,86 @@
         </div>
 
         <div class="card col-12">
-            <div class="justify-content-center align-items-center entete">
+            <div style="display: flex;justify-content:space-between;">
                 <h3 class="entete mt-3">LISTE SUIVIS FLUX MES</h3>
-            </div>
-            <div class="card-modal">
-                <form action="{{ route('MES.suiviFlux') }}" method="post" autocomplete="off">
+                <form action="{{ route('exportCSV') }}" method="get">
                     @csrf
-                    <div class="row">
-                        <div class="col-3 mr-1">
-                            <div class="row texte">
-                                <label>Date ex-factory</label>
-                            </div>
-                            <div class="row">
-                                <div class="input-group" id="date-range">
-                                    <input type="date" class="form-control" name="startEntree"
-                                        value="{{ $startEntree }}">
-                                    <span class="input-group-addon b-0 text-white"
-                                        style="width: 20px; text-align: center; justify-content: center; background-color: gray;">à</span>
-                                    <input type="date" class="form-control" name="endEntree"
-                                        value="{{ $endEntree }}">
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="col-2 mr-1">
-                            <div class="row texte">
-                                <label>OF</label>
-                            </div>
-                            <div class="row">
-                                <div class="input-group">
-                                    <input type="text" name="of" class="form-control"
-                                        value="{{ $of }}">
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="col-2 mr-1">
-                            <div class="row texte">
-                                <label>Style</label>
-                            </div>
-                            <div class="row">
-                                <div class="input-group">
-                                    <input type="text" name="modele" class="form-control"
-                                        value="{{ $modele }}">
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="col-md-2 col-lg-2">
-                            <div class="row texte">
-                                <label>Client</label>
-                            </div>
-                            <div class="row">
-                                <div class="input-group">
-                                    <input type="text" id="nomTiers" name="nomTiers" class="form-control"
-                                        value="{{ $nomTiers }}">
-                                    <input type="hidden" id="idTiers" name="idTiers"
-                                        value="{{ $idTiers }}">
-                                    <ul id="suggestionsListTiers" class="list-group mt-2" style="display: none;">
-                                    </ul>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="col-2">
-                            <div class="row texte">
-                                <label>Designation</label>
-                            </div>
-                            <div class="row">
-                                <div class="input-group">
-                                    <input type="text" id="nomStyle" name="nomStyle" class="form-control"
-                                        value="{{ $nomStyle }}">
-                                    <input type="hidden" id="idStyle" name="idStyle"
-                                        value="{{ $idStyle }}">
-                                    <ul id="suggestionsListStyle" class="list-group mt-2" style="display: none;">
-                                    </ul>
-                                </div>
-                            </div>
-
-                        </div>
-
-
-
-
-                    </div>
-                    <div class="row mt-2">
-                        <div class="col-9">
-                        </div>
-                        <div class="col-3 d-flex justify-content-end">
-                            <button class="btn btn-success" style="width: 100px">Filtrer</button>
-                        </div>
-                    </div>
-
+                    <button type="submit" class="btn btn-primary mt-3">
+                        <i class="fas fa-file-csv"></i>Télécharger CSV
+                    </button>
                 </form>
             </div>
+            <br>
+            <div>
+                <form action="{{ route('MES.suiviFlux') }}" method="post" autocomplete="off">
+                    @csrf
+                    <div class="row g-3">
+                        <!-- Date ex-factory -->
+                        <div class="col-md-3">
+                            <label class="form-label fw-bold" style="color:rgb(122, 121, 121);">Date ex-factory</label>
+                            <div class="input-group">
+                                <input type="date" class="form-control" name="startEntree"
+                                    value="{{ $startEntree }}">
+                                <span class="input-group-text">à</span>
+                                <input type="date" class="form-control" name="endEntree"
+                                    value="{{ $endEntree }}">
+                            </div>
+                        </div>
+
+                        <!-- OF -->
+                        <div class="col-md-2">
+                            <label class="form-label fw-bold" style="color:rgb(122, 121, 121);">OF</label>
+                            <div class="input-group">
+                                <span class="input-group-text"><i class="fas fa-barcode"></i></span>
+                                <input type="text" name="of" class="form-control"
+                                    value="{{ $of }}">
+                            </div>
+                        </div>
+
+                        <!-- Style -->
+                        <div class="col-md-2">
+                            <label class="form-label fw-bold" style="color:rgb(122, 121, 121);">Style</label>
+                            <div class="input-group">
+                                <span class="input-group-text"><i class="fas fa-tshirt"></i></span>
+                                <input type="text" name="modele" class="form-control"
+                                    value="{{ $modele }}">
+                            </div>
+                        </div>
+
+                        <!-- Client -->
+                        <div class="col-md-2">
+                            <label class="form-label fw-bold" style="color:rgb(122, 121, 121);">Client</label>
+                            <div class="input-group">
+                                <span class="input-group-text"><i class="fas fa-user"></i></span>
+                                <input type="text" id="nomTiers" name="nomTiers" class="form-control"
+                                    value="{{ $nomTiers }}">
+                                <input type="hidden" id="idTiers" name="idTiers" value="{{ $idTiers }}">
+                                <ul id="suggestionsListTiers" class="list-group mt-2" style="display: none;"></ul>
+                            </div>
+                        </div>
+
+                        <!-- Designation -->
+                        <div class="col-md-3">
+                            <label class="form-label fw-bold" style="color:rgb(122, 121, 121);">Designation</label>
+                            <div class="input-group">
+                                <span class="input-group-text"><i class="fas fa-tag"></i></span>
+                                <input type="text" id="nomStyle" name="nomStyle" class="form-control"
+                                    value="{{ $nomStyle }}">
+                                <input type="hidden" id="idStyle" name="idStyle" value="{{ $idStyle }}">
+                                <ul id="suggestionsListStyle" class="list-group mt-2" style="display: none;"></ul>
+                            </div>
+                        </div>
+                        <!-- Boutons -->
+                            <button type="submit"  class="btn btn-success" style="margin-left:13px;margin-top: 15px;justify-content: flex-end;">
+                                <i class="fas fa-filter"></i> Filtrer
+                            </button>
+                    </div>
+                </form>
+            </div>
+
             <div class="table-responsive" style="margin-top: -15px;">
                 <table class="table student-data-table m-t-20 table-hover mt-3" style="color: black">
-                    <thead>
+                    <thead class="thead-dark">
                         <tr>
                             <th>Client</th>
                             <th>ColorCode</th>

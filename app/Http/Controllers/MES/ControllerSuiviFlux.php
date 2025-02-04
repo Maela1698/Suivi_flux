@@ -76,12 +76,14 @@ class ControllerSuiviFlux extends Controller
         $pourcentageRepassage=0;
         $pourcentageRejetCoupe=0;
         $pourcentageRejetChaine=0;
+        $pourcentageTransferer=0;
         if ($qte_coupe != 0) {
             $pourcentageExpediee = ($qte_deja_livrer / $qte_coupe) * 100;
             $pourcentageBoxing = ($qte_pret_livrer / $qte_coupe) * 100;
             $pourcentageRepassage = ($sortie_repassage / $qte_coupe) * 100;
             $pourcentageRejetCoupe = ($qteRejetCoupe / $qte_coupe) * 100;
             $pourcentageRejetChaine = ($qteRejetChaine / $qte_coupe) * 100;
+            $pourcentageTransferer = ($qte_transfere / $qte_coupe) * 100;
         }
 
         if ($condition == "") {
@@ -96,8 +98,9 @@ class ControllerSuiviFlux extends Controller
             $s->diff_date = self::diff_date($now, $s->ex_factory);
             $s->pourcentage = self::getPourcentageByDifferenceDate($s->date_livraison_confirme, $s->ex_factory, $now);
         }
-        return view('MES.suivi.flux.listeSuiviFlux', compact('etat','nombreOf','pourcentageExpediee', 'pourcentageRepassage', 'pourcentageRejetChaine', 'pourcentageRejetCoupe', 'pourcentageBoxing', 'pourcentageCoupe', 'nomStyle', 'nomTiers', 'idStyle', 'idTiers', 'modele', 'of', 'endEntree', 'startEntree', 'suivi', 'qte_po', 'qte_coupe', 'qte_entree_chaine', 'qte_transfere', 'qte_pret_livrer', 'qte_deja_livrer', 'entree_repassage', 'sortie_repassage', 'balanceatransferer', 'balancealivrer', 'balancerepassage'));
+        return view('MES.suivi.flux.listeSuiviFlux', compact('pourcentageTransferer','etat','nombreOf','pourcentageExpediee', 'pourcentageRepassage', 'pourcentageRejetChaine', 'pourcentageRejetCoupe', 'pourcentageBoxing', 'pourcentageCoupe', 'nomStyle', 'nomTiers', 'idStyle', 'idTiers', 'modele', 'of', 'endEntree', 'startEntree', 'suivi', 'qte_po', 'qte_coupe', 'qte_entree_chaine', 'qte_transfere', 'qte_pret_livrer', 'qte_deja_livrer', 'entree_repassage', 'sortie_repassage', 'balanceatransferer', 'balancealivrer', 'balancerepassage'));
     }
+
 
 
     public function modificationSuiviMes(Request $request)
