@@ -1,6 +1,6 @@
 -- public.v_suivifluxmes source
 
-ALTER TABLE suivifluxmes ADD COLUMN etat_exp BOOLEAN DEFAULT FALSE;
+ALTER TABLE suivifluxmes ADD COLUMN etat_exp BOOLEAN DEFAULT FALSE; 
 
 CREATE OR REPLACE VIEW public.v_suivifluxmes
 AS SELECT suivifluxmes.id,
