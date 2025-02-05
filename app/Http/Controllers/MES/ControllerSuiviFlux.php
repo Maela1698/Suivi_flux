@@ -183,7 +183,6 @@ class ControllerSuiviFlux extends Controller
         $date1 = Carbon::parse($date1);
         $date2 = Carbon::parse($date2);
 
-
         $diff = $date1->diffInDays($date2); // Différence en jours (toujours positive)
         $etat = 0;
         $jourJ = false;
@@ -203,24 +202,27 @@ class ControllerSuiviFlux extends Controller
         ];
     }
 
-    public static function getPourcentageByDifferenceDate($dateConfirmeDemande,$dateLivrason,$today){
+    public static function getPourcentageByDifferenceDate($dateConfirmeDemande,$dateLivraison,$today){
         $dateConfirmeDemande = Carbon::parse($dateConfirmeDemande);
-        $dateLivrason = Carbon::parse($dateLivrason);
+        $dateLivraison = Carbon::parse($dateLivraison);
+        
         $today = Carbon::parse($today);
 
-        // $diff = $dateConfirmeDemande->diffInDays($dateLivrason);
-        $diff = self::diff_date($dateConfirmeDemande,$dateLivrason);
-        // $dateReste = $today->diffInDays($dateLivrason);
-        $dateReste = self::diff_date($today,$dateLivrason);
+        // $diff = $dateConfirmeDemande->diffInDays($dateLivraison);
+        $diff = self::diff_date($dateConfirmeDemande,$dateLivraison);
+        
+        // $dateReste = $today->diffInDays($dateLivraison);
+        $dateReste = self::diff_date($today,$dateLivraison);
         // $dateVita = $diff - $dateReste;
         $dateVita = $diff['diff'] - $dateReste['diff'];
         if($dateVita < 0){
             $dateVita = $dateVita * -1;
         }
-        $pourcentage = 100;
-        if($diff != 0){
+        $pourcentage = 100; 
+        if($diff['diff'] != 0 && $today < $dateLivraison){
             $pourcentage = ($dateVita / $diff['diff']) * 100;
         }
+        // dd($dateReste);
         return $pourcentage;
     }
 

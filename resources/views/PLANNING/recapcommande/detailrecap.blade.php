@@ -372,7 +372,6 @@
                                     <tbody>
                                         @foreach($destrecap as $index => $ds) <!-- Ajoutez l'index pour le suivi -->
                                             <tr>
-
                                                 <td><input type="text" style="border: none;height: 30px;width: 150px;border-radius:5px;text-align:center;" name="champ1[]" value="{{ $ds->numerocommande }}"></td>
                                                 <td><input type="date" style="border: none;height: 30px;width: 150px;border-radius:5px;text-align:center;" name="champ2[]" value="{{ $ds->etdinitial }}"></td>
                                                 <td><input type="number" style="border: none;height: 30px;width: 150px;border-radius:5px;text-align:center;" name="champ3[]" value="{{ $ds->qteof }}"></td>
