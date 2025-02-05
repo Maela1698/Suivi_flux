@@ -24,11 +24,8 @@
     <!-- row -->
     <div class="container-fluid">
         @include('COMPLIANCE.headerCompliance')
-
-
         <div class="row">
             <div class="card col-12">
-
                 <div class="card-header d-flex justify-content-between align-items-center">
                     <h3 class="entete">LISTE CONSTAT</h3>
                     <button type="button" data-toggle="modal" data-target="#constat"

@@ -9,7 +9,7 @@
             <div class="card col-12">
                 <div class="card">
                     <div class="card-header d-flex justify-center">
-                        <h4 class="card-title titre">LISTE DEMANDES CONFIRMÉS</h4>
+                        <h4 class="card-title titre entete">LISTE DEMANDES CONFIRMÉS</h4>
                     </div>
                     <div class="card-body">
                         <div class="basic-form">
@@ -60,6 +60,7 @@
                                         <tr>
                                             <th>CODE</th>
                                             <th>SAISON</th>
+                                            <td>DATE ENTRÉE</td>
                                             <th>DATE LIVRAISON</th>
                                             <th>CLIENT</th>
                                             <th>MODÈLE</th>
