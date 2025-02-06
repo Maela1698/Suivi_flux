@@ -1,60 +1,27 @@
--- public.v_suivifluxmes source
+CREATE TABLE public.meeting (
+	"date" date NOT NULL,
+	id serial4 NOT NULL,
+	CONSTRAINT test_meeting_check CHECK ((date >= now())),
+	CONSTRAINT test_meeting_pk PRIMARY KEY (id),
+	CONSTRAINT test_meeting_unique UNIQUE (date)
+);
 
-ALTER TABLE suivifluxmes ADD COLUMN etat_exp BOOLEAN DEFAULT FALSE; 
-
-CREATE OR REPLACE VIEW public.v_suivifluxmes
-AS SELECT suivifluxmes.id,
-    suivifluxmes.date_operaton,
-    suivifluxmes.id_demande_client,
-    suivifluxmes.numero_commande,
-    COALESCE(suivifluxmes.qte_coupe, 0::double precision) AS qte_coupe,
-    COALESCE(suivifluxmes.qte_entree_chaine, 0::double precision) AS qte_entree_chaine,
-    COALESCE(suivifluxmes.qte_transfere, 0::double precision) AS qte_transfere,
-    COALESCE(suivifluxmes.qte_pret_livrer, 0::double precision) AS qte_pret_livrer,
-    COALESCE(suivifluxmes.qte_deja_livrer, 0::double precision) AS qte_deja_livrer,
-    suivifluxmes.id_taille,
-    COALESCE(suivifluxmes.qte_po, 0::double precision) AS qte_po,
-        CASE
-            WHEN COALESCE(suivifluxmes.qte_po, 0::double precision) = 0::double precision THEN 0::double precision
-            ELSE COALESCE(suivifluxmes.qte_coupe, 0::double precision) / COALESCE(suivifluxmes.qte_po, 0::double precision) * 100::double precision
-        END AS pourcentagecoupe,
-        CASE
-            WHEN COALESCE(suivifluxmes.qte_coupe, 0::double precision) = 0::double precision THEN 0::double precision
-            ELSE COALESCE(suivifluxmes.qte_transfere, 0::double precision) / COALESCE(suivifluxmes.qte_coupe, 0::double precision) * 100::double precision
-        END AS pourcentagetransferer,
-        CASE
-            WHEN COALESCE(suivifluxmes.qte_coupe, 0::double precision) = 0::double precision THEN 0::double precision
-            ELSE COALESCE(suivifluxmes.qte_rejet_chaine, 0::double precision) / COALESCE(suivifluxmes.qte_coupe, 0::double precision) * 100::double precision
-        END AS pourcentagerejetchaine,
-        CASE
-            WHEN COALESCE(suivifluxmes.qte_coupe, 0::double precision) = 0::double precision THEN 0::double precision
-            ELSE COALESCE(suivifluxmes.qte_rejet_coupe, 0::double precision) / COALESCE(suivifluxmes.qte_coupe, 0::double precision) * 100::double precision
-        END AS pourcentagerejetcoupe,
-    suivifluxmes.couleur,
-    COALESCE(suivifluxmes.entree_repassage, 0::double precision) AS entree_repassage,
-    COALESCE(suivifluxmes.sortie_repassage, 0::double precision) AS sortie_repassage,
-    suivifluxmes.commentaire,
-    suivifluxmes.id_destination,
-    suivifluxmes.qte_rejet_chaine,
-    suivifluxmes.qte_rejet_coupe,
-    suivifluxmes.etat,
-    v_demandeclient.nomtier,
-    v_demandeclient.id_tiers,
-    v_demandeclient.nom_style,
-    v_demandeclient.id_style,
-    v_demandeclient.nom_modele,
-    unitetaille.unite_taille,
-    COALESCE(suivifluxmes.qte_transfere, 0::double precision) - COALESCE(suivifluxmes.qte_coupe, 0::double precision) AS balanceatransferer,
-    COALESCE(suivifluxmes.qte_deja_livrer, 0::double precision) - COALESCE(suivifluxmes.qte_coupe, 0::double precision) AS balancealivrer,
-    COALESCE(suivifluxmes.sortie_repassage, 0::double precision) - COALESCE(suivifluxmes.qte_coupe, 0::double precision) AS balancerepassage,
-    v_destinationrecap.datelivraisonexacte,
-    v_destinationrecap.etdrevise,
-    v_destinationrecap.etdpropose,
-    v_destinationrecap.etdinitial,
-    v_demandeclient.date_livraison,
-    COALESCE(v_destinationrecap.datelivraisonexacte, v_destinationrecap.etdrevise, v_destinationrecap.etdpropose, v_destinationrecap.etdinitial, v_demandeclient.date_livraison) AS ex_factory,
-    suivifluxmes.etat_exp
-   FROM suivifluxmes
-     JOIN v_demandeclient ON suivifluxmes.id_demande_client = v_demandeclient.id
-     JOIN unitetaille ON unitetaille.id = suivifluxmes.id_taille
-     LEFT JOIN v_destinationrecap ON v_destinationrecap.id = suivifluxmes.id_destination;
+CREATE TABLE public.details_meeting (
+	id serial4 NOT NULL,
+	id_meeting int4 NULL,
+	heure_debut time NOT NULL,
+	effectif_prevu int4 NULL,
+	effectif_reel int4 NULL,
+	id_demande int4 NULL,
+	commentaire text NULL,
+	etat bool NULL,
+	id_chaine int4 NOT NULL,
+	date_entree_chaine date NULL,
+	date_entree_coupe date NULL,
+	date_entree_finition date NULL,
+	CONSTRAINT test_details_meeting_pk PRIMARY KEY (id),
+	CONSTRAINT test_details_meeting_unique UNIQUE (heure_debut, id_meeting),
+	CONSTRAINT test_details_meeting_chaine_fk FOREIGN KEY (id_chaine) REFERENCES public.chaine(id_chaine),
+	CONSTRAINT test_details_meeting_demandeclient_fk FOREIGN KEY (id_demande) REFERENCES public.demandeclient(id),
+	CONSTRAINT test_details_meeting_test_meeting_fk FOREIGN KEY (id_meeting) REFERENCES public.meeting(id)
+);
