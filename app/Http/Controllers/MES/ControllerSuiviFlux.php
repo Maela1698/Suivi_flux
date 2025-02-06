@@ -116,7 +116,7 @@ class ControllerSuiviFlux extends Controller
         $nomTiers = $request->input('nomTiers');
         $nomStyle = $request->input('nomStyle');
 
-        $qteCoupe = $request->input('qteCoupe');
+        $qteCoupe = $request->input('qteCoupes');
         $qteEntreeChaine = $request->input('qteEntreeChaine');
         $qteTransferes = $request->input('qteTransferes');
         $pretALivrer = $request->input('pretALivrer');
@@ -131,41 +131,41 @@ class ControllerSuiviFlux extends Controller
         $coupeFinal = $request->input('coupeFinal');
 
         $erreur ="";
-        if($qteCoupe<$qteEntreeChaine){
+        if($qteCoupe<$qteEntreeChaine && $qteCoupe!=$qteEntreeChaine){
             $erreur = $erreur." -La quantité entree chaine ne doit pas etre superieur à la quantité coupée de ".$qteCoupe."|";
         }elseif($qteCoupe>=$qteEntreeChaine){
             $erreur = $erreur."";
         }
 
-        if($qteEntreeChaine<$qteTransferes){
+        if($qteEntreeChaine<$qteTransferes && $qteEntreeChaine!=$qteTransferes){
             $erreur =  $erreur."-La quantité transferee ne doit pas etre superieur à la quantité entree de ".$qteEntreeChaine."|";
         }elseif($qteEntreeChaine>=$qteTransferes){
             $erreur = $erreur."";
         }
 
-        if($qteCoupe<$pretALivrer){
+        if($qteCoupe<$pretALivrer && $qteCoupe!=$pretALivrer){
             $erreur =  $erreur."-La quantité pret a livrer doit ne doit pas etre superieur à la quantité coupée de ".$qteCoupe."|";
         }elseif($qteCoupe>=$pretALivrer){
             $erreur = $erreur."";
         }
 
-        if($pretALivrer<$qteDejaLivre){
+        if($pretALivrer<$qteDejaLivre && $pretALivrer!=$qteDejaLivre){
             $erreur =  $erreur."-La quantité deja livrer doit ne doit pas etre superieur à la quantité pret a livrer de ".$pretALivrer."|";
         }elseif($pretALivrer>=$qteDejaLivre){
             $erreur = $erreur."";
         }
 
-        if($qteCoupe<$entreeRepassage){
-            $erreur =  $erreur."La quantité entree repassage doit ne doit pas etre superieur à la quantité coupée de ".$qteCoupe."|";
-        }elseif($qteCoupe>=$entreeRepassage){
-            $erreur = $erreur."";
-        }
+        // if($qteCoupe<$entreeRepassage && $qteCoupe!=$entreeRepassage){
+        //     $erreur =  $erreur."La quantité entree repassage doit ne doit pas etre superieur à la quantité coupée de ".$qteCoupe."|";
+        // }elseif($qteCoupe>=$entreeRepassage){
+        //     $erreur = $erreur."";
+        // }
 
-        if($entreeRepassage<$sortieRepassage){
-            $erreur =  $erreur."-La quantité sortie repassage doit ne doit pas etre superieur à la quantité entree repassage de ".$entreeRepassage."|";
-        }elseif($entreeRepassage>=$sortieRepassage){
-            $erreur = $erreur."";
-        }
+        // if($entreeRepassage<$sortieRepassage && $entreeRepassage!=$sortieRepassage){
+        //     $erreur =  $erreur."-La quantité sortie repassage doit ne doit pas etre superieur à la quantité entree repassage de ".$entreeRepassage."|";
+        // }elseif($entreeRepassage>=$sortieRepassage){
+        //     $erreur = $erreur."";
+        // }
 
         if(empty($coupeFinal)){
             $coupeFinal=0;
@@ -205,12 +205,12 @@ class ControllerSuiviFlux extends Controller
     public static function getPourcentageByDifferenceDate($dateConfirmeDemande,$dateLivraison,$today){
         $dateConfirmeDemande = Carbon::parse($dateConfirmeDemande);
         $dateLivraison = Carbon::parse($dateLivraison);
-        
+
         $today = Carbon::parse($today);
 
         // $diff = $dateConfirmeDemande->diffInDays($dateLivraison);
         $diff = self::diff_date($dateConfirmeDemande,$dateLivraison);
-        
+
         // $dateReste = $today->diffInDays($dateLivraison);
         $dateReste = self::diff_date($today,$dateLivraison);
         // $dateVita = $diff - $dateReste;
@@ -218,7 +218,7 @@ class ControllerSuiviFlux extends Controller
         if($dateVita < 0){
             $dateVita = $dateVita * -1;
         }
-        $pourcentage = 100; 
+        $pourcentage = 100;
         if($diff['diff'] != 0 && $today < $dateLivraison){
             $pourcentage = ($dateVita / $diff['diff']) * 100;
         }

@@ -215,7 +215,7 @@
                                         value="{{ $endEntree }}">
                                 </div>
                             </div>
-    
+
                             <!-- OF -->
                             <div class="col-md-2">
                                 <label class="form-label fw-bold" style="color:rgb(122, 121, 121);">OF</label>
@@ -225,7 +225,7 @@
                                         value="{{ $of }}">
                                 </div>
                             </div>
-    
+
                             <!-- Style -->
                             <div class="col-md-2">
                                 <label class="form-label fw-bold" style="color:rgb(122, 121, 121);">Style</label>
@@ -235,7 +235,7 @@
                                         value="{{ $modele }}">
                                 </div>
                             </div>
-    
+
                             <!-- Client -->
                             <div class="col-md-2">
                                 <label class="form-label fw-bold" style="color:rgb(122, 121, 121);">Client</label>
@@ -247,7 +247,7 @@
                                     <ul id="suggestionsListTiers" class="list-group mt-2" style="display: none;"></ul>
                                 </div>
                             </div>
-    
+
                             <!-- Designation -->
                             <div class="col-md-3">
                                 <label class="form-label fw-bold" style="color:rgb(122, 121, 121);">Designation</label>
@@ -266,7 +266,7 @@
                         </div>
                     </form>
                 </div>
-    
+
                 <div class="table-responsive" style="margin-top: -15px;">
                     <table class="table student-data-table m-t-20 table-hover mt-3" style="color: black">
                         <thead class="thead-dark">
@@ -285,7 +285,7 @@
                                 <th>Entree repassage</th>
                                 <th>Sortie repassage</th>
                                 <th>Balance repassage</th>
-    
+
                                 <th>Pret a livrer(BOXING)</th>
                                 <th>Qte deja livre(Expediee)</th>
                                 <th>Balance a livrer(Expediee)</th>
@@ -295,7 +295,7 @@
                             </tr>
                         </thead>
                         <tbody style="cursor: pointer;">
-    
+
                             @for ($i = 0; $i < count($suivi); $i++)
                                 <tr data-qtepo="{{ $suivi[$i]->qte_po }}" data-qtecoupe="{{ $suivi[$i]->qte_coupe }}"
                                     data-qteentreechaine="{{ $suivi[$i]->qte_entree_chaine }}"
@@ -349,7 +349,7 @@
                 </div>
             </div>
         </div>
-        
+
         <!-- Modal -->
         <div class="modal fade" id="repassageModal" tabindex="-1" aria-labelledby="repassageModalLabel"
             aria-hidden="true">
@@ -453,7 +453,7 @@
                                 <input type="hidden" name="idStyle" value="{{ $idStyle }}">
                                 <input type="hidden" name="idSuivi" id="idSuivi">
                                 <label for="qtePo">Qte P.O</label>
-                                <input type="text" class="form-control" id="qtePo1" name="qtePo" readonly>
+                                <input type="text" class="form-control" id="qtePo1" name="qtePo">
                             </div>
 
                             <div class="form-group">
