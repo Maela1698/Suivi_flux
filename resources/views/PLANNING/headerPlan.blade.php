@@ -27,7 +27,7 @@
                                     </a>
                                     <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
                                       <a class="dropdown-item" href="{{route('LRP.objectifSaison')}}">Objectif saison</a>
-                                      <a class="dropdown-item" href="{{route('LRP.listeMasterPlan')}}">RAD</a>
+                                      <a class="dropdown-item" href="#">RAD</a>
                                     </div>
                                   </li>
                                   <li class="nav-item dropdown mr-5">
@@ -59,7 +59,7 @@
                                     </a>
                                     <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
                                       <a class="dropdown-item" href="#">Situation export</a>
-                                      <a class="dropdown-item" href="#">Planing PP Meeting</a>
+                                      <a class="dropdown-item" href="{{ route('LRP.listeDemandeForPpmeeting') }}">Planing PP Meeting</a>
                                       <a class="dropdown-item" href="#">Planing Tracé</a>
                                     </div>
                                   </li>

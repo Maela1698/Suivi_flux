@@ -22,6 +22,7 @@ use App\Http\Controllers\ControllerListeEmploye;
 use App\Http\Controllers\ControllerMasterPlan;
 use App\Http\Controllers\ControllerObjectifSaison;
 use App\Http\Controllers\ControllerPlanningDev;
+use App\Http\Controllers\ControllerPpmeeting;
 use App\Http\Controllers\ControllerTransit;
 use App\Http\Controllers\ControlleurRetroMerch;
 use App\Http\Controllers\MES\ControllerDemande as MESControllerDemande;
@@ -424,3 +425,9 @@ Route::match(['get', 'post'],'/COMPLIANCEBUDGET.listeBudgetCompliance',action: [
 Route::match(['get', 'post'],'/COMPLIANCEBUDGET.ajoutBudgetCompliance',[ControllerComplianceBudget::class,'ajoutBudgetCompliance'])->name('COMPLIANCEBUDGET.ajoutBudgetCompliance');
 Route::match(['get', 'post'],'/COMPLIANCEBUDGET.detailBudgetNorme',[ControllerComplianceBudget::class,'detailBudgetNorme'])->name('COMPLIANCEBUDGET.detailBudgetNorme');
 Route::match(['get', 'post'],'/COMPLIANCEBUDGET.modifBudgetReel',[ControllerComplianceBudget::class,'modifBudgetReel'])->name('COMPLIANCEBUDGET.modifBudgetReel');
+
+
+ /*-------------------------------------------------------------PPMEETING---------------------------------------------------------*/
+ Route::get('listeDemandeForPpmeeting', [ControllerPpmeeting::class, 'listeDemandeForPpmeeting'])->name('LRP.listeDemandeForPpmeeting');
+ Route::post('ajoutedisponibilite', [ControllerPpmeeting::class, 'ajoutedisponibilite'])->name('LRP.ajoutedisponibilite');
+ Route::post('modifdisponibilite', [ControllerPpmeeting::class, 'modifdisponibilite'])->name('LRP.modifdisponibilite');
