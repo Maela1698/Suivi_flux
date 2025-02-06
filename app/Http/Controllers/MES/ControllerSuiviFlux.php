@@ -129,6 +129,7 @@ class ControllerSuiviFlux extends Controller
         $rejetCoupe = $request->input('rejetCoupe');
         $dateActuelle = Carbon::now()->format('Y-m-d');
         $coupeFinal = $request->input('coupeFinal');
+        $expediee = $request->input('expediee');
 
         $erreur ="";
         if($qteCoupe<$qteEntreeChaine && $qteCoupe!=$qteEntreeChaine){
@@ -171,7 +172,7 @@ class ControllerSuiviFlux extends Controller
             $coupeFinal=0;
         }
         if(empty($erreur)){
-            SuiviFluxMes::updateSuiviFluxMes($dateActuelle, $qteCoupe, $qteEntreeChaine, $qteTransferes, $pretALivrer, $qteDejaLivre, $entreeRepassage, $sortieRepassage, $commentaire, $rejetCoupe,$rejetChaine,$coupeFinal,$idSuivi);
+            SuiviFluxMes::updateSuiviFluxMes($dateActuelle, $qteCoupe, $qteEntreeChaine, $qteTransferes, $pretALivrer, $qteDejaLivre, $entreeRepassage, $sortieRepassage, $commentaire, $rejetCoupe,$rejetChaine,$coupeFinal,$expediee,$idSuivi);
             return redirect()->route('MES.suiviFlux', compact('startEntree', 'endEntree', 'of', 'modele', 'idTiers', 'idStyle', 'nomTiers', 'nomStyle'));
         }else{
             return redirect()->route('MES.suiviFlux', compact('startEntree', 'endEntree', 'of', 'modele', 'idTiers', 'idStyle', 'nomTiers', 'nomStyle'))->with('error', $erreur);

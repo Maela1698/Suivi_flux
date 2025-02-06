@@ -206,7 +206,8 @@
                         <div class="row g-3">
                             <!-- Date ex-factory -->
                             <div class="col-md-3">
-                                <label class="form-label fw-bold" style="color:rgb(122, 121, 121);">Date ex-factory</label>
+                                <label class="form-label fw-bold" style="color:rgb(122, 121, 121);">Date
+                                    ex-factory</label>
                                 <div class="input-group">
                                     <input type="date" class="form-control" name="startEntree"
                                         value="{{ $startEntree }}">
@@ -243,26 +244,32 @@
                                     <span class="input-group-text"><i class="fas fa-user"></i></span>
                                     <input type="text" id="nomTiers" name="nomTiers" class="form-control"
                                         value="{{ $nomTiers }}">
-                                    <input type="hidden" id="idTiers" name="idTiers" value="{{ $idTiers }}">
-                                    <ul id="suggestionsListTiers" class="list-group mt-2" style="display: none;"></ul>
+                                    <input type="hidden" id="idTiers" name="idTiers"
+                                        value="{{ $idTiers }}">
+                                    <ul id="suggestionsListTiers" class="list-group mt-2" style="display: none;">
+                                    </ul>
                                 </div>
                             </div>
 
                             <!-- Designation -->
                             <div class="col-md-3">
-                                <label class="form-label fw-bold" style="color:rgb(122, 121, 121);">Designation</label>
+                                <label class="form-label fw-bold"
+                                    style="color:rgb(122, 121, 121);">Designation</label>
                                 <div class="input-group">
                                     <span class="input-group-text"><i class="fas fa-tag"></i></span>
                                     <input type="text" id="nomStyle" name="nomStyle" class="form-control"
                                         value="{{ $nomStyle }}">
-                                    <input type="hidden" id="idStyle" name="idStyle" value="{{ $idStyle }}">
-                                    <ul id="suggestionsListStyle" class="list-group mt-2" style="display: none;"></ul>
+                                    <input type="hidden" id="idStyle" name="idStyle"
+                                        value="{{ $idStyle }}">
+                                    <ul id="suggestionsListStyle" class="list-group mt-2" style="display: none;">
+                                    </ul>
                                 </div>
                             </div>
                             <!-- Boutons -->
-                                <button type="submit"  class="btn btn-success" style="margin-left:13px;margin-top: 15px;justify-content: flex-end;">
-                                    <i class="fas fa-filter"></i> Filtrer
-                                </button>
+                            <button type="submit" class="btn btn-success"
+                                style="margin-left:13px;margin-top: 15px;justify-content: flex-end;">
+                                <i class="fas fa-filter"></i> Filtrer
+                            </button>
                         </div>
                     </form>
                 </div>
@@ -297,17 +304,20 @@
                         <tbody style="cursor: pointer;">
 
                             @for ($i = 0; $i < count($suivi); $i++)
-                                <tr data-qtepo="{{ $suivi[$i]->qte_po }}" data-qtecoupe="{{ $suivi[$i]->qte_coupe }}"
+                                <tr data-qtepo="{{ $suivi[$i]->qte_po }}"
+                                    data-qtecoupe="{{ $suivi[$i]->qte_coupe }}"
                                     data-qteentreechaine="{{ $suivi[$i]->qte_entree_chaine }}"
                                     data-qtetransferes="{{ $suivi[$i]->qte_transfere }}"
                                     data-pretalivrer="{{ $suivi[$i]->qte_pret_livrer }}"
                                     data-qtedejalivre="{{ $suivi[$i]->qte_deja_livrer }}"
                                     data-entreerepassage="{{ $suivi[$i]->entree_repassage }}"
                                     data-sortierepassage="{{ $suivi[$i]->sortie_repassage }}"
-                                    data-commentaire="{{ $suivi[$i]->commentaire }}" data-idsuivi="{{ $suivi[$i]->id }}"
+                                    data-commentaire="{{ $suivi[$i]->commentaire }}"
+                                    data-idsuivi="{{ $suivi[$i]->id }}"
                                     data-rejetcoupe="{{ $suivi[$i]->qte_rejet_coupe }}"
                                     data-rejetchaine="{{ $suivi[$i]->qte_rejet_chaine }}"
-                                    data-etat="{{ $suivi[$i]->etat }}" onclick="ouvrirModifSuiviFlux(this)">
+                                    data-etat="{{ $suivi[$i]->etat }}"
+                                    data-exped="{{ $suivi[$i]->etat_exp }}" onclick="ouvrirModifSuiviFlux(this)">
                                     <td>
                                         {{ $suivi[$i]->nomtier }}
                                     </td>
@@ -426,7 +436,8 @@
             <div class="modal-dialog modal-dialog-centered modal-lg-custom" role="document">
                 <div class="modal-content modal-content-custom">
                     <div class="modal-header">
-                        <h5 class="modal-title" id="choixEtapeModalLabel">Modification suivi flux</h5>
+                        <h5 class="modal-title" id="choixEtapeModalLabel">Modification suivi flux
+                            {{ session('employe')[0]['role'] }}</h5>
                         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                             <span aria-hidden="true">&times;</span>
                         </button>
@@ -434,9 +445,21 @@
                     <div class="modal-body texte">
                         <form action="{{ route('MES.modificationSuiviMes') }}" method="POST" autocomplete="off">
                             @csrf
-                            <div id="checkboxContainer" class="mr-3" style="display: none; margin-top: 10px;">
-                                <label for="checkboxCondition">Coupe final</label>
-                                <input type="checkbox" id="checkboxCondition" value="1" name="coupeFinal">
+                            @if (session('employe')[0]['role'] == 'Coupe' || session('employe')[0]['role'] == 'Admin')
+                                <div id="checkboxContainer" class="mr-3" style="display: none; margin-top: 10px;">
+                                    <label for="checkboxCondition">Coupe final</label>
+                                    <input type="checkbox" id="checkboxCondition" value="1" name="coupeFinal">
+                                </div>
+                            @else
+                                <div id="checkboxContainer" class="mr-3" style="display: none; margin-top: 10px;">
+                                    <label for="checkboxCondition">Coupe final</label>
+                                    <input type="checkbox" id="checkboxCondition" value="1" name="coupeFinal"
+                                        readonly>
+                                </div>
+                            @endif
+                            <div id="checkboxExpediee" class="mr-3" style="display: none; margin-top: 10px;">
+                                <label for="checkboxCondition">Expediee</label>
+                                <input type="checkbox" id="checkboxExpediees" value="true" name="expediee">
                             </div>
                             <div class="form-group">
                                 <input type="hidden" class="form-control" name="startEntree"
@@ -456,55 +479,129 @@
                                 <input type="text" class="form-control" id="qtePo1" name="qtePo">
                             </div>
 
+                            @if (session('employe')[0]['role'] == 'Coupe' || session('employe')[0]['role'] == 'Admin')
+                                <div class="form-group">
+                                    <label for="qteCoupe">Qte Coupe</label>
+                                    <input type="text" class="form-control" id="qteCoupe" name="qteCoupes">
+                                </div>
+                            @else
+                                <div class="form-group">
+                                    <label for="qteCoupe">Qte Coupe</label>
+                                    <input type="text" class="form-control" id="qteCoupe" name="qteCoupes" readonly>
+                                </div>
+                            @endif
+
+                            @if (session('employe')[0]['role'] == 'Prod' || session('employe')[0]['role'] == 'Admin')
+                                <div class="form-group">
+                                    <label for="qteEntreeChaine">Qte Entree chaine</label>
+                                    <input type="text" class="form-control" id="qteEntreeChaine"
+                                        name="qteEntreeChaine">
+                                </div>
+                                <div class="form-group">
+                                    <label for="qteTransferes">Qte transferes (sortie chaine)</label>
+                                    <input type="text" class="form-control" id="qteTransferes"
+                                        name="qteTransferes">
+                                </div>
+                            @else
+                                <div class="form-group">
+                                    <label for="qteEntreeChaine">Qte Entree chaine</label>
+                                    <input type="text" class="form-control" id="qteEntreeChaine"
+                                        name="qteEntreeChaine" readonly>
+                                </div>
+                                <div class="form-group">
+                                    <label for="qteTransferes">Qte transferes (sortie chaine)</label>
+                                    <input type="text" class="form-control" id="qteTransferes"
+                                        name="qteTransferes" readonly>
+                                </div>
+                            @endif
+
+                            @if (session('employe')[0]['role'] == 'Finition' || session('employe')[0]['role'] == 'Admin')
+                                <div class="form-group">
+                                    <label for="pretALivrer">Pret a livrer (BOXING)</label>
+                                    <input type="text" class="form-control" id="pretALivrer" name="pretALivrer">
+                                </div>
+                                <div class="form-group">
+                                    <label for="qteDejaLivre">Qte deja livree (Expediee)</label>
+                                    <input type="text" class="form-control" id="qteDejaLivre"
+                                        name="qteDejaLivre">
+                                </div>
+                            @else
+                                <div class="form-group">
+                                    <label for="pretALivrer">Pret a livrer (BOXING)</label>
+                                    <input type="text" class="form-control" id="pretALivrer" name="pretALivrer"
+                                        readonly>
+                                </div>
+                                <div class="form-group">
+                                    <label for="qteDejaLivre">Qte deja livree (Expediee)</label>
+                                    <input type="text" class="form-control" id="qteDejaLivre" name="qteDejaLivre"
+                                        readonly>
+                                </div>
+                            @endif
+
+
                             <div class="form-group">
-                                <label for="qteCoupe">Qte Coupe</label>
-                                <input type="text" class="form-control" id="qteCoupe" name="qteCoupes">
-                            </div>
-                            <div class="form-group">
-                                <label for="qteEntreeChaine">Qte Entree chaine</label>
-                                <input type="text" class="form-control" id="qteEntreeChaine"
-                                    name="qteEntreeChaine">
-                            </div>
-                            <div class="form-group">
-                                <label for="qteTransferes">Qte transferes (sortie chaine)</label>
-                                <input type="text" class="form-control" id="qteTransferes" name="qteTransferes">
-                            </div>
-                            <div class="form-group">
-                                <label for="pretALivrer">Pret a livrer (BOXING)</label>
-                                <input type="text" class="form-control" id="pretALivrer" name="pretALivrer">
-                            </div>
-                            <div class="form-group">
-                                <label for="qteDejaLivre">Qte deja livree (Expediee)</label>
-                                <input type="text" class="form-control" id="qteDejaLivre" name="qteDejaLivre">
-                            </div>
-                            <div class="form-group">
-                                <label for="entreeRepassage">Entree Repassage</label>
-                                <input type="text" class="form-control" id="entreeRepassage"
+                                {{--  <label for="entreeRepassage">Entree Repassage</label>  --}}
+                                <input type="hidden" class="form-control" id="entreeRepassage"
                                     name="entreeRepassage">
                             </div>
                             <div class="form-group">
-                                <label for="sortieRepassage">Sortie Repassage</label>
-                                <input type="text" class="form-control" id="sortieRepassage"
+                                {{--  <label for="sortieRepassage">Sortie Repassage</label>  --}}
+                                <input type="hidden" class="form-control" id="sortieRepassage"
                                     name="sortieRepassage">
                             </div>
-                            <div class="form-group">
-                                <label for="rejetCoupe">Qte rejet coupe</label>
-                                <input type="text" class="form-control" id="rejetCoupe" name="rejetCoupe">
-                            </div>
-                            <div class="form-group">
-                                <label for="rejetChaine">Qte rejet chaine</label>
-                                <input type="text" class="form-control" id="rejetChaine" name="rejetChaine">
-                            </div>
-                            <div class="form-group">
-                                <label for="sortieRepassage">Commentaire</label>
-                                <input type="text" class="form-control" id="commentaires" name="commentaire">
-                            </div>
 
-                            <div class="modal-footer mt-3">
-                                <button type="button" class="btn btn-secondary"
-                                    data-dismiss="modal">Annuler</button>
-                                <button type="submit" class="btn btn-success">Enregistrer</button>
-                            </div>
+                            @if (session('employe')[0]['role'] == 'Coupe' || session('employe')[0]['role'] == 'Admin')
+                                <div class="form-group">
+                                    <label for="rejetCoupe">Qte rejet coupe</label>
+                                    <input type="text" class="form-control" id="rejetCoupe" name="rejetCoupe">
+                                </div>
+                            @else
+                                <div class="form-group">
+                                    <label for="rejetCoupe">Qte rejet coupe</label>
+                                    <input type="text" class="form-control" id="rejetCoupe" name="rejetCoupe"
+                                        readonly>
+                                </div>
+                            @endif
+
+                            @if (session('employe')[0]['role'] == 'Prod' || session('employe')[0]['role'] == 'Admin')
+                                <div class="form-group">
+                                    <label for="rejetChaine">Qte rejet chaine</label>
+                                    <input type="text" class="form-control" id="rejetChaine" name="rejetChaine">
+                                </div>
+                            @else
+                                <div class="form-group">
+                                    <label for="rejetChaine">Qte rejet chaine</label>
+                                    <input type="text" class="form-control" id="rejetChaine" name="rejetChaine"
+                                        readonly>
+                                </div>
+                            @endif
+
+                            @if (session('employe')[0]['role'] == 'Prod' ||
+                                    session('employe')[0]['role'] == 'Finition' ||
+                                    session('employe')[0]['role'] == 'Coupe' || session('employe')[0]['role'] == 'Admin')
+                                <div class="form-group">
+                                    <label for="sortieRepassage">Commentaire</label>
+                                    <input type="text" class="form-control" id="commentaires" name="commentaire">
+                                </div>
+
+                                <div class="modal-footer mt-3">
+                                    <button type="button" class="btn btn-secondary"
+                                        data-dismiss="modal">Annuler</button>
+                                    <button type="submit" class="btn btn-success">Enregistrer</button>
+                                </div>
+                            @else
+                                <div class="form-group">
+                                    <label for="sortieRepassage">Commentaire</label>
+                                    <input type="text" class="form-control" id="commentaires" name="commentaire"
+                                        readonly>
+                                </div>
+
+                                <div class="modal-footer mt-3">
+                                    <button type="button" class="btn btn-secondary"
+                                        data-dismiss="modal">Annuler</button>
+                                    <button type="submit" class="btn btn-success" disabled>Enregistrer</button>
+                                </div>
+                            @endif
                         </form>
                     </div>
 
@@ -701,6 +798,7 @@
         var rejetcoupe = button.getAttribute('data-rejetcoupe');
         var rejetchaine = button.getAttribute('data-rejetchaine');
         var etat = button.getAttribute('data-etat');
+        var etatExp = button.getAttribute('data-exped');
 
         // Remplir les champs du formulaire
         document.getElementById('qtePo1').value = qtePo;
@@ -720,17 +818,33 @@
         const checkboxContainer = document.getElementById('checkboxContainer');
         checkboxContainer.style.display = (qtePo <= qteCoupe) ? 'block' : 'none';
 
+        const checkboxExpediee = document.getElementById('checkboxExpediee');
+        checkboxExpediee.style.display = (qtePo <= qteDejaLivre) ? 'block' : 'none';
+
         // Désactiver ou activer l'input et la checkbox selon l'état
         const inputQteCoupe = document.getElementById('qteCoupe');
+        const inputQDejaLivrer = document.getElementById('qteDejaLivre');
         const checkboxCondition = document.getElementById('checkboxCondition');
+        const checkboxExpediees = document.getElementById('checkboxExpediees');
 
         if (etat == 1) {
             inputQteCoupe.readOnly = true;
             checkboxCondition.checked = true;
             checkboxCondition.disabled = true;
+
         } else {
             inputQteCoupe.readOnly = false;
             checkboxCondition.checked = false;
+            checkboxCondition.disabled = false;
+        }
+
+        if(etatExp== true){
+            inputQDejaLivrer.readOnly = true;
+            checkboxExpediees.checked = true;
+            checkboxCondition.disabled = true;
+        }else{
+            inputQDejaLivrer.readOnly = false;
+            checkboxExpediees.checked = false;
             checkboxCondition.disabled = false;
         }
 
