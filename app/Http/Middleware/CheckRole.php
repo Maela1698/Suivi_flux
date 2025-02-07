@@ -13,14 +13,28 @@ class CheckRole
      *
      * @param  \Closure(\Illuminate\Http\Request): (\Symfony\Component\HttpFoundation\Response)  $next
      */
+    // public function handle(Request $request, Closure $next, $role)
+    // {
+    //     // Vérifier si la session contient un employé et si son rôle correspond
+    //     if ($request->session()->has('employe') && $request->session()->get('employe')[0]->role === $role) {
+    //         return $next($request); // Continuer vers la route
+    //     }
+
+    //     // Si l'utilisateur n'a pas le bon rôle, rediriger vers une page de non-autorisation
+    //     return redirect('/unauthorized'); // Vous pouvez personnaliser cette redirection
+    // }
+
     public function handle(Request $request, Closure $next, $role)
     {
-        // Vérifier si la session contient un employé et si son rôle correspond
-        if ($request->session()->has('employe') && $request->session()->get('employe')[0]->role === $role) {
-            return $next($request); // Continuer vers la route
+        if ($request->session()->has('employe')) {
+            $userRole = $request->session()->get('employe')[0]->role;
+
+            // Vérifier si l'utilisateur a l'un des rôles autorisés
+            if (in_array($userRole, explode('|', $role))) {
+                return $next($request);
+            }
         }
 
-        // Si l'utilisateur n'a pas le bon rôle, rediriger vers une page de non-autorisation
-        return redirect('/unauthorized'); // Vous pouvez personnaliser cette redirection
+        return redirect('/unauthorized');
     }
 }
