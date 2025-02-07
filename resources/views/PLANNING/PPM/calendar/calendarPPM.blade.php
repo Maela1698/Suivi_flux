@@ -8,6 +8,10 @@
             <div class="card col-12">
                 <div class="card-header">
                     <h4 class="card-title">PLANNING PPMeeting</h4>
+                    <form action="{{ route('LRP.listeDemandeForPpmeeting') }}" method="get">
+                        @csrf
+                        <button type="btn" class="btn btn-success">Listes</button>
+                    </form>
                 </div>
                 <div class="card-body">
                     <div id="calendar"></div>
