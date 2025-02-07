@@ -431,3 +431,6 @@ Route::match(['get', 'post'],'/COMPLIANCEBUDGET.modifBudgetReel',[ControllerComp
  Route::get('listeDemandeForPpmeeting', [ControllerPpmeeting::class, 'listeDemandeForPpmeeting'])->name('LRP.listeDemandeForPpmeeting');
  Route::post('ajoutedisponibilite', [ControllerPpmeeting::class, 'ajoutedisponibilite'])->name('LRP.ajoutedisponibilite');
  Route::post('modifdisponibilite', [ControllerPpmeeting::class, 'modifdisponibilite'])->name('LRP.modifdisponibilite');
+
+/*------------------PP_MEETING_MAELA-------------------------------*/
+require __DIR__.'/LRP/web_ppm.php';

@@ -1,0 +1,18 @@
+/* .fini-text-color{
+    color: #25D366 !important;
+
+}
+
+.fini-back-ground-color{
+    background-color: #c8ffd3 !important;
+    border: none;
+} */
+
+.fc-daygrid-day-events { 
+    color: #25D366 !important;
+}
+
+.fc-event {
+    background-color: #c8ffd3 !important;
+    border: none;
+}
