@@ -189,7 +189,7 @@ Route::match(['get', 'post'],'/DEV.fdcApercu',[ControllerDevAccueil::class,'fdcA
 Route::match(['get', 'post'],'/DEV.fdc',[ControllerDevAccueil::class,'fdc'])->name('DEV.fdc');
 Route::match(['get', 'post'],'/DEV.ficheCoupe',[ControllerDevAccueil::class,'ficheCoupe'])->name('DEV.ficheCoupe');
 Route::match(['get', 'post'],'/DEV.planningDEV',[ControllerPlanningDev::class,'planningDEV'])->name('DEV.planningDEV');
-Route::match(['get', 'post'],'/DEV.formAjoutBureauEtude',[ControllerPlanningDev::class,'formAjoutBureauEtude'])->name('DEV.formAjoutBureauEtude')->middleware(middleware: 'checkrole:DEV');
+Route::match(['get', 'post'],'/DEV.formAjoutBureauEtude',[ControllerPlanningDev::class,'formAjoutBureauEtude'])->name('DEV.formAjoutBureauEtude')->middleware(middleware: 'checkrole:DEV|Admin');
 Route::match(['get', 'post'],'/DEV.ajoutBureauEtude',[ControllerPlanningDev::class,'ajoutBureauEtude'])->name('DEV.ajoutBureauEtude')->middleware(middleware: 'checkrole:DEV');
 Route::match(['get', 'post'],'/DEV.formUpdateBureauEtude',[ControllerPlanningDev::class,'formUpdateBureauEtude'])->name('DEV.formUpdateBureauEtude')->middleware(middleware: 'checkrole:DEV');
 Route::match(['get', 'post'],'/DEV.updateBureauEtude',[ControllerPlanningDev::class,'updateBureauEtude'])->name('DEV.updateBureauEtude')->middleware(middleware: 'checkrole:DEV');
@@ -434,3 +434,4 @@ Route::match(['get', 'post'],'/COMPLIANCEBUDGET.modifBudgetReel',[ControllerComp
 
 /*------------------PP_MEETING_MAELA-------------------------------*/
 require __DIR__.'/LRP/web_ppm.php';
+ Route::post('ajoutPPMeeting', [ControllerPpmeeting::class, 'ajoutPPMeeting'])->name('LRP.ajoutPPMeeting');
