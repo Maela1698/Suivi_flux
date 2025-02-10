@@ -550,7 +550,7 @@
                                     name="sortieRepassage">
                             </div>
 
-                            @if (session('employe')[0]['role'] == 'Coupe' || session('employe')[0]['role'] == 'Admin')
+                            @if (session('employe')[0]['role'] == 'Coupe' || session('employe')[0]['role'] == 'Admin' || session('employe')[0]['role'] == 'CRM')
                                 <div class="form-group">
                                     <label for="rejetCoupe">Qte rejet coupe</label>
                                     <input type="text" class="form-control" id="rejetCoupe" name="rejetCoupe">
@@ -578,7 +578,8 @@
 
                             @if (session('employe')[0]['role'] == 'Prod' ||
                                     session('employe')[0]['role'] == 'Finition' ||
-                                    session('employe')[0]['role'] == 'Coupe' || session('employe')[0]['role'] == 'Admin')
+                                    session('employe')[0]['role'] == 'Coupe' || session('employe')[0]['role'] == 'Admin'
+                                    || session('employe')[0]['role'] == 'CRM')
                                 <div class="form-group">
                                     <label for="sortieRepassage">Commentaire</label>
                                     <input type="text" class="form-control" id="commentaires" name="commentaire">
