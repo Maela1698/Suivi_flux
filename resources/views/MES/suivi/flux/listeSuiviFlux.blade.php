@@ -445,7 +445,7 @@
                     <div class="modal-body texte">
                         <form action="{{ route('MES.modificationSuiviMes') }}" method="POST" autocomplete="off">
                             @csrf
-                            @if (session('employe')[0]['role'] == 'Coupe' || session('employe')[0]['role'] == 'Admin')
+                            @if (session('employe')[0]['role'] == 'Coupe' || session('employe')[0]['role'] == 'Admin' || session('employe')[0]['role'] == 'CRM')
                                 <div id="checkboxContainer" class="mr-3" style="display: none; margin-top: 10px;">
                                     <label for="checkboxCondition">Coupe final</label>
                                     <input type="checkbox" id="checkboxCondition" value="1" name="coupeFinal">
@@ -479,7 +479,7 @@
                                 <input type="text" class="form-control" id="qtePo1" name="qtePo">
                             </div>
 
-                            @if (session('employe')[0]['role'] == 'Coupe' || session('employe')[0]['role'] == 'Admin')
+                            @if (session('employe')[0]['role'] == 'Coupe' || session('employe')[0]['role'] == 'Admin' || session('employe')[0]['role'] == 'CRM')
                                 <div class="form-group">
                                     <label for="qteCoupe">Qte Coupe</label>
                                     <input type="text" class="form-control" id="qteCoupe" name="qteCoupes">
@@ -491,7 +491,7 @@
                                 </div>
                             @endif
 
-                            @if (session('employe')[0]['role'] == 'Prod' || session('employe')[0]['role'] == 'Admin')
+                            @if (session('employe')[0]['role'] == 'Prod' || session('employe')[0]['role'] == 'Admin' || session('employe')[0]['role'] == 'CRM')
                                 <div class="form-group">
                                     <label for="qteEntreeChaine">Qte Entree chaine</label>
                                     <input type="text" class="form-control" id="qteEntreeChaine"
@@ -515,7 +515,7 @@
                                 </div>
                             @endif
 
-                            @if (session('employe')[0]['role'] == 'Finition' || session('employe')[0]['role'] == 'Admin')
+                            @if (session('employe')[0]['role'] == 'Finition' || session('employe')[0]['role'] == 'Admin' || session('employe')[0]['role'] == 'CRM')
                                 <div class="form-group">
                                     <label for="pretALivrer">Pret a livrer (BOXING)</label>
                                     <input type="text" class="form-control" id="pretALivrer" name="pretALivrer">
@@ -563,7 +563,7 @@
                                 </div>
                             @endif
 
-                            @if (session('employe')[0]['role'] == 'Prod' || session('employe')[0]['role'] == 'Admin')
+                            @if (session('employe')[0]['role'] == 'Prod' || session('employe')[0]['role'] == 'Admin' || session('employe')[0]['role'] == 'CRM')
                                 <div class="form-group">
                                     <label for="rejetChaine">Qte rejet chaine</label>
                                     <input type="text" class="form-control" id="rejetChaine" name="rejetChaine">
@@ -578,7 +578,7 @@
 
                             @if (session('employe')[0]['role'] == 'Prod' ||
                                     session('employe')[0]['role'] == 'Finition' ||
-                                    session('employe')[0]['role'] == 'Coupe' || session('employe')[0]['role'] == 'Admin'
+                                    session('employe')[0]['role'] == 'Coupe' || session('employe')[0]['role'] == 'Admin' || session('employe')[0]['role'] == 'CRM'
                                     || session('employe')[0]['role'] == 'CRM')
                                 <div class="form-group">
                                     <label for="sortieRepassage">Commentaire</label>
