@@ -168,7 +168,7 @@
                                 href="{{ route('PLANNING.PPM.calendar') }}"
                                 >Planing PP Meeting</a
                             >
-                            <a class="dropdown-item" href="#">Planing Tracé</a>
+                            <a class="dropdown-item" href="{{ route('LRP.calendrierTrace') }}">Planing Tracé</a>
                         </div>
                     </li>
                 </ul>

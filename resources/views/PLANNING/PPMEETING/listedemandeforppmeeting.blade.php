@@ -99,14 +99,16 @@
 
                             <div class="col-auto my-1" style="flex-grow: 1; min-width: 200px;">
                                 <label class="mr-sm-2" for="inlineFormInput">Client</label>
-                                <input type="text" id="nomTiers" name="nomTiers" value="{{ $nomTiers }}" class="form-control" oninput="syncHiddenField('nomTiers', 'idTiers')">
-                                    <input type="hidden" id="idTiers" name="idTiers" value="{{ $idTiers }}">
-                                    <ul id="suggestionsListTiers" class="list-group mt-2" style="display: none;">
-                                    </ul>
+                                <input type="text" id="nomTiers" name="nomTiers" value="{{ $nomTiers }}"
+                                    class="form-control" oninput="syncHiddenField('nomTiers', 'idTiers')">
+                                <input type="hidden" id="idTiers" name="idTiers" value="{{ $idTiers }}">
+                                <ul id="suggestionsListTiers" class="list-group mt-2" style="display: none;">
+                                </ul>
                             </div>
                             <div class="col-auto my-1" style="flex-grow: 1; min-width: 200px;">
                                 <label class="mr-sm-2" for="inlineFormInput">Modele</label>
-                                <input type="text" class="form-control mr-sm-2" id="inlineFormInput" name="modele" value="{{ $modele }}">
+                                <input type="text" class="form-control mr-sm-2" id="inlineFormInput" name="modele"
+                                    value="{{ $modele }}">
                             </div>
                             <div class="col-auto my-1" style="flex-grow: 1; min-width: 200px;">
                                 <label class="mr-sm-2" for="inlineFormInput" style="color: transparent;">Search</label>
@@ -121,6 +123,7 @@
                             <tr>
                                 <th>Couleur</th>
                                 <th>Date PPM</th>
+                                <th>Date trace</th>
                                 <th>Chaine</th>
                                 <th>Client</th>
                                 <th>Modèle</th>
@@ -142,9 +145,12 @@
                                     data-heuredebut="{{ $d->heure_debut }}"
                                     data-effectifprevu="{{ $d->effectif_prevu }}"
                                     data-effectifreel="{{ $d->effectif_reel }}"
-                                    data-etat="{{ $d->etat_detailmeeting }}"
-                                    data-commentaire="{{ $d->commentaire }}" data-idchaine="{{ $d->id_chaine }}"
-                                    onclick="ouvrirModalPPMeeting(this)">
+                                    data-etat="{{ $d->etat_detailmeeting }}" data-commentaire="{{ $d->commentaire }}"
+                                    data-idchaine="{{ $d->id_chaine }}" data-accessoire="{{ $d->accy }}"
+                                    data-okprod="{{ $d->okprod }}" onclick="ouvrirModalPPMeeting(this)"
+                                    @if ($d->tissus) onclick="ouvrirModalPPMeeting(this)"
+                                        @else
+                                        onclick="messageErreurTissu(this)" @endif>
                                     <td>
                                         <div class="code">
                                             @if ($d->tissus)
@@ -175,6 +181,25 @@
                                     <td>
                                         @if ($d->dateppm)
                                             {{ \Carbon\Carbon::parse($d->dateppm)->format('d/m/Y') }}
+                                        @endif
+                                    </td>
+                                    <td>
+                                        @if ($d->datetrace)
+                                            @if ($d->etat_trace == 1)
+                                                <input type="text" name="datecalcule"
+                                                    style="border: none;width:120px;text-align:center;border-radius:5px;cursor: pointer;  background-color:green; color: black"
+                                                    value="{{ $d->datetrace }}" data-trace="{{ $d->datetrace }}"
+                                                    data-demande="{{ $d->id }}"
+                                                    data-etat="{{ $d->etat_trace }}"
+                                                    onclick="modificationTrace(event, this)">
+                                            @else
+                                                <input type="text" name="datecalcule"
+                                                    style="border: none;width:120px;text-align:center;border-radius:5px;cursor: pointer; background-color:#c7c4c4; color: black;"
+                                                    value="{{ $d->datetrace }}" data-trace="{{ $d->datetrace }}"
+                                                    data-demande="{{ $d->id }}"
+                                                    data-etat="{{ $d->etat_trace }}"
+                                                    onclick="modificationTrace(event, this)">
+                                            @endif
                                         @endif
                                     </td>
                                     <td>{{ $d->designation }}/{{ $d->id }}</td>
@@ -212,7 +237,8 @@
 
 
         <!-- Ajout ppmeeting -->
-        <div class="modal fade" id="ppmeeting" tabindex="-1" role="dialog" aria-labelledby="choixEtapeModalLabel" aria-hidden="true">
+        <div class="modal fade" id="ppmeeting" tabindex="-1" role="dialog" aria-labelledby="choixEtapeModalLabel"
+            aria-hidden="true">
             <div class="modal-dialog modal-dialog-centered" style="width: 360px" role="document">
                 <div class="modal-content modal-content-custom">
                     <div class="modal-header">
@@ -221,14 +247,15 @@
                             <span aria-hidden="true">&times;</span>
                         </button>
                     </div>
-                    <div class="modal-body texte">
+                    <div class="modal-body texte" style="max-height: 800px; overflow-y: auto;">
+
                         <form action="{{ route('LRP.ajoutPPMeeting') }}" method="POST" autocomplete="off">
                             @csrf
                             <input type="hidden" name="demandePasse" id="demandePasse">
                             <input type="hidden" name="daty" id="daty">
-                            <input type="hidden" name="modele"  value="{{ $modele }}">
-                            <input type="hidden" name="nomTiers"  value="{{ $nomTiers }}">
-                            <input type="hidden" name="idTiers"  value="{{ $idTiers }}">
+                            <input type="hidden" name="modele" value="{{ $modele }}">
+                            <input type="hidden" name="nomTiers" value="{{ $nomTiers }}">
+                            <input type="hidden" name="idTiers" value="{{ $idTiers }}">
                             <div id="checkboxContainer" class="mr-3" style="margin-top: 10px;">
                                 <label for="checkboxCondition">Fini</label>
                                 <input type="checkbox" id="checkboxCondition" value="true" name="fini">
@@ -236,55 +263,65 @@
 
                             <div class="form-group">
                                 <label>Date ppmeeting</label>
-                                <input type="date" class="form-control" id="datys" name="dateppmeeting" required>
+                                <input type="date" class="form-control" id="datys" name="dateppmeeting"
+                                    required>
                             </div>
 
                             <div class="form-group">
                                 <label>Heure ppmeeting</label>
-                                <input type="time" class="form-control" id="heuredebuts" name="heureppmeeting" required>
+                                <input type="time" class="form-control" id="heuredebuts" name="heureppmeeting"
+                                    required>
                             </div>
 
                             <div class="form-group">
                                 <label>Effectifs prévus</label>
-                                <input type="number" class="form-control" id="effectifprevus" name="effectifPrevu" required>
+                                <input type="number" class="form-control" id="effectifprevus" name="effectifPrevu"
+                                    required>
                             </div>
 
                             <div class="form-group">
                                 <label>Effectifs réels</label>
-                                <input type="number" class="form-control" id="effectifreels" name="effectifReel" required>
+                                <input type="number" class="form-control" id="effectifreels" name="effectifReel"
+                                    required>
                             </div>
 
                             <div class="form-group">
                                 <label>Chaine</label>
-                                <select class="form-control"  name="chaineMeeting" >
-                                   @for ($c=0 ;$c  < count($chaine);$c ++)
-                                       <option value="{{ $chaine[$c]->id_chaine }}">{{ $chaine[$c]->designation }}</option>
-                                   @endfor
+                                <select class="form-control" name="chaineMeeting">
+                                    @for ($c = 0; $c < count($chaine); $c++)
+                                        <option value="{{ $chaine[$c]->id_chaine }}">{{ $chaine[$c]->designation }}
+                                        </option>
+                                    @endfor
                                 </select>
                             </div>
 
                             <div class="form-group">
                                 <label>Date entrée chaîne</label>
-                                <input type="date" class="form-control" id="entreechaines" name="dateChaine" required>
+                                <input type="date" class="form-control" id="entreechaines" name="dateChaine"
+                                    required>
                             </div>
 
                             <div class="form-group">
                                 <label>Date entrée coupe</label>
-                                <input type="date" class="form-control" id="entreecoupes" name="dateCoupe" required>
+                                <input type="date" class="form-control" id="entreecoupes" name="dateCoupe"
+                                    required>
                             </div>
 
                             <div class="form-group">
                                 <label>Date entrée finition</label>
-                                <input type="date" class="form-control" id="entreefinitions" name="dateFinition" required>
+                                <input type="date" class="form-control" id="entreefinitions" name="dateFinition"
+                                    required>
                             </div>
 
                             <div class="form-group">
                                 <label>Commentaire</label>
-                                <input type="text" class="form-control" id="commentaires" name="commentaire" required>
+                                <input type="text" class="form-control" id="commentaires" name="commentaire"
+                                    required>
                             </div>
 
                             <div class="modal-footer mt-3">
-                                <button type="button" class="btn btn-secondary" data-dismiss="modal">Annuler</button>
+                                <button type="button" class="btn btn-secondary"
+                                    data-dismiss="modal">Annuler</button>
                                 <button type="submit" class="btn btn-success">Enregistrer</button>
                             </div>
                         </form>
@@ -292,6 +329,92 @@
                 </div>
             </div>
         </div>
+
+
+        <!-- Erreur meeting -->
+        <div class="modal fade" id="erreurtissu" tabindex="-1" role="dialog"
+            aria-labelledby="choixEtapeModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered" style="width: 360px" role="document">
+                <div class="modal-content modal-content-custom">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="choixEtapeModalLabel">⚠️Attention</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body texte">
+                        <div class="form-group">
+                            <label>Le tissu n'est pas encore disponible du coup vous n'avez pas le droit de faire une
+                                ppmetting sur cette modèle.</label>
+                        </div>
+                        <div class="modal-footer mt-3">
+                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Annuler</button>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Modal de confirmation -->
+        <div class="modal fade" id="confirmationAccessoire" tabindex="-1" role="dialog"
+            aria-labelledby="confirmationAccessoireLabel" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered" style="width: 360px" role="document">
+                <div class="modal-content modal-content-custom">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="confirmationAccessoireLabel">⚠️Accessoire non disponible</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body texte">
+                        <p>L'accessoire n'est pas disponible. Voulez-vous continuer ?</p>
+                    </div>
+                    <div class="modal-footer mt-3">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Annuler</button>
+                        <button type="button" class="btn btn-success" id="confirmerSuite">Continuer</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Modal modification trace -->
+        <div class="modal fade" id="modifTrace" tabindex="-1" role="dialog"
+            aria-labelledby="confirmationAccessoireLabel" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered" style="width: 360px" role="document">
+                <div class="modal-content modal-content-custom">
+                    <form action="{{ route('LRP.updateTrace') }}" autocomplete="off" method="post">
+                        @csrf
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="confirmationAccessoireLabel">Modification trace</h5>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                        <div class="modal-body texte">
+                            <input type="hidden" name="demandeTrace" id="demandeTrace">
+                            <input type="hidden" name="modele" value="{{ $modele }}">
+                            <input type="hidden" name="nomTiers" value="{{ $nomTiers }}">
+                            <input type="hidden" name="idTiers" value="{{ $idTiers }}">
+                            <div id="checkboxContainer" class="mr-3" style="margin-top: 10px;">
+                                <label for="checkboxCondition">Fini</label>
+                                <input type="checkbox" id="checkfiniTrace" value="1" name="finiTrace">
+                            </div>
+
+                            <div class="form-group">
+                                <label>Date ppmeeting</label>
+                                <input type="date" class="form-control" id="datetrace" name="datetrace" required>
+                            </div>
+                        </div>
+                        <div class="modal-footer mt-3">
+                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Annuler</button>
+                            <button type="submit" class="btn btn-success">Modifier</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+
 
         @if (session('error'))
             <div class="modal fade" id="errorModal" tabindex="-1" role="dialog" aria-labelledby="errorModalLabel"
@@ -490,6 +613,7 @@
     }
 </script>
 
+{{--  modal de modification ppmeeting  --}}
 <script>
     function ouvrirModalPPMeeting(button) {
         var iddemande = button.getAttribute('data-demande');
@@ -504,6 +628,7 @@
         var idchaine = button.getAttribute('data-idchaine');
         var designation = button.getAttribute('data-designation');
         var etat = button.getAttribute('data-etat');
+        var accessoire = button.getAttribute('data-accessoire');
 
         // Remplir les champs du formulaire
         document.getElementById('daty').value = datemeeting;
@@ -518,16 +643,28 @@
         document.getElementById('commentaires').value = commentaire;
 
         const checkboxCondition = document.getElementById('checkboxCondition');
-        if(etat==false){
-            checkboxCondition.checked= false;
-        }else{
-            checkboxCondition.checked= true;
+        if (etat == false) {
+            checkboxCondition.checked = false;
+        } else {
+            checkboxCondition.checked = true;
         }
-        // Ouvrir la modal
-        var modal = new bootstrap.Modal(document.getElementById('ppmeeting'));
-        modal.show();
-    }
 
+        if (!accessoire) {
+            var modalConfirmation = new bootstrap.Modal(document.getElementById('confirmationAccessoire'));
+            modalConfirmation.show();
+
+            // Ajouter un événement pour continuer après confirmation
+            document.getElementById('confirmerSuite').onclick = function() {
+                modalConfirmation.hide();
+                var modal = new bootstrap.Modal(document.getElementById('ppmeeting'));
+                modal.show();
+            };
+        } else {
+            // Ouvrir la modal
+            var modal = new bootstrap.Modal(document.getElementById('ppmeeting'));
+            modal.show();
+        }
+    }
 </script>
 
 <script>
@@ -537,4 +674,33 @@
             $('#errorModal').modal('show');
         @endif
     });
+</script>
+
+{{--  modal aucun tissu  --}}
+<script>
+    function messageErreurTissu(button) {
+
+        var modal = new bootstrap.Modal(document.getElementById('erreurtissu'));
+        modal.show();
+    }
+</script>
+
+<script>
+    function modificationTrace(event, element) {
+        event.stopPropagation(); // Empêche l'exécution des autres onclick sur <tr>
+        var trace = element.getAttribute('data-trace');
+        var demande = element.getAttribute('data-demande');
+        var etat = element.getAttribute('data-etat');
+        document.getElementById('datetrace').value = trace;
+        document.getElementById('demandeTrace').value = demande;
+        const checkfiniTrace = document.getElementById('checkfiniTrace');
+        if (etat == 0) {
+            checkfiniTrace.checked = false;
+        } else {
+            checkfiniTrace.checked = true;
+        }
+
+        var modal = new bootstrap.Modal(document.getElementById('modifTrace'));
+        modal.show();
+    }
 </script>
