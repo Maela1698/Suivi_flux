@@ -7,7 +7,7 @@
         <div class="row">
             <div class="card col-12">
                 <div class="card-header">
-                    <h4 class="card-title">PLANNING PPMeeting</h4>
+                    <h2 class="card-title titre">PLANNING PPMeeting <span class="badge badge-info nb-ppm">Nb ppm : --</span></h2>
                     <form action="{{ route('LRP.listeDemandeForPpmeeting') }}" method="get">
                         @csrf
                         <button type="btn" class="btn btn-success">Listes</button>
@@ -19,8 +19,8 @@
                             <div class="card">
                                 <div class="stat-widget-two card-body">
                                     <div class="stat-content">
-                                        <div class="stat-text">Taux d'achevement</div>
-                                        <div class="stat-digit"> <i class="fa fa-usd"></i>75%</div>
+                                        <div class="stat-text">Taux d'achèvement</div>
+                                        <div class="stat-digit"> 75%</div>
                                     </div>
                                     <div class="progress">
                                         <div class="progress-bar progress-bar-primary w-75" role="progressbar" aria-valuenow="78" aria-valuemin="0" aria-valuemax="100"></div>
@@ -33,7 +33,7 @@
                                 <div class="stat-widget-two card-body">
                                     <div class="stat-content">
                                         <div class="stat-text">Taux de retard</div>
-                                        <div class="stat-digit"> <i class="fa fa-usd"></i>15%</div>
+                                        <div class="stat-digit"> 15%</div>
                                     </div>
                                     <div class="progress">
                                         <div class="progress-bar progress-bar-warning w-50" role="progressbar" aria-valuenow="50" aria-valuemin="0" aria-valuemax="100"></div>
@@ -45,8 +45,8 @@
                             <div class="card">
                                 <div class="stat-widget-two card-body">
                                     <div class="stat-content">
-                                        <div class="stat-text">Taux a temps</div>
-                                        <div class="stat-digit"> <i class="fa fa-usd"></i>43%</div>
+                                        <div class="stat-text">Taux à temps</div>
+                                        <div class="stat-digit"> 43%</div>
                                     </div>
                                     <div class="progress">
                                         <div class="progress-bar progress-bar-danger w-65" role="progressbar" aria-valuenow="65" aria-valuemin="0" aria-valuemax="100"></div>
@@ -60,7 +60,7 @@
                                 <div class="stat-widget-two card-body">
                                     <div class="stat-content">
                                         <div class="stat-text">Taux d'absence</div>
-                                        <div class="stat-digit"> <i class="fa fa-usd"></i>56%</div>
+                                        <div class="stat-digit"> 56%</div>
                                     </div>
                                     <div class="progress">
                                         <div class="progress-bar progress-bar-success w-85" role="progressbar" aria-valuenow="85" aria-valuemin="0" aria-valuemax="100"></div>

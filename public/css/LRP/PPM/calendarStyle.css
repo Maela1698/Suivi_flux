@@ -16,3 +16,19 @@
     background-color: #c8ffd3 !important;
     border: none;
 }
+
+.titre{
+    color : #7571f9;
+    font-size: 25px;
+    letter-spacing: 0px;
+}
+
+.nb-ppm{
+    background-color: #B1ECEB ;
+    color : #42A0A5 ;
+    font-size : 12px;
+}
+
+.fc-day-other .fc-daygrid-event {
+    display: none !important;
+}
