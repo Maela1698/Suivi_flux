@@ -123,6 +123,7 @@
                             <tr>
                                 <th>Couleur</th>
                                 <th>Date PPM</th>
+                                <th>Date trace</th>
                                 <th>Chaine</th>
                                 <th>Client</th>
                                 <th>Modèle</th>
@@ -145,14 +146,11 @@
                                     data-effectifprevu="{{ $d->effectif_prevu }}"
                                     data-effectifreel="{{ $d->effectif_reel }}"
                                     data-etat="{{ $d->etat_detailmeeting }}" data-commentaire="{{ $d->commentaire }}"
-                                    data-idchaine="{{ $d->id_chaine }}"
-                                    data-accessoire="{{ $d->accy }}"
-                                    data-okprod="{{ $d->okprod }}"
-
+                                    data-idchaine="{{ $d->id_chaine }}" data-accessoire="{{ $d->accy }}"
+                                    data-okprod="{{ $d->okprod }}" onclick="ouvrirModalPPMeeting(this)"
                                     @if ($d->tissus) onclick="ouvrirModalPPMeeting(this)"
                                         @else
                                         onclick="messageErreurTissu(this)" @endif>
-                                        >
                                     <td>
                                         <div class="code">
                                             @if ($d->tissus)
@@ -183,6 +181,25 @@
                                     <td>
                                         @if ($d->dateppm)
                                             {{ \Carbon\Carbon::parse($d->dateppm)->format('d/m/Y') }}
+                                        @endif
+                                    </td>
+                                    <td>
+                                        @if ($d->datetrace)
+                                            @if ($d->etat_trace == 1)
+                                                <input type="text" name="datecalcule"
+                                                    style="border: none;width:120px;text-align:center;border-radius:5px;cursor: pointer;  background-color:green; color: black"
+                                                    value="{{ $d->datetrace }}" data-trace="{{ $d->datetrace }}"
+                                                    data-demande="{{ $d->id }}"
+                                                    data-etat="{{ $d->etat_trace }}"
+                                                    onclick="modificationTrace(event, this)">
+                                            @else
+                                                <input type="text" name="datecalcule"
+                                                    style="border: none;width:120px;text-align:center;border-radius:5px;cursor: pointer; background-color:#c7c4c4; color: black;"
+                                                    value="{{ $d->datetrace }}" data-trace="{{ $d->datetrace }}"
+                                                    data-demande="{{ $d->id }}"
+                                                    data-etat="{{ $d->etat_trace }}"
+                                                    onclick="modificationTrace(event, this)">
+                                            @endif
                                         @endif
                                     </td>
                                     <td>{{ $d->designation }}/{{ $d->id }}</td>
@@ -357,6 +374,43 @@
                         <button type="button" class="btn btn-secondary" data-dismiss="modal">Annuler</button>
                         <button type="button" class="btn btn-success" id="confirmerSuite">Continuer</button>
                     </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Modal modification trace -->
+        <div class="modal fade" id="modifTrace" tabindex="-1" role="dialog"
+            aria-labelledby="confirmationAccessoireLabel" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered" style="width: 360px" role="document">
+                <div class="modal-content modal-content-custom">
+                    <form action="{{ route('LRP.updateTrace') }}" autocomplete="off" method="post">
+                        @csrf
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="confirmationAccessoireLabel">Modification trace</h5>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                        <div class="modal-body texte">
+                            <input type="hidden" name="demandeTrace" id="demandeTrace">
+                            <input type="hidden" name="modele" value="{{ $modele }}">
+                            <input type="hidden" name="nomTiers" value="{{ $nomTiers }}">
+                            <input type="hidden" name="idTiers" value="{{ $idTiers }}">
+                            <div id="checkboxContainer" class="mr-3" style="margin-top: 10px;">
+                                <label for="checkboxCondition">Fini</label>
+                                <input type="checkbox" id="checkfiniTrace" value="1" name="finiTrace">
+                            </div>
+
+                            <div class="form-group">
+                                <label>Date ppmeeting</label>
+                                <input type="date" class="form-control" id="datetrace" name="datetrace" required>
+                            </div>
+                        </div>
+                        <div class="modal-footer mt-3">
+                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Annuler</button>
+                            <button type="submit" class="btn btn-success">Modifier</button>
+                        </div>
+                    </form>
                 </div>
             </div>
         </div>
@@ -605,10 +659,10 @@
                 var modal = new bootstrap.Modal(document.getElementById('ppmeeting'));
                 modal.show();
             };
-        }else{
-        // Ouvrir la modal
-        var modal = new bootstrap.Modal(document.getElementById('ppmeeting'));
-        modal.show();
+        } else {
+            // Ouvrir la modal
+            var modal = new bootstrap.Modal(document.getElementById('ppmeeting'));
+            modal.show();
         }
     }
 </script>
@@ -627,6 +681,26 @@
     function messageErreurTissu(button) {
 
         var modal = new bootstrap.Modal(document.getElementById('erreurtissu'));
+        modal.show();
+    }
+</script>
+
+<script>
+    function modificationTrace(event, element) {
+        event.stopPropagation(); // Empêche l'exécution des autres onclick sur <tr>
+        var trace = element.getAttribute('data-trace');
+        var demande = element.getAttribute('data-demande');
+        var etat = element.getAttribute('data-etat');
+        document.getElementById('datetrace').value = trace;
+        document.getElementById('demandeTrace').value = demande;
+        const checkfiniTrace = document.getElementById('checkfiniTrace');
+        if (etat == 0) {
+            checkfiniTrace.checked = false;
+        } else {
+            checkfiniTrace.checked = true;
+        }
+
+        var modal = new bootstrap.Modal(document.getElementById('modifTrace'));
         modal.show();
     }
 </script>

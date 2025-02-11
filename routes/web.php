@@ -23,6 +23,7 @@ use App\Http\Controllers\ControllerMasterPlan;
 use App\Http\Controllers\ControllerObjectifSaison;
 use App\Http\Controllers\ControllerPlanningDev;
 use App\Http\Controllers\ControllerPpmeeting;
+use App\Http\Controllers\ControllerTracer;
 use App\Http\Controllers\ControllerTransit;
 use App\Http\Controllers\ControlleurRetroMerch;
 use App\Http\Controllers\MES\ControllerDemande as MESControllerDemande;
@@ -435,3 +436,7 @@ Route::match(['get', 'post'],'/COMPLIANCEBUDGET.modifBudgetReel',[ControllerComp
 /*------------------PP_MEETING_MAELA-------------------------------*/
 require __DIR__.'/LRP/web_ppm.php';
  Route::post('ajoutPPMeeting', [ControllerPpmeeting::class, 'ajoutPPMeeting'])->name('LRP.ajoutPPMeeting');
+ Route::post('ajouteprevision', [ControllerTracer::class, 'ajouteprevision'])->name('LRP.ajouteprevision');
+ Route::post('modifprevision', [ControllerTracer::class, 'modifprevision'])->name('LRP.modifprevision');
+ Route::post('updateTrace', [ControllerTracer::class, 'updateTrace'])->name('LRP.updateTrace');
+ Route::match(['get', 'post'],'/calendrierTrace',[ControllerTracer::class,'calendrierTrace'])->name('LRP.calendrierTrace');
