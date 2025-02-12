@@ -6,3 +6,5 @@ use Illuminate\Support\Facades\Route;
 Route::get('/planning_ppm_calendar',[ControllerPlanningPPMeeting::class,'getPlanning'])->name('PLANNING.PPM.calendar');
 Route::get('/api/meetings', [ControllerPlanningPPMeeting::class, 'getMeetings']);
 Route::get('/api/getNbPPM', [ControllerPlanningPPMeeting::class, 'getNbPPM']);
+Route::get('/api/meeting/{eventIdDemande}', [ControllerPlanningPPMeeting::class, 'getMeetingById']);
+

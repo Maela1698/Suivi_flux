@@ -18,6 +18,7 @@ class ControllerPlanningPPMeeting extends Controller{
                 'title' => $meeting->nom_modele,
                 'start' => $meeting->dateppm . 'T' . $meeting->heure_debut, // Format : 'YYYY-MM-DDTHH:MM:SS'
                 'color' => "#25D366",
+                'id_demande' => $meeting->id
             ];
         });
 
@@ -36,5 +37,21 @@ class ControllerPlanningPPMeeting extends Controller{
             ->value('nbppm') ?? 0; // Si aucune valeur trouvée, retourner 0
     
         return response()->json(['nbppm' => $nbppm]);
+    }
+
+    public function getMeetingById($id) {
+        $meeting = VPPMeeting::find($id);
+    
+        if (!$meeting) {
+            return response()->json(['error' => 'Meeting non trouvé'], 404);
+        }
+    
+        return response()->json([
+            'nom_modele' => $meeting->nom_modele,
+            'dateppm' => $meeting->dateppm,
+            'heure_debut' => $meeting->heure_debut,
+            'effectif' => $meeting->effectif,
+            'photo_commande' => $meeting->photo_commande ? 'data:image/png;base64,' . $meeting->photo_commande : null
+        ]);
     }
 }

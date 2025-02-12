@@ -17,18 +17,56 @@
     border: none;
 }
 
+.fc-daygrid-event, 
+.fc-timegrid-event {
+  color: inherit !important;
+  text-decoration: none !important;
+}
+
+.fc-daygrid-event:hover, 
+.fc-daygrid-event:focus, 
+.fc-timegrid-event:hover, 
+.fc-timegrid-event:focus {
+  color: inherit !important;
+}
+
+
 .titre{
     color : #7571f9;
     font-size: 25px;
     letter-spacing: 0px;
 }
 
-.nb-ppm{
-    background-color: #B1ECEB ;
-    color : #42A0A5 ;
-    font-size : 12px;
-}
-
 .fc-day-other .fc-daygrid-event {
     display: none !important;
+}
+
+.cin-content {
+    display: flex;
+    align-items: center;
+    margin-left: 17%;
+}
+
+.cin-content img {
+    width: 118px;
+    height: 147px;
+    object-fit: cover;
+    margin-right: 15px;
+}
+
+.cin-details {
+    display: flex;
+    flex-direction: column;
+}
+
+.cin-details h2 {
+    margin: 0 0 10px;
+    font-size: 18px;
+    color: #333;
+}
+
+.cin-details p {
+    margin: 4px 0;
+    font-size: 14px;
+    color: #555;
 }
