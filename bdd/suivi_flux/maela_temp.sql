@@ -17,7 +17,7 @@ AS SELECT vd.id,
     vd.etat,
     vd.id_etat,
     dm.etat AS details_meeting_etat,
-    vdm.photo_commande 
+    vd.photo_commande 
    FROM v_general_final_recap vd
      LEFT JOIN datedisponibiliteforppmeeting d ON vd.id = d.id_demande_client
      LEFT JOIN details_meeting dm ON vd.id = dm.id_demande
@@ -28,3 +28,16 @@ AS SELECT vd.id,
            FROM v_suivifluxmes) sv ON vd.id = sv.id_demande_client
     JOIN v_demandeclient vdm ON vd.id = vdm.id
   WHERE vd.etat = 0 AND vd.id_etat = 2;
+
+CREATE OR REPLACE VIEW public.v_nb_ppm_by_month AS
+SELECT 
+    to_char(v_ppmeeting.dateppm::timestamp with time zone, 'YYYY-MM') AS mois,
+    count(*) AS nbppm,
+    count(CASE WHEN details_meeting_etat = true THEN 1 END) AS nbfini,
+    CASE WHEN count(*) > 0 THEN count(CASE WHEN details_meeting_etat = true THEN 1 END)::float / count(*) ELSE 0 END AS taux_achevement 
+FROM 
+    v_ppmeeting
+WHERE 
+    v_ppmeeting.dateppm IS NOT NULL
+GROUP BY 
+    to_char(v_ppmeeting.dateppm::timestamp with time zone, 'YYYY-MM');

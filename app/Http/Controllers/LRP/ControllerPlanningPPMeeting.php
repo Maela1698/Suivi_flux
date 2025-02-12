@@ -17,7 +17,7 @@ class ControllerPlanningPPMeeting extends Controller{
             return [
                 'title' => $meeting->nom_modele,
                 'start' => $meeting->dateppm . 'T' . $meeting->heure_debut, // Format : 'YYYY-MM-DDTHH:MM:SS'
-                'color' => "#25D366",
+                'color' => "#FFD700",
                 'id_demande' => $meeting->id
             ];
         });
@@ -32,11 +32,15 @@ class ControllerPlanningPPMeeting extends Controller{
     public function getNbPPM(Request $request) {
         $month = $request->query('month');
     
-        $nbppm = DB::table('v_nb_ppm_by_month')
-            ->where('mois', $month)
-            ->value('nbppm') ?? 0; // Si aucune valeur trouvée, retourner 0
-    
-        return response()->json(['nbppm' => $nbppm]);
+        $data = DB::table('v_nb_ppm_by_month')
+        ->where('mois', $month)
+        ->select('nbppm', 'taux_achevement')
+        ->first();
+
+        return response()->json([
+            'nbppm' => $data->nbppm ?? 0, 
+            'taux_achevement' => $data->taux_achevement ?? 0
+    ]);
     }
 
     public function getMeetingById($id) {

@@ -9,11 +9,11 @@
 } */
 
 .fc-daygrid-day-events { 
-    color: #25D366 !important;
+    color: #FFD700 !important;
 }
 
 .fc-event {
-    background-color: #c8ffd3 !important;
+    background-color: #FFFDD0 !important;
     border: none;
 }
 
@@ -32,7 +32,6 @@
 
 
 .titre{
-    color : #7571f9;
     font-size: 25px;
     letter-spacing: 0px;
 }
@@ -69,4 +68,80 @@
     margin: 4px 0;
     font-size: 14px;
     color: #555;
+}
+
+.stat-widget-one .stat-icon i{
+    font-size: 30px;
+    border-width: 1px;
+    border-style: solid;
+    border-radius: 100px;
+    padding: 15px;
+    font-weight: 900;
+    display: inline-block;
+}
+
+.ppm{
+    background-color: #FFFDD0;
+}
+
+.achevement{
+    background-color: #c8ffd3;
+}
+
+.retard{
+    background-color: #FFF3F3;
+}
+
+.temps{
+    background-color: #E1F5FE;
+}
+
+.abs{
+    background-color: #FFF3E0;
+}
+
+.text-success,
+.ppm-color{
+    color: #FFD700   !important;
+}
+  
+.border-success {
+    border-color: #FFD700   !important;
+}
+
+.text-achevement,
+.achevement-color{
+    color: #25D366 !important;
+    
+}
+  
+.border-achevement {
+    border-color: #25D366 !important;
+}
+
+.text-retard,
+.retard-color{
+    color: #FF5C58   !important;
+}
+  
+.border-retard {
+    border-color: #FF5C58   !important;
+}
+
+.text-temps,
+.temps-color{
+    color: #4FC3F7   !important;
+}
+  
+.border-temps {
+    border-color: #4FC3F7   !important;
+}
+
+.text-abs,
+.abs-color{
+    color: #FFA726   !important;
+}
+  
+.border-abs {
+    border-color: #FFA726   !important;
 }

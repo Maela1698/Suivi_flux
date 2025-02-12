@@ -17,65 +17,65 @@
                     <div class="row">
                         <div class="col-lg">
                             <div class="card">
-                                <div class="stat-widget-one card-body">
+                                <div class="stat-widget-one card-body ppm">
                                     <div class="stat-icon d-inline-block">
-                                        <i class="ti-calendar text-success border-success"></i>
+                                        <i class="fas fa-calendar text-success border-success"></i>
                                     </div>
                                     <div class="stat-content d-inline-block">
-                                        <div class="stat-text">PPM</div>
-                                        <div class="stat-digit"><span class="nb-ppm">...</span></div>
+                                        <div class="stat-text ppm-color">PPM</div>
+                                        <div class="stat-digit ppm-color"><span class="nb-ppm">...</span></div>
                                     </div>
                                 </div>
                             </div>
                         </div>
                         <div class="col-lg">
                             <div class="card">
-                                <div class="stat-widget-one card-body">
+                                <div class="stat-widget-one card-body achevement">
                                     <div class="stat-icon d-inline-block">
-                                        <i class="ti-money text-success border-success"></i>
+                                        <i class="fas fa-check-circle text-achevement border-achevement"></i>
                                     </div>
                                     <div class="stat-content d-inline-block">
-                                        <div class="stat-text">Profit</div>
-                                        <div class="stat-digit">1,012</div>
+                                        <div class="stat-text achevement-color">Complétion</div>
+                                        <div class="stat-digit achevement-color"><span class="taux-achevement">...</span></div>
                                     </div>
                                 </div>
                             </div>
                         </div>
                         <div class="col-lg">
                             <div class="card">
-                                <div class="stat-widget-one card-body">
+                                <div class="stat-widget-one card-body retard">
                                     <div class="stat-icon d-inline-block">
-                                        <i class="ti-user text-primary border-primary"></i>
+                                        <i class="fas fa-clock text-retard border-retard"></i>
                                     </div>
                                     <div class="stat-content d-inline-block">
-                                        <div class="stat-text">Customer</div>
-                                        <div class="stat-digit">961</div>
+                                        <div class="stat-text retard-color">Retard</div>
+                                        <div class="stat-digit retard-color">34%</div>
                                     </div>
                                 </div>
                             </div>
                         </div>
                         <div class="col-lg">
                             <div class="card">
-                                <div class="stat-widget-one card-body">
+                                <div class="stat-widget-one card-body temps">
                                     <div class="stat-icon d-inline-block">
-                                        <i class="ti-layout-grid2 text-pink border-pink"></i>
+                                        <i class="fas fa-hourglass-start text-temps border-temps"></i>
                                     </div>
                                     <div class="stat-content d-inline-block">
-                                        <div class="stat-text">Projects</div>
-                                        <div class="stat-digit">770</div>
+                                        <div class="stat-text temps-color">A temps</div>
+                                        <div class="stat-digit temps-color">20%</div>
                                     </div>
                                 </div>
                             </div>
                         </div>
                         <div class="col-lg">
                             <div class="card">
-                                <div class="stat-widget-one card-body">
+                                <div class="stat-widget-one card-body abs">
                                     <div class="stat-icon d-inline-block">
-                                        <i class="ti-link text-danger border-danger"></i>
+                                        <i class="fas fa-user-slash text-abs border-abs"></i>
                                     </div>
                                     <div class="stat-content d-inline-block">
-                                        <div class="stat-text">Referral</div>
-                                        <div class="stat-digit">2,781</div>
+                                        <div class="stat-text abs-color">Abscence</div>
+                                        <div class="stat-digit abs-color">5%</div>
                                     </div>
                                 </div>
                             </div>
