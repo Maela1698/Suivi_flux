@@ -6,6 +6,7 @@ import frLocale from '@fullcalendar/core/locales/fr';
 
 document.addEventListener('DOMContentLoaded', function() {
     var calendarEl = document.getElementById('calendar');
+    let currentMeetingId = null;
     if (calendarEl) {
         var calendar = new Calendar(calendarEl, {
             plugins: [dayGridPlugin, timeGridPlugin],
@@ -17,6 +18,15 @@ document.addEventListener('DOMContentLoaded', function() {
                 right: 'dayGridMonth,timeGridWeek,timeGridDay'
             },
             events: '/api/meetings',
+            eventClassNames: function(arg) {
+                var event = arg.event;
+    
+                // Vérifiez la propriété details_meeting_etat et retournez un tableau de classes
+                if (event.extendedProps.details_meeting_etat) {
+                    return ['fini-back-ground-color','fini-text-color'];
+                }
+                return ['a-venir-back-ground-color','a-venir-color'];
+            },
             editable: false,
             eventOverlap: false,
 
@@ -37,10 +47,54 @@ document.addEventListener('DOMContentLoaded', function() {
                 fetch(`/api/meeting/${eventIdDemande}`)
                     .then(response => response.json())
                     .then(data => {
+                        currentMeetingId = data.id_details_ppmeeting;
+
                         let modalContent = `
                             <p><strong>Modèle :</strong> ${data.nom_modele}</p>
-                            <p><strong>Date :</strong> ${data.dateppm}</p>
-                            <p><strong>Heure :</strong> ${data.heure_debut}</p>
+                            <div class="form-group row">
+                                <label class="col-sm-2 col-form-label">Date PPM</label>
+                                <div class="col-sm-10">
+                                    <input type="date" class="form-control" value=${data.dateppm} name="dateppm">
+                                </div>
+                            </div>
+                            <div class="form-group row">
+                                <label class="col-sm-2 col-form-label">Horraire</label>
+                                <div class="col-sm-10">
+                                    <input type="time" class="form-control" value=${data.heure_debut} name="heure_debut">
+                                </div>
+                            </div>
+                            <div class="form-group row">
+                                <label class="col-sm-2 col-form-label">chaine</label>
+                                <div class="col-sm-10">
+                                    <input type="number" class="form-control" value=${data.id_chaine} name="id_chaine">
+                                </div>
+                            </div>
+                            <div class="form-group row">
+                                <label class="col-sm-2 col-form-label">Entree Chaine</label>
+                                <div class="col-sm-10">
+                                    <input type="date" class="form-control" value=${data.date_entree_chaine} name="date_entree_chaine">
+                                </div>
+                            </div>
+                            <div class="form-group row">
+                                <label class="col-sm-2 col-form-label">Entree Coupe</label>
+                                <div class="col-sm-10">
+                                    <input type="date" class="form-control" value=${data.date_entree_coupe} name="date_entree_coupe">
+                                </div>
+                            </div>
+                            <div class="form-group row">
+                                <label class="col-sm-2 col-form-label">Entree Finition</label>
+                                <div class="col-sm-10">
+                                    <input type="date" class="form-control" value=${data.date_entree_finition} name="date_entree_finition">
+                                </div>
+                            </div>
+                            <div class="form-group row">
+                                <label class="col-sm-2 col-form-label">Effectif reel</label>
+                                <div class="col-sm-10">
+                                    <input type="number" class="form-control" value=${data.effectif_reel} name="effectif_reel">
+                                </div>
+                            </div>
+                            <input type="hidden" value="${data.id_meeting}" name="id_meeting">
+                            <input type="hidden" value="${data.id_demande}" name="id_demande">
                             <p><strong>Effectif prevu :</strong> --</p>
                         `;
 
@@ -69,6 +123,17 @@ document.addEventListener('DOMContentLoaded', function() {
         let initialMonth = new Date().getFullYear() + '-' + String(new Date().getMonth() + 1).padStart(2, '0');
         updateNbPPM(initialMonth);
     }
+    const enregistrerBtn = document.getElementById('enregistrerBtn');
+
+    enregistrerBtn.addEventListener('click', function() {
+        let form = document.getElementById('updateStatusForm');
+        if (currentMeetingId) {
+            form.action = `/meeting-update/${currentMeetingId}`;
+            form.submit();
+        } else {
+            alert("Erreur : ID du meeting manquant !");
+        }
+    });
 });
 
 function updateNbPPM(month) {

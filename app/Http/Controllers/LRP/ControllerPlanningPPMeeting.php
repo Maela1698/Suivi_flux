@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\LRP;
 
 use App\Http\Controllers\Controller;
+use App\Models\LRP\PP\DetailsMeeting;
 use App\Models\LRP\PP\Meeting;
 use App\Models\LRP\PP\VPPMeeting;
 use Illuminate\Http\Request;
@@ -17,8 +18,9 @@ class ControllerPlanningPPMeeting extends Controller{
             return [
                 'title' => $meeting->nom_modele,
                 'start' => $meeting->dateppm . 'T' . $meeting->heure_debut, // Format : 'YYYY-MM-DDTHH:MM:SS'
-                'color' => "#FFD700",
-                'id_demande' => $meeting->id
+                'color' => $meeting->details_meeting_etat ? "#25D366" : "#FFD700",
+                'id_demande' => $meeting->id,
+                'details_meeting_etat' => $meeting->details_meeting_etat
             ];
         });
 
@@ -44,18 +46,68 @@ class ControllerPlanningPPMeeting extends Controller{
     }
 
     public function getMeetingById($id) {
-        $meeting = VPPMeeting::find($id);
+        $detail_meeting = VPPMeeting::find($id);
     
-        if (!$meeting) {
+        if (!$detail_meeting) {
             return response()->json(['error' => 'Meeting non trouvé'], 404);
         }
     
         return response()->json([
-            'nom_modele' => $meeting->nom_modele,
-            'dateppm' => $meeting->dateppm,
-            'heure_debut' => $meeting->heure_debut,
-            'effectif' => $meeting->effectif,
-            'photo_commande' => $meeting->photo_commande ? 'data:image/png;base64,' . $meeting->photo_commande : null
+            'id_details_ppmeeting' => $detail_meeting->id_details_ppmeeting,
+            'nom_modele' => $detail_meeting->nom_modele,
+            'dateppm' => $detail_meeting->dateppm,
+            'heure_debut' => $detail_meeting->heure_debut,
+            'effectif' => $detail_meeting->effectif,
+            'photo_commande' => $detail_meeting->photo_commande ? 'data:image/png;base64,' . $detail_meeting->photo_commande : null,
+            'details_meeting_etat' => $detail_meeting->details_meeting_etat,
+            'id_chaine' => $detail_meeting->id_chaine,
+            'id_meeting' => $detail_meeting->id_meeting,
+            'id_demande' => $detail_meeting->id_demande,
+            'date_entree_chaine'  => $detail_meeting->date_entree_chaine,
+            'date_entree_coupe' => $detail_meeting->date_entree_coupe,
+            'date_entree_finition' => $detail_meeting->date_entree_finition,
+            'effectif_reel' => $detail_meeting->effectif_reel
         ]);
     }
+
+    public function updateStatus($id, Request $request){
+        DB::beginTransaction();
+        try {
+            $etat = (bool)$request->checkbox;
+            $detail_meeting = DetailsMeeting::findOrFail($id);
+            $detail_meeting->id_chaine = $request->id_chaine;
+            $detail_meeting->etat = $etat;
+            $detail_meeting->heure_debut = $request->heure_debut;
+
+            if(self::checkIfDateExists($request->dateppm)){
+                $detail_meeting->save();
+                DB::commit();
+            }
+            else{
+                $meeting = new Meeting();
+                $meeting->date = $request->dateppm;
+                $meeting->save();
+
+                $detail_meeting->delete();
+
+                $new_detail_meeting = new DetailsMeeting();
+                $new_detail_meeting->id_meeting = $meeting->id;
+                $new_detail_meeting->heure_debut = $request->heure_debut;
+                $new_detail_meeting->id_chaine = $request->id_chaine;
+                $new_detail_meeting->id_demande = $request->id_demande;
+
+                $new_detail_meeting->save();
+                DB::commit();
+            }
+            return redirect()->route('PLANNING.PPM.calendar')->with('success', 'L\'état de la réunion a été mis à jour avec succès.');
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return redirect()->back()->with('error', 'Une erreur est survenue lors de la mise à jour.');
+        }
+    }
+
+    public static function checkIfDateExists($dateppm){
+        return Meeting::where('date', $dateppm)->exists();
+    }
+    
 }

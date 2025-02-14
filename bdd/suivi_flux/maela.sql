@@ -1,192 +1,74 @@
-alter table destination add column idtaille int;
-
-alter table destination add foreign key(idtaille) references unitetaille(id);
-
---view pour lister par destinations(OF) les destinations d'une commande
-CREATE OR REPLACE VIEW public.v_liste_of
-AS SELECT vdr.recap_id,
-    vdr.iddemandeclient,
-    vdr.numerocommande,
-    vd.nomtier,
-    vd.nom_style,
-    vd.nom_modele,
-    sum(vdr.qteof) AS qteof
-   FROM v_dest_recap vdr
-     JOIN v_demandeclient vd ON vd.id = vdr.iddemandeclient
-GROUP BY vdr.recap_id, vdr.iddemandeclient, vdr.numerocommande, vd.nomtier, vd.nom_style, vd.nom_modele;
-
-CREATE OR REPLACE VIEW public.v_dest_recap
-AS SELECT rc.id AS recap_id,
-    rc.iddemandeclient,
-    rc.etdrevise,
-    rc.etdpropose,
-    rc.receptionbc,
-    rc.bcclient,
-    rc.date_bc_tissu,
-    rc.date_bc_access,
-    rc.etat AS recap_etat,
-    d.id AS destination_id,
-    d.numerocommande,
-    d.etdinitial,
-    d.datelivraisonexacte,
-    d.dateinspection,
-    d.qteof,
-    d.etat AS destination_etat,
-    ds.id AS deststd_id,
-    ds.designation AS deststd_designation,
-    ut.unite_taille,
-    ut.id AS unitetailleid,
-    vd.nomtier,
+CREATE OR REPLACE VIEW public.v_ppmeeting
+AS SELECT vd.id,
     vd.id_tiers,
     vd.nom_modele,
-    vd.nom_style,
-    vd.id_style
-   FROM recapcommande rc
-     LEFT JOIN destination d ON rc.id = d.idrecapcommande
-     LEFT JOIN deststd ds ON d.iddeststd = ds.id
-     LEFT JOIN unitetaille ut ON d.idtaille = ut.id
-     JOIN v_demandeclient vd ON rc.iddemandeclient = vd.id;
-
---27/01/2025
---ajout colonne isTracked sur la table destination pour savoir si celui ci est deja tracke dans le suivi de flux
-alter table destination  add column isTracked boolean default false;
-
---ajout des colonne destination(id,isTracked) de dans le view afin d'avoir l'id de la destination en question qui a ete envoye dans le suivi
-CREATE OR REPLACE VIEW public.v_dest_recap
-AS SELECT rc.id AS recap_id,
-    rc.iddemandeclient,
-    rc.etdrevise,
-    rc.etdpropose,
-    rc.receptionbc,
-    rc.bcclient,
-    rc.date_bc_tissu,
-    rc.date_bc_access,
-    rc.etat AS recap_etat,
-    d.id AS destination_id,
-    d.numerocommande,
-    d.etdinitial,
-    d.datelivraisonexacte,
-    d.dateinspection,
-    d.qteof,
-    d.etat AS destination_etat,
-    ds.id AS deststd_id,
-    ds.designation AS deststd_designation,
-    ut.unite_taille,
-    ut.id AS unitetailleid,
     vd.nomtier,
-    vd.id_tiers,
-    vd.nom_modele,
-    vd.nom_style,
-    vd.id_style,
-    d.id as id_destination,
-    d.isTracked
-   FROM recapcommande rc
-     LEFT JOIN destination d ON rc.id = d.idrecapcommande
-     LEFT JOIN deststd ds ON d.iddeststd = ds.id
-     LEFT JOIN unitetaille ut ON d.idtaille = ut.id
-     LEFT JOIN v_demandeclient vd ON rc.iddemandeclient = vd.id;
+    vd.id_etat,
+    vd.etat,
+    vd.qte_commande_provisoire,
+    vd.types_valeur_ajout,
+    d.tissus,
+    d.accy,
+    d.okprod,
+    m.date AS dateppm,
+    dp.datetrace,
+    c.designation,
+    dm.date_entree_chaine,
+    dm.date_entree_coupe,
+    dm.date_entree_finition,
+    dm.heure_debut,
+    sv.ex_factory,
+    dm.effectif_prevu,
+    dm.effectif_reel,
+    dm.id_demande,
+    dm.commentaire,
+    dm.id_chaine,
+    dm.etat AS etat_detailmeeting,
+    dp.etat AS etat_trace,
+    vd.photo_commande,
+    dm.etat AS details_meeting_etat,
+    dm.id AS id_details_ppmeeting
+   FROM v_general_final_recap vd
+     LEFT JOIN datedisponibiliteforppmeeting d ON vd.id = d.id_demande_client
+     LEFT JOIN dateprevisionfortrace dp ON vd.id = dp.id_demande_client
+     LEFT JOIN details_meeting dm ON vd.id = dm.id_demande
+     LEFT JOIN meeting m ON dm.id_meeting = m.id
+     LEFT JOIN chaine c ON dm.id_chaine = c.id_chaine
+     LEFT JOIN ( SELECT DISTINCT ON (v_suivifluxmes.id_demande_client) v_suivifluxmes.id_demande_client,
+            v_suivifluxmes.ex_factory
+           FROM v_suivifluxmes) sv ON vd.id = sv.id_demande_client
+     JOIN v_demandeclient vdm ON vd.id = vdm.id
+  WHERE vd.etat = 0 AND vd.id_etat = 2;
 
-
---ajout colonne id_destination dans la table suivi flux pour anticiper les evenements dans le cas ou on a besoin de l'id_destination au futur
-ALTER TABLE suivifluxmes 
-ADD COLUMN id_destination INTEGER REFERENCES destination(id);
-
---28/01/2025
-ALTER TABLE tiers ADD CONSTRAINT unique_nom_tier UNIQUE (nomtier);
-
---30/01/2025
-
-CREATE OR REPLACE VIEW public.v_dest_recap
-AS SELECT rc.id AS recap_id,
-    rc.iddemandeclient,
-    rc.etdrevise,
-    rc.etdpropose,
-    rc.receptionbc,
-    rc.bcclient,
-    rc.date_bc_tissu,
-    rc.date_bc_access,
-    rc.etat AS recap_etat,
-    d.id AS destination_id,
-    d.numerocommande,
-    d.etdinitial,
-    d.datelivraisonexacte,
-    d.dateinspection,
-    d.qteof,
-    d.etat AS destination_etat,
-    ds.id AS deststd_id,
-    ds.designation AS deststd_designation,
-    ut.unite_taille,
-    ut.id AS unitetailleid,
-    vd.nomtier,
-    vd.id_tiers,
-    vd.nom_modele,
-    vd.nom_style,
-    vd.id_style,
-    d.id as id_destination,
-    d.isTracked,
-    COALESCE(vgfr.receptionbc, vgfr.date_entree) AS date_livraison_confirme
-   FROM recapcommande rc
-     LEFT JOIN destination d ON rc.id = d.idrecapcommande
-     LEFT JOIN deststd ds ON d.iddeststd = ds.id
-     LEFT JOIN unitetaille ut ON d.idtaille = ut.id
-     LEFT JOIN v_demandeclient vd ON rc.iddemandeclient = vd.id
-     LEFT JOIN v_general_final_recap vgfr ON vgfr.id = rc.iddemandeclient;
-
-ALTER TABLE suivifluxmes ADD COLUMN date_livraison_confirme DATE;
-
-CREATE OR REPLACE VIEW public.v_suivifluxmes
-AS SELECT suivifluxmes.id,
-    suivifluxmes.date_operaton,
-    suivifluxmes.id_demande_client,
-    suivifluxmes.numero_commande,
-    COALESCE(suivifluxmes.qte_coupe, 0::double precision) AS qte_coupe,
-    COALESCE(suivifluxmes.qte_entree_chaine, 0::double precision) AS qte_entree_chaine,
-    COALESCE(suivifluxmes.qte_transfere, 0::double precision) AS qte_transfere,
-    COALESCE(suivifluxmes.qte_pret_livrer, 0::double precision) AS qte_pret_livrer,
-    COALESCE(suivifluxmes.qte_deja_livrer, 0::double precision) AS qte_deja_livrer,
-    suivifluxmes.id_taille,
-    COALESCE(suivifluxmes.qte_po, 0::double precision) AS qte_po,
+  CREATE OR REPLACE VIEW public.v_nb_ppm_by_month
+AS SELECT to_char(v_ppmeeting.dateppm::timestamp with time zone, 'YYYY-MM'::text) AS mois,
+    count(*) AS nbppm,
+    count(
         CASE
-            WHEN COALESCE(suivifluxmes.qte_po, 0::double precision) = 0::double precision THEN 0::double precision
-            ELSE COALESCE(suivifluxmes.qte_coupe, 0::double precision) / COALESCE(suivifluxmes.qte_po, 0::double precision) * 100::double precision
-        END AS pourcentagecoupe,
+            WHEN v_ppmeeting.details_meeting_etat = true THEN 1
+            ELSE NULL::integer
+        END) AS nbfini,
         CASE
-            WHEN COALESCE(suivifluxmes.qte_coupe, 0::double precision) = 0::double precision THEN 0::double precision
-            ELSE COALESCE(suivifluxmes.qte_transfere, 0::double precision) / COALESCE(suivifluxmes.qte_coupe, 0::double precision) * 100::double precision
-        END AS pourcentagetransferer,
-        CASE
-            WHEN COALESCE(suivifluxmes.qte_coupe, 0::double precision) = 0::double precision THEN 0::double precision
-            ELSE COALESCE(suivifluxmes.qte_rejet_chaine, 0::double precision) / COALESCE(suivifluxmes.qte_coupe, 0::double precision) * 100::double precision
-        END AS pourcentagerejetchaine,
-        CASE
-            WHEN COALESCE(suivifluxmes.qte_coupe, 0::double precision) = 0::double precision THEN 0::double precision
-            ELSE COALESCE(suivifluxmes.qte_rejet_coupe, 0::double precision) / COALESCE(suivifluxmes.qte_coupe, 0::double precision) * 100::double precision
-        END AS pourcentagerejetcoupe,
-    suivifluxmes.couleur,
-    COALESCE(suivifluxmes.entree_repassage, 0::double precision) AS entree_repassage,
-    COALESCE(suivifluxmes.sortie_repassage, 0::double precision) AS sortie_repassage,
-    suivifluxmes.commentaire,
-    suivifluxmes.id_destination,
-    suivifluxmes.qte_rejet_chaine,
-    suivifluxmes.qte_rejet_coupe,
-    suivifluxmes.etat,
-    v_demandeclient.nomtier,
-    v_demandeclient.id_tiers,
-    v_demandeclient.nom_style,
-    v_demandeclient.id_style,
-    v_demandeclient.nom_modele,
-    unitetaille.unite_taille,
-    COALESCE(suivifluxmes.qte_transfere, 0::double precision) - COALESCE(suivifluxmes.qte_coupe, 0::double precision) AS balanceatransferer,
-    COALESCE(suivifluxmes.qte_deja_livrer, 0::double precision) - COALESCE(suivifluxmes.qte_coupe, 0::double precision) AS balancealivrer,
-    COALESCE(suivifluxmes.sortie_repassage, 0::double precision) - COALESCE(suivifluxmes.qte_coupe, 0::double precision) AS balancerepassage,
-    v_destinationrecap.datelivraisonexacte,
-    v_destinationrecap.etdrevise,
-    v_destinationrecap.etdpropose,
-    v_destinationrecap.etdinitial,
-    v_demandeclient.date_livraison,
-    COALESCE(v_destinationrecap.datelivraisonexacte, v_destinationrecap.etdrevise, v_destinationrecap.etdpropose, v_destinationrecap.etdinitial, v_demandeclient.date_livraison) AS ex_factory,
-    suivifluxmes.date_livraison_confirme
-   FROM suivifluxmes
-     JOIN v_demandeclient ON suivifluxmes.id_demande_client = v_demandeclient.id
-     JOIN unitetaille ON unitetaille.id = suivifluxmes.id_taille
-     LEFT JOIN v_destinationrecap ON v_destinationrecap.id = suivifluxmes.id_destination;
+            WHEN count(*) > 0 THEN count(
+            CASE
+                WHEN v_ppmeeting.details_meeting_etat = true THEN 1
+                ELSE NULL::integer
+            END)::double precision / count(*)::double precision
+            ELSE 0::double precision
+        END AS taux_achevement
+   FROM v_ppmeeting
+  WHERE v_ppmeeting.dateppm IS NOT NULL
+  GROUP BY (to_char(v_ppmeeting.dateppm::timestamp with time zone, 'YYYY-MM'::text));
+
+  CREATE TABLE public.dateprevisionfortrace (
+	id serial4 NOT NULL,
+	id_demande_client int4 NULL,
+	datetrace date NULL,
+	etat int4 NULL DEFAULT 0,
+	CONSTRAINT dateprevisionfortrace_pkey PRIMARY KEY (id)
+);
+
+
+-- public.dateprevisionfortrace foreign keys
+
+ALTER TABLE public.dateprevisionfortrace ADD CONSTRAINT dateprevisionfortrace_id_demande_client_fkey FOREIGN KEY (id_demande_client) REFERENCES public.demandeclient(id);

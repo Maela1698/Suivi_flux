@@ -1,3 +1,5 @@
+-- public.v_ppmeeting source
+
 CREATE OR REPLACE VIEW public.v_ppmeeting
 AS SELECT vd.id,
     vd.id_tiers,
@@ -25,7 +27,10 @@ AS SELECT vd.id,
     dm.id_chaine,
     dm.etat AS etat_detailmeeting,
     dp.etat AS etat_trace,
-    vd.photo_commande
+    vd.photo_commande,
+    dm.etat AS details_meeting_etat,
+    dm.id AS id_details_ppmeeting,
+    dm.id_meeting
    FROM v_general_final_recap vd
      LEFT JOIN datedisponibiliteforppmeeting d ON vd.id = d.id_demande_client
      LEFT JOIN dateprevisionfortrace dp ON vd.id = dp.id_demande_client
@@ -35,19 +40,9 @@ AS SELECT vd.id,
      LEFT JOIN ( SELECT DISTINCT ON (v_suivifluxmes.id_demande_client) v_suivifluxmes.id_demande_client,
             v_suivifluxmes.ex_factory
            FROM v_suivifluxmes) sv ON vd.id = sv.id_demande_client
-    JOIN v_demandeclient vdm ON vd.id = vdm.id
+     JOIN v_demandeclient vdm ON vd.id = vdm.id
   WHERE vd.etat = 0 AND vd.id_etat = 2;
 
-CREATE OR REPLACE VIEW public.v_nb_ppm_by_month AS
-SELECT 
-    to_char(v_ppmeeting.dateppm::timestamp with time zone, 'YYYY-MM') AS mois,
-    count(*) AS nbppm,
-    count(CASE WHEN details_meeting_etat = true THEN 1 END) AS nbfini,
-    CASE WHEN count(*) > 0 THEN count(CASE WHEN details_meeting_etat = true THEN 1 END)::float / count(*) ELSE 0 END AS taux_achevement 
-FROM 
-    v_ppmeeting
-WHERE 
-    v_ppmeeting.dateppm IS NOT NULL
-GROUP BY 
-    to_char(v_ppmeeting.dateppm::timestamp with time zone, 'YYYY-MM');
-           FROM v_suivifluxmes sv ON vd.id = sv.id_demande_client;
+ALTER TABLE public.details_meeting ALTER COLUMN id_demande SET NOT NULL;
+
+ALTER TABLE public.meeting DROP CONSTRAINT test_meeting_check ;
