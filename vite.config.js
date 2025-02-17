@@ -6,7 +6,8 @@ export default defineConfig({
         laravel({
             input: [
                 'resources/js/app.jsx',
-                'resources/js/fullCalendar/ppMeeting.js'
+                'resources/js/fullCalendar/ppMeeting.js',
+                'resources/js/fullCalendar/trace.js',
         ],
             refresh: true,
         }),

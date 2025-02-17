@@ -108,7 +108,7 @@
                 @csrf
                 <input type="hidden" name="_token" value="{{ csrf_token() }}">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="eventModalLabel">Détails du ppmeeting</h5>
+                    <h5 class="modal-title" id="eventModalLabel">Détails</h5>
                     <div class="form-check ml-auto">
                         <input type="checkbox" class="form-check-input" name="checkbox">
                         <label class="form-check-label" for="termineCheckbox">Terminé</label>

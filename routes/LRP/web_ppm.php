@@ -9,3 +9,10 @@ Route::get('/api/getNbPPM', [ControllerPlanningPPMeeting::class, 'getNbPPM']);
 Route::get('/api/meeting/{eventIdDemande}', [ControllerPlanningPPMeeting::class, 'getMeetingById']);
 Route::post('/meeting-update/{id}', [ControllerPlanningPPMeeting::class, 'updateStatus'])->name('PLANNING.PPM.update');
 
+Route::get('/api/trace', [ControllerPlanningPPMeeting::class, 'getTraces']);
+Route::get('/api/trace/{eventIdDemande}', [ControllerPlanningPPMeeting::class, 'getTraceById']);
+Route::post('/trace-update/{id}', [ControllerPlanningPPMeeting::class, 'updateStatusTrace'])->name('PLANNING.trace.update');
+
+
+
+
