@@ -49,6 +49,10 @@ document.addEventListener('DOMContentLoaded', function() {
                     .then(data => {
                         currentMeetingId = data.id_details_ppmeeting;
 
+                        let termineIcon = data.details_meeting_etat
+                        ? '<i class="fas fa-check-circle"></i>'
+                        : '<input type="checkbox" class="form-check-input" name="checkbox">';
+
                         let modalContent = `
                             <p><strong>Modèle :</strong> ${data.nom_modele}</p>
                             <div class="form-group row">
@@ -101,11 +105,25 @@ document.addEventListener('DOMContentLoaded', function() {
                         // Insérer le contenu dans le modal
                         document.getElementById('cin_details').innerHTML = modalContent;
 
+                        // Mettre à jour l'icône ou la case à cocher
+                        document.querySelector('.modal-header .form-check').innerHTML = termineIcon + ' <label class="form-check-label">Terminé</label>';
+
                         // Mettre à jour l'image si disponible
                         if (data.photo_commande) {
                             document.getElementById('modalImage').src = data.photo_commande;
                         } else {
                             document.getElementById('modalImage').src = "default.jpg"; // Image par défaut si pas de photo
+                        }
+
+                        // Mettre à jour le footer du modal
+                        let modalFooter = document.querySelector('.modal-footer');
+                        if (data.details_meeting_etat) {
+                            modalFooter.innerHTML = '<button type="button" class="btn btn-secondary" data-dismiss="modal">Fermer</button>';
+                        } else {
+                            modalFooter.innerHTML = `
+                                <button type="submit" class="btn btn-primary" id="enregistrerBtn">Enregistrer</button>
+                                <button type="button" class="btn btn-secondary" data-dismiss="modal">Fermer</button>
+                            `;
                         }
                     })
                     .catch(error => {
@@ -123,15 +141,15 @@ document.addEventListener('DOMContentLoaded', function() {
         let initialMonth = new Date().getFullYear() + '-' + String(new Date().getMonth() + 1).padStart(2, '0');
         updateNbPPM(initialMonth);
     }
-    const enregistrerBtn = document.getElementById('enregistrerBtn');
-
-    enregistrerBtn.addEventListener('click', function() {
-        let form = document.getElementById('updateStatusForm');
-        if (currentMeetingId) {
-            form.action = `/meeting-update/${currentMeetingId}`;
-            form.submit();
-        } else {
-            alert("Erreur : ID du meeting manquant !");
+    document.querySelector('.modal-footer').addEventListener('click', function(event) {
+        if (event.target && event.target.id === 'enregistrerBtn') {
+            let form = document.getElementById('updateStatusForm');
+            if (currentMeetingId) {
+                form.action = `/meeting-update/${currentMeetingId}`;
+                form.submit();
+            } else {
+                alert("Erreur : ID du meeting manquant !");
+            }
         }
     });
 });
@@ -142,7 +160,7 @@ function updateNbPPM(month) {
         .then(response => response.json())
         .then(data => {
             document.querySelector('.nb-ppm').textContent = `${data.nbppm}`;
-            document.querySelector('.taux-achevement').textContent = `${data.taux_achevement*100}%`;
+            document.querySelector('.taux-achevement').textContent = `${(data.taux_achevement * 100).toFixed(2)}%`;
         })
         .catch(error => console.error('Erreur:', error));
 }

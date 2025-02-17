@@ -80,6 +80,8 @@ class ControllerPlanningPPMeeting extends Controller{
             $detail_meeting->heure_debut = $request->heure_debut;
 
             if(self::checkIfDateExists($request->dateppm)){
+                $meeting = Meeting::where('date',$request->dateppm)->first();
+                $detail_meeting->id_meeting = $meeting->id;
                 $detail_meeting->save();
                 DB::commit();
             }
@@ -87,7 +89,7 @@ class ControllerPlanningPPMeeting extends Controller{
                 $meeting = new Meeting();
                 $meeting->date = $request->dateppm;
                 $meeting->save();
-
+                
                 $detail_meeting->delete();
 
                 $new_detail_meeting = new DetailsMeeting();
@@ -102,7 +104,7 @@ class ControllerPlanningPPMeeting extends Controller{
             return redirect()->route('PLANNING.PPM.calendar')->with('success', 'L\'état de la réunion a été mis à jour avec succès.');
         } catch (\Exception $e) {
             DB::rollBack();
-            return redirect()->back()->with('error', 'Une erreur est survenue lors de la mise à jour.');
+            return redirect()->route('PLANNING.PPM.calendar')->with('error', 'Une erreur est survenue lors de la mise à jour : ' . $e->getMessage());
         }
     }
 

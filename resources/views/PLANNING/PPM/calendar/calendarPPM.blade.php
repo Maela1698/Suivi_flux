@@ -49,7 +49,7 @@
                                     </div>
                                     <div class="stat-content d-inline-block">
                                         <div class="stat-text retard-color">Retard</div>
-                                        <div class="stat-digit retard-color">34%</div>
+                                        <div class="stat-digit retard-color">0%</div>
                                     </div>
                                 </div>
                             </div>
@@ -62,7 +62,7 @@
                                     </div>
                                     <div class="stat-content d-inline-block">
                                         <div class="stat-text temps-color">A temps</div>
-                                        <div class="stat-digit temps-color">20%</div>
+                                        <div class="stat-digit temps-color">0%</div>
                                     </div>
                                 </div>
                             </div>
@@ -75,12 +75,22 @@
                                     </div>
                                     <div class="stat-content d-inline-block">
                                         <div class="stat-text abs-color">Abscence</div>
-                                        <div class="stat-digit abs-color">5%</div>
+                                        <div class="stat-digit abs-color">0%</div>
                                     </div>
                                 </div>
                             </div>
                         </div>
                     </div>
+                    @if (session('error'))
+                        <div class="alert alert-danger">
+                            {{ session('error') }}
+                        </div>
+                    @endif
+                    @if (session('success'))
+                        <div class="alert alert-success">
+                            {{ session('success') }}
+                        </div>
+                    @endif
                     <div id="calendar"></div>
                 </div>
             </div>
@@ -111,7 +121,7 @@
                     </div>
                 </div>
                 <div class="modal-footer">
-                    <button type="submit" class="btn btn-primary" id="enregistrerBtn">Enregistrer</button>
+                    <button type="submit" class="btn btn-primary" id="enregistrerBtn">Modifier</button>
                     <button type="button" class="btn btn-secondary" data-dismiss="modal">Fermer</button>
                 </div>
             </form>
