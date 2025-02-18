@@ -19,11 +19,15 @@ document.addEventListener('DOMContentLoaded', function() {
             editable: false,
             eventOverlap: false,
 
+            datesSet: function(info) {
+                let currentMonth = info.view.currentStart.getFullYear() + '-' + String(info.view.currentStart.getMonth() + 1).padStart(2, '0');
+                updateStatInfo(currentMonth);
+            },
+
             eventClick: function(info) {
                 info.jsEvent.preventDefault();
 
                 document.getElementById('cin_details').innerHTML = "<p>Chargement...</p>";
-                document.getElementById('modalImage').src = "";
 
                 let eventIdDemande = info.event.extendedProps.id_demande;
 
@@ -75,6 +79,9 @@ document.addEventListener('DOMContentLoaded', function() {
         });
 
         calendar.render();
+
+        let initialMonth = new Date().getFullYear() + '-' + String(new Date().getMonth() + 1).padStart(2, '0');
+        updateStatInfo(initialMonth);
     }
 
     document.querySelector('.modal-footer').addEventListener('click', function(event) {
@@ -89,3 +96,14 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     });
 });
+
+function updateStatInfo(month) {
+    console.log("Mois envoyé à l'API :", month);
+    fetch(`/api/getStatTrace?month=${month}`)
+        .then(response => response.json())
+        .then(data => {
+            document.querySelector('.nb-trace').textContent = `${data.nbtrace}`;
+            document.querySelector('.taux-achevement').textContent = `${(data.taux_achevement * 100).toFixed(2)}%`;
+        })
+        .catch(error => console.error('Erreur:', error));
+}

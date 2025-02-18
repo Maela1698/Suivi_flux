@@ -49,7 +49,7 @@
                                     </div>
                                     <div class="stat-content d-inline-block">
                                         <div class="stat-text retard-color">Retard</div>
-                                        <div class="stat-digit retard-color">0%</div>
+                                        <div class="stat-digit retard-color"><span class="taux-retard">...</span></div>
                                     </div>
                                 </div>
                             </div>

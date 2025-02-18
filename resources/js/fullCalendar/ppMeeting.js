@@ -161,6 +161,7 @@ function updateNbPPM(month) {
         .then(data => {
             document.querySelector('.nb-ppm').textContent = `${data.nbppm}`;
             document.querySelector('.taux-achevement').textContent = `${(data.taux_achevement * 100).toFixed(2)}%`;
+            document.querySelector('.taux-retard').textContent = `${(data.taux_retard * 100).toFixed(2)}%`;
         })
         .catch(error => console.error('Erreur:', error));
 }

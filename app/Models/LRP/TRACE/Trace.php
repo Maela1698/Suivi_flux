@@ -1,11 +1,11 @@
 <?php
 
-namespace App\Models\LRP;
+namespace App\Models\LRP\TRACE;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class TraceMaela extends Model
+class Trace extends Model
 {
     use HasFactory;
 
