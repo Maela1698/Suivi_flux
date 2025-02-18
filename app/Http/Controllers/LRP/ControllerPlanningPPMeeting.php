@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\LRP;
 
 use App\Http\Controllers\Controller;
+use App\Models\Chaine;
 use App\Models\LRP\PP\DetailsMeeting;
 use App\Models\LRP\PP\Meeting;
 use App\Models\LRP\PP\VPPMeeting;
@@ -19,9 +20,11 @@ class ControllerPlanningPPMeeting extends Controller{
             return [
                 'title' => $meeting->nom_modele,
                 'start' => $meeting->dateppm . 'T' . $meeting->heure_debut, // Format : 'YYYY-MM-DDTHH:MM:SS'
-                'color' => $meeting->details_meeting_etat ? "#25D366" : "#FFD700",
+                'color' => ($meeting->isretar && !$meeting->details_meeting_etat) ? "#25D366" :
+                            ($meeting->details_meeting_etat ? "#25D366" : "rgb(170, 170, 170)"),
                 'id_demande' => $meeting->id,
-                'details_meeting_etat' => $meeting->details_meeting_etat
+                'details_meeting_etat' => $meeting->details_meeting_etat,
+                'isretard' => $meeting->isretard,
             ];
         });
 
@@ -68,20 +71,26 @@ class ControllerPlanningPPMeeting extends Controller{
             'date_entree_chaine'  => $detail_meeting->date_entree_chaine,
             'date_entree_coupe' => $detail_meeting->date_entree_coupe,
             'date_entree_finition' => $detail_meeting->date_entree_finition,
-            'effectif_reel' => $detail_meeting->effectif_reel
+            'effectif_reel' => $detail_meeting->effectif_reel,
+            'effectif_prevu' => $detail_meeting->effectif_prevu
         ]);
     }
-
-    
 
     public function updateStatus($id, Request $request){
         DB::beginTransaction();
         try {
+            $validatedData = $request->validate([
+                'effectif_reel' => 'required|numeric|min:1',
+            ]);
             $etat = (bool)$request->checkbox;
             $detail_meeting = DetailsMeeting::findOrFail($id);
-            $detail_meeting->id_chaine = $request->id_chaine;
             $detail_meeting->etat = $etat;
             $detail_meeting->heure_debut = $request->heure_debut;
+            $detail_meeting->date_entree_chaine = $request->date_entree_chaine;
+            $detail_meeting->date_entree_coupe = $request->date_entree_coupe;
+            $detail_meeting->date_entree_finition = $request->date_entree_finition;
+            $detail_meeting->effectif_reel = $validatedData['effectif_reel'];
+            $detail_meeting->id_chaine = $request->id_chaine;
 
             if(self::checkIfDateExists($request->dateppm)){
                 $meeting = Meeting::where('date',$request->dateppm)->first();
@@ -98,9 +107,13 @@ class ControllerPlanningPPMeeting extends Controller{
 
                 $new_detail_meeting = new DetailsMeeting();
                 $new_detail_meeting->id_meeting = $meeting->id;
-                $new_detail_meeting->heure_debut = $request->heure_debut;
-                $new_detail_meeting->id_chaine = $request->id_chaine;
                 $new_detail_meeting->id_demande = $request->id_demande;
+                $new_detail_meeting->heure_debut = $request->heure_debut;
+                $new_detail_meeting->date_entree_chaine = $request->date_entree_chaine;
+                $new_detail_meeting->date_entree_coupe = $request->date_entree_coupe;
+                $new_detail_meeting->date_entree_finition = $request->date_entree_finition;
+                $new_detail_meeting->effectif_reel = $validatedData['effectif_reel'];
+                $new_detail_meeting->id_chaine = $request->id_chaine;
 
                 $new_detail_meeting->save();
                 DB::commit();
@@ -112,9 +125,12 @@ class ControllerPlanningPPMeeting extends Controller{
         }
     }
 
-    
-
     public static function checkIfDateExists($dateppm){
         return Meeting::where('date', $dateppm)->exists();
+    }
+
+    public function getAllChaines(){
+        $chaines = Chaine::all();
+        return response()->json($chaines);
     }
 }

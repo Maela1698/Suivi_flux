@@ -1,6 +1,7 @@
 @include('CRM.header')
 @include('CRM.sidebar')
 @include('STYLE.PLANNING.PPM.styleCalendarPPM')
+
 <div class="content-body">
     <div class="container-fluid">
         @include('PLANNING.headerPlan')
@@ -54,7 +55,7 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="col-lg">
+                        {{-- <div class="col-lg">
                             <div class="card">
                                 <div class="stat-widget-one card-body temps">
                                     <div class="stat-icon d-inline-block">
@@ -79,7 +80,7 @@
                                     </div>
                                 </div>
                             </div>
-                        </div>
+                        </div> --}}
                     </div>
                     @if (session('error'))
                         <div class="alert alert-danger">

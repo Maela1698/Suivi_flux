@@ -18,6 +18,8 @@ class ControllerTrace extends Controller
                 'title' => $trace->nom_modele,
                 'start' => $trace->datetrace,
                 'id_demande' => $trace->id,
+                'etat_trace' => $trace->etat_trace,
+                'isretardtrace' => $trace->isretardtrace
             ];
         });
 
@@ -61,12 +63,13 @@ class ControllerTrace extends Controller
     
         $data = DB::table('v_stat_trace')
         ->where('mois', $month)
-        ->select('nbtrace', 'taux_achevement')
+        ->select('nbtrace', 'taux_achevement','taux_retard')
         ->first();
 
         return response()->json([
             'nbtrace' => $data->nbtrace ?? 0, 
-            'taux_achevement' => $data->taux_achevement ?? 0
+            'taux_achevement' => $data->taux_achevement ?? 0,
+            'taux_retard' => $data->taux_retard ?? 0,
     ]);
     }
 }

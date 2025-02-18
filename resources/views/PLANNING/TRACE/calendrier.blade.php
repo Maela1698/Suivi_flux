@@ -1,6 +1,6 @@
 @include('CRM.header')
 @include('CRM.sidebar')
-@include('STYLE.PLANNING.PPM.styleCalendarPPM')
+@include('STYLE.PLANNING.TRACE.styleCalendarTrace')
 <div class="content-body">
     <div class="container-fluid">
         @include('PLANNING.headerPlan')
@@ -45,12 +45,12 @@
                                     </div>
                                     <div class="stat-content d-inline-block">
                                         <div class="stat-text retard-color">Retard</div>
-                                        <div class="stat-digit retard-color">0%</div>
+                                        <div class="stat-digit retard-color"><span class="taux-retard">...</span></div>
                                     </div>
                                 </div>
                             </div>
                         </div>
-                        <div class="col-lg">
+                        {{-- <div class="col-lg">
                             <div class="card">
                                 <div class="stat-widget-one card-body temps">
                                     <div class="stat-icon d-inline-block">
@@ -75,7 +75,7 @@
                                     </div>
                                 </div>
                             </div>
-                        </div>
+                        </div> --}}
                     </div>
                     <div id="calendar"></div>
                 </div>

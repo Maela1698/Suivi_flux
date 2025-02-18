@@ -16,6 +16,17 @@ document.addEventListener('DOMContentLoaded', function() {
                 right: 'dayGridMonth,timeGridWeek,timeGridDay'
             },
             events: '/api/trace',
+
+            eventClassNames: function(arg) {
+                var event = arg.event;
+                if (event.extendedProps.etat_trace == 1) {
+                    return ['fini-back-ground-color'];
+                }
+                if( event.extendedProps.isretardtrace && event.extendedProps.etat_trace != 1){
+                    return ['retard-back-ground-color'];
+                }
+                return ['a-venir-back-ground-color'];
+            },
             editable: false,
             eventOverlap: false,
 
@@ -104,6 +115,7 @@ function updateStatInfo(month) {
         .then(data => {
             document.querySelector('.nb-trace').textContent = `${data.nbtrace}`;
             document.querySelector('.taux-achevement').textContent = `${(data.taux_achevement * 100).toFixed(2)}%`;
+            document.querySelector('.taux-retard').textContent = `${(data.taux_retard * 100).toFixed(2)}%`;
         })
         .catch(error => console.error('Erreur:', error));
 }
