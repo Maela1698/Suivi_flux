@@ -70,6 +70,28 @@ class ControllerTrace extends Controller
             'nbtrace' => $data->nbtrace ?? 0, 
             'taux_achevement' => $data->taux_achevement ?? 0,
             'taux_retard' => $data->taux_retard ?? 0,
-    ]);
+        ]);
     }
+
+    public function getStatWeekTrace(Request $request){
+        $startDate = $request->query('startDate');
+        $endDate = $request->query('endDate');
+    
+        if (!$startDate || !$endDate) {
+            return response()->json(['error' => 'Les paramètres startDate et endDate sont requis.'], 400);
+        }
+    
+        $data = DB::select('SELECT * FROM f_stat_week_trace(?, ?)', [$startDate, $endDate]);
+    
+        if (!empty($data)) {
+            return response()->json([
+                'nb_trace' => $data[0]->nb_trace ?? 0,
+                'taux_fini' =>  $data[0]->taux_fini ?? 0,
+                'taux_retard' => $data[0]->taux_retard ?? 0,
+            ]);
+        } else {
+            return response()->json(['nb_trace' => 0]);
+        }
+    }
+
 }

@@ -20,8 +20,8 @@ class ControllerPlanningPPMeeting extends Controller{
             return [
                 'title' => $meeting->nom_modele,
                 'start' => $meeting->dateppm . 'T' . $meeting->heure_debut, // Format : 'YYYY-MM-DDTHH:MM:SS'
-                'color' => ($meeting->isretar && !$meeting->details_meeting_etat) ? "#25D366" :
-                            ($meeting->details_meeting_etat ? "#25D366" : "rgb(170, 170, 170)"),
+                'color' =>  ($meeting->isretard && !$meeting->details_meeting_etat) ? "rgb(255, 60, 60)" :
+                            ($meeting->details_meeting_etat ? "#25D366" : "gray"),
                 'id_demande' => $meeting->id,
                 'details_meeting_etat' => $meeting->details_meeting_etat,
                 'isretard' => $meeting->isretard,
@@ -47,7 +47,28 @@ class ControllerPlanningPPMeeting extends Controller{
             'nbppm' => $data->nbppm ?? 0, 
             'taux_achevement' => $data->taux_achevement ?? 0,
             'taux_retard' => $data->taux_retard ?? 0
-    ]);
+        ]);
+    }
+
+    public function getStatWeekPPM(Request $request){
+        $startDate = $request->query('startDate');
+        $endDate = $request->query('endDate');
+    
+        if (!$startDate || !$endDate) {
+            return response()->json(['error' => 'Les paramètres startDate et endDate sont requis.'], 400);
+        }
+    
+        $data = DB::select('SELECT * FROM f_stat_week_ppm(?, ?)', [$startDate, $endDate]);
+    
+        if (!empty($data)) {
+            return response()->json([
+                'nbppm' => $data[0]->nbppm ?? 0,
+                'taux_fini' =>  $data[0]->taux_fini ?? 0,
+                'taux_retard' => $data[0]->taux_retard ?? 0,
+            ]);
+        } else {
+            return response()->json(['nbppm' => 0]);
+        }
     }
 
     public function getMeetingById($id) {
@@ -79,9 +100,12 @@ class ControllerPlanningPPMeeting extends Controller{
     public function updateStatus($id, Request $request){
         DB::beginTransaction();
         try {
-            $validatedData = $request->validate([
-                'effectif_reel' => 'required|numeric|min:1',
-            ]);
+            $validatedData['effectif_reel'] = null;
+            if ($request->has('effectif_reel')) {
+                $validatedData = $request->validate([
+                    'effectif_reel' => 'required|numeric|min:1',
+                ]);
+            } else
             $etat = (bool)$request->checkbox;
             $detail_meeting = DetailsMeeting::findOrFail($id);
             $detail_meeting->etat = $etat;
@@ -89,8 +113,11 @@ class ControllerPlanningPPMeeting extends Controller{
             $detail_meeting->date_entree_chaine = $request->date_entree_chaine;
             $detail_meeting->date_entree_coupe = $request->date_entree_coupe;
             $detail_meeting->date_entree_finition = $request->date_entree_finition;
-            $detail_meeting->effectif_reel = $validatedData['effectif_reel'];
+            if($validatedData['effectif_reel'] != null){
+                $detail_meeting->effectif_reel = $validatedData['effectif_reel'];
+            }
             $detail_meeting->id_chaine = $request->id_chaine;
+            $detail_meeting->effectif_prevu = $request->effectif_prevu;
 
             if(self::checkIfDateExists($request->dateppm)){
                 $meeting = Meeting::where('date',$request->dateppm)->first();
@@ -112,8 +139,12 @@ class ControllerPlanningPPMeeting extends Controller{
                 $new_detail_meeting->date_entree_chaine = $request->date_entree_chaine;
                 $new_detail_meeting->date_entree_coupe = $request->date_entree_coupe;
                 $new_detail_meeting->date_entree_finition = $request->date_entree_finition;
-                $new_detail_meeting->effectif_reel = $validatedData['effectif_reel'];
+                if($validatedData['effectif_reel'] != null){
+                    $new_detail_meeting->effectif_reel = $validatedData['effectif_reel'];
+                }
                 $new_detail_meeting->id_chaine = $request->id_chaine;
+                $new_detail_meeting->effectif_prevu = $request->effectif_prevu;
+
 
                 $new_detail_meeting->save();
                 DB::commit();

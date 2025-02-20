@@ -101,3 +101,82 @@ AS SELECT vd.id,
      LEFT JOIN tauxretartrace t ON dp.id = t.id_trace
      JOIN v_demandeclient vdm ON vd.id = vdm.id
   WHERE vd.etat = 0 AND vd.id_etat = 2;
+
+--
+CREATE OR REPLACE FUNCTION public.f_stat_week_ppm(date_debut DATE, date_fin DATE)
+RETURNS TABLE(
+    date_debut_return DATE,
+    date_fin_return DATE,
+    nbppm BIGINT,
+    nb_fini BIGINT,
+    taux_fini DECIMAL,
+    nb_retard BIGINT,
+    taux_retard DECIMAL
+)
+LANGUAGE plpgsql
+AS $$
+BEGIN
+    RETURN QUERY
+    SELECT
+        date_debut AS date_debut_return,
+        date_fin AS date_fin_return,
+        COUNT(*) AS nbppm,
+        SUM(CASE WHEN vp.details_meeting_etat THEN 1 ELSE 0 END) AS nb_fini,
+        CASE
+            WHEN COUNT(*) > 0 THEN
+                (SUM(CASE WHEN vp.details_meeting_etat THEN 1 ELSE 0 END)::DECIMAL / COUNT(*))
+            ELSE 0
+        END AS taux_fini,
+        SUM(CASE WHEN vp.isretard THEN 1 ELSE 0 END) AS nb_retard,
+        CASE
+            WHEN COUNT(*) > 0 THEN
+                (SUM(CASE WHEN vp.isretard THEN 1 ELSE 0 END)::DECIMAL / COUNT(*))
+            ELSE 0
+        END AS taux_retard
+    FROM
+        v_ppmeeting vp
+    WHERE
+        vp.dateppm BETWEEN date_debut AND date_fin;
+END; $$;
+
+
+CREATE OR REPLACE FUNCTION public.f_stat_week_trace(date_debut DATE, date_fin DATE)
+RETURNS TABLE(
+    date_debut_return DATE,
+    date_fin_return DATE,
+    nb_trace BIGINT,
+    nb_fini BIGINT,
+    taux_fini DECIMAL,
+    nb_retard BIGINT,
+    taux_retard DECIMAL
+)
+LANGUAGE plpgsql
+AS $$
+BEGIN
+    RETURN QUERY
+    SELECT
+        date_debut,
+        date_fin,
+        COUNT(*) AS nb_trace,
+        SUM(CASE WHEN vp.etat_trace = 1 THEN 1 ELSE 0 END) AS nb_fini,
+        CASE
+            WHEN COUNT(*) > 0 THEN
+                (SUM(CASE WHEN vp.etat_trace = 1 THEN 1 ELSE 0 END)::DECIMAL / COUNT(*))
+            ELSE 0
+        END AS taux_fini,
+        SUM(CASE WHEN vp.isretardtrace THEN 1 ELSE 0 END) AS nb_retard,
+        CASE
+            WHEN COUNT(*) > 0 THEN
+                (SUM(CASE WHEN vp.isretardtrace THEN 1 ELSE 0 END)::DECIMAL / COUNT(*))
+            ELSE 0
+        END AS taux_retard
+    FROM
+        v_ppmeeting vp
+    where vp.datetrace BETWEEN date_debut AND date_fin;
+END; $$;
+
+
+ALTER TABLE details_meeting
+ALTER COLUMN effectif_reel SET DEFAULT 0;
+
+UPDATE details_meeting SET effectif_reel = 0 WHERE effectif_reel=NULL;

@@ -1,6 +1,4 @@
-.fini-text-color {
-    color: #25d366 !important;
-}
+
 
 .fini-back-ground-color {
     background-color: #c8ffd3 !important;
@@ -8,7 +6,7 @@
 }
 
 .retard-back-ground-color{
-    background-color: rgb(245, 220, 220)  !important;
+    background-color: rgb(255, 218, 218)  !important;
     border: none;
 }
 
@@ -17,16 +15,23 @@
     border: none;
 }
 
+.fc-event-main-frame{
+    color : gray;
+    font-weight: bolder;
 
-
-.a-venir-color {
-    color: rgb(170, 170, 170) !important;
 }
 
-.fc-daygrid-event,
-.fc-timegrid-event {
-    color: inherit !important;
-    text-decoration: none !important;
+.fc-v-event .fc-event-main-frame {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    height: 130%;
+  }
+
+.fc-daygrid-event{
+    color : gray;
+    font-weight: bolder;
+    text-decoration : none;
 }
 
 .fc-daygrid-event:hover,

@@ -33,9 +33,16 @@ document.addEventListener('DOMContentLoaded', function() {
             editable: false,
             eventOverlap: false,
 
-            datesSet: function(info) {
-                let currentMonth = info.view.currentStart.getFullYear() + '-' + String(info.view.currentStart.getMonth() + 1).padStart(2, '0');
-                updateNbPPM(currentMonth);
+            datesSet: function(dateInfo) {
+                let currentMonth = dateInfo.view.currentStart.getFullYear() + '-' + String(dateInfo.view.currentStart.getMonth() + 1).padStart(2, '0');
+                if (dateInfo.view.type === 'dayGridMonth') {
+                    updateStat(currentMonth);
+                }
+                if (dateInfo.view.type === 'timeGridWeek') {
+                    let startDate = dateInfo.startStr.split('T')[0];
+                    let endDate = dateInfo.endStr.split('T')[0];
+                    updateStatWeek(startDate,endDate);
+                }
             },
 
             eventClick: function(info) {
@@ -45,7 +52,6 @@ document.addEventListener('DOMContentLoaded', function() {
                 let eventIdDemande = info.event.extendedProps.id_demande;
 
                 document.getElementById('cin_details').innerHTML = "<p>Chargement...</p>";
-                document.getElementById('modalImage').src = "";
 
                 fetch(`/api/meeting/${eventIdDemande}`)
                     .then(response => response.json())
@@ -54,7 +60,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
                         let termineIcon = data.details_meeting_etat
                             ? '<i class="fas fa-check-circle"></i>'
-                            : '<input type="checkbox" class="form-check-input" name="checkbox">';
+                            : '<input type="checkbox" class="form-check-input" name="checkbox" id="terminateCheckbox">';
 
                         // Récupérer les chaînes
                         fetchChaines().then(chaines => {
@@ -102,14 +108,16 @@ document.addEventListener('DOMContentLoaded', function() {
                                     </div>
                                 </div>
                                 <p><strong>Effectif prevu : </strong>${data.effectif_prevu}</p>
-                                <div class="form-group row">
+                                <div class="form-group row" id="effectifReelDiv">
                                     <label class="col-sm-2 col-form-label">Effectif reel</label>
                                     <div class="col-sm-10">
-                                        <input type="number" class="form-control" value="${data.effectif_reel}" name="effectif_reel">
+                                        <input type="number" class="form-control" value="${data.effectif_reel}" id="inputEffectifReel">
                                     </div>
                                 </div>
                                 <input type="hidden" value="${data.id_meeting}" name="id_meeting">
                                 <input type="hidden" value="${data.id_demande}" name="id_demande">
+                                <input type="hidden" value="${data.effectif_prevu}" name="effectif_prevu">
+
                             `;
 
                             // Insérer le contenu dans le modal
@@ -117,12 +125,24 @@ document.addEventListener('DOMContentLoaded', function() {
 
                             // Mettre à jour l'icône ou la case à cocher
                             document.querySelector('.modal-header .form-check').innerHTML = termineIcon + ' <label class="form-check-label">Terminé</label>';
-
-                            // Mettre à jour l'image si disponible
-                            if (data.photo_commande) {
-                                document.getElementById('modalImage').src = data.photo_commande;
-                            } else {
-                                document.getElementById('modalImage').src = "default.jpg"; // Image par défaut si pas de photo
+                          
+                            let terminateCheckbox = document.getElementById('terminateCheckbox');
+                            if (terminateCheckbox) {
+                                terminateCheckbox.addEventListener('change', function() {
+                                    let effectifReelDiv = document.getElementById('effectifReelDiv');
+                                    if (this.checked) {
+                                        effectifReelDiv.style.display = 'flex';
+                                    } else {
+                                        effectifReelDiv.style.display = 'none';
+                                    }
+                                });
+                            
+                                // Initialiser l'affichage en fonction de l'état initial de la case à cocher
+                                if (terminateCheckbox.checked) {
+                                    document.getElementById('effectifReelDiv').style.display = 'flex';
+                                } else {
+                                    document.getElementById('effectifReelDiv').style.display = 'none';
+                                }
                             }
 
                             // Mettre à jour le footer du modal
@@ -149,7 +169,7 @@ document.addEventListener('DOMContentLoaded', function() {
         calendar.render();
 
         let initialMonth = new Date().getFullYear() + '-' + String(new Date().getMonth() + 1).padStart(2, '0');
-        updateNbPPM(initialMonth);
+        updateStat(initialMonth);
     }
     document.querySelector('.modal-footer').addEventListener('click', function(event) {
         if (event.target && event.target.id === 'enregistrerBtn') {
@@ -164,7 +184,7 @@ document.addEventListener('DOMContentLoaded', function() {
     });
 });
 
-function updateNbPPM(month) {
+function updateStat(month) {
     console.log("Mois envoyé à l'API :", month);
     fetch(`/api/getNbPPM?month=${month}`)
         .then(response => response.json())
@@ -177,7 +197,7 @@ function updateNbPPM(month) {
 }
 
 function fetchChaines() {
-    return fetch('/api/chaines') // Assurez-vous que cette route API renvoie toutes les chaînes
+    return fetch('/api/chaines')
         .then(response => response.json())
         .then(chaines => {
             return chaines;
@@ -186,4 +206,16 @@ function fetchChaines() {
             console.error('Erreur lors de la récupération des chaînes:', error);
             return [];
         });
+}
+
+function updateStatWeek(startDate,endDate) {
+    console.log('Dates de début et de fin de la semaine :', startDate, endDate)
+    fetch(`/api/getStatWeekPPM?startDate=${startDate}&endDate=${endDate}`)
+        .then(response => response.json())
+        .then(data => {
+            document.querySelector('.nb-ppm').textContent = `${data.nbppm}`;
+            document.querySelector('.taux-achevement').textContent = `${(data.taux_fini * 100).toFixed(2)}%`;
+            document.querySelector('.taux-retard').textContent = `${(data.taux_retard * 100).toFixed(2)}%`;
+        })
+        .catch(error => console.error('Erreur:', error));
 }

@@ -32,7 +32,14 @@ document.addEventListener('DOMContentLoaded', function() {
 
             datesSet: function(info) {
                 let currentMonth = info.view.currentStart.getFullYear() + '-' + String(info.view.currentStart.getMonth() + 1).padStart(2, '0');
-                updateStatInfo(currentMonth);
+                if (info.view.type === 'dayGridMonth') {
+                    updateStatInfo(currentMonth);
+                }
+                if (info.view.type === 'timeGridWeek') {
+                    let startDate = info.startStr.split('T')[0];
+                    let endDate = info.endStr.split('T')[0];
+                    updateStatWeek(startDate,endDate);
+                }
             },
 
             eventClick: function(info) {
@@ -115,6 +122,18 @@ function updateStatInfo(month) {
         .then(data => {
             document.querySelector('.nb-trace').textContent = `${data.nbtrace}`;
             document.querySelector('.taux-achevement').textContent = `${(data.taux_achevement * 100).toFixed(2)}%`;
+            document.querySelector('.taux-retard').textContent = `${(data.taux_retard * 100).toFixed(2)}%`;
+        })
+        .catch(error => console.error('Erreur:', error));
+}
+
+function updateStatWeek(startDate,endDate) {
+    console.log('Dates de début et de fin de la semaine :', startDate, endDate)
+    fetch(`/api/getStatWeekTrace?startDate=${startDate}&endDate=${endDate}`)
+        .then(response => response.json())
+        .then(data => {
+            document.querySelector('.nb-trace').textContent = `${data.nb_trace}`;
+            document.querySelector('.taux-achevement').textContent = `${(data.taux_fini * 100).toFixed(2)}%`;
             document.querySelector('.taux-retard').textContent = `${(data.taux_retard * 100).toFixed(2)}%`;
         })
         .catch(error => console.error('Erreur:', error));

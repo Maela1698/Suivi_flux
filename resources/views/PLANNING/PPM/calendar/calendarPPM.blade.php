@@ -55,20 +55,20 @@
                                 </div>
                             </div>
                         </div>
-                        {{-- <div class="col-lg">
+                        <div class="col-lg">
                             <div class="card">
                                 <div class="stat-widget-one card-body temps">
                                     <div class="stat-icon d-inline-block">
-                                        <i class="fas fa-hourglass-start text-temps border-temps"></i>
+                                        <i class="fas fa-user-slash text-temps border-temps"></i>
                                     </div>
                                     <div class="stat-content d-inline-block">
-                                        <div class="stat-text temps-color">A temps</div>
+                                        <div class="stat-text temps-color">Absence</div>
                                         <div class="stat-digit temps-color">0%</div>
                                     </div>
                                 </div>
                             </div>
                         </div>
-                        <div class="col-lg">
+                        {{-- <div class="col-lg">
                             <div class="card">
                                 <div class="stat-widget-one card-body abs">
                                     <div class="stat-icon d-inline-block">
@@ -115,11 +115,8 @@
                         <label class="form-check-label" for="termineCheckbox">Terminé</label>
                     </div>
                 </div>
-                <div class="modal-body">
-                    <div class="cin-content">
-                        <img id="modalImage">
-                        <div class="cin-details" id="cin_details"></div>
-                    </div>
+                <div class="modal-body">   
+                    <div class="cin-details" id="cin_details"></div>
                 </div>
                 <div class="modal-footer">
                     <button type="submit" class="btn btn-primary" id="enregistrerBtn">Modifier</button>
