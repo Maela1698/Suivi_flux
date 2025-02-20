@@ -22,7 +22,6 @@ class ControllerTrace extends Controller
                 'isretardtrace' => $trace->isretardtrace
             ];
         });
-
         return response()->json($formattedTraces);
     }
 

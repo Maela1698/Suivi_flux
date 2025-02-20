@@ -30,8 +30,8 @@ AS SELECT vd.id,
     vd.photo_commande,
     dm.etat AS details_meeting_etat,
     dm.id AS id_details_ppmeeting,
-    dm.id_meeting,
     dp.id AS trace_id,
+     dm.id_meeting,
     CASE
         WHEN tr.id IS NOT NULL THEN true
         ELSE false
@@ -149,5 +149,3 @@ BEGIN
 END; 
 $function$
 ;
-
-

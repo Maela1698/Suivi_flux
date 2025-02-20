@@ -18,7 +18,7 @@
                                         <i class="fas fa-calendar text-success border-success"></i>
                                     </div>
                                     <div class="stat-content d-inline-block">
-                                        <div class="stat-text ppm-color">PPM</div>
+                                        <div class="stat-text ppm-color">TRACE</div>
                                         <div class="stat-digit ppm-color"><span class="nb-trace">...</span></div>
                                     </div>
                                 </div>

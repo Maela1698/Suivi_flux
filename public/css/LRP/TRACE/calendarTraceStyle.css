@@ -3,21 +3,24 @@
 }
 
 .fini-back-ground-color {
-    background-color: #25d366 !important;
+    background-color: #c8ffd3 !important;
     border: none;
 }
 
 .retard-back-ground-color{
-    background-color: rgb(202, 40, 40)  !important;
+    background-color: rgb(255, 218, 218) !important;
     border: none;
 }
 
 .a-venir-back-ground-color {
-    background-color: #b3b3b3 !important;
+    background-color: #f2f2f2 !important;
     border: none;
 }
 
-
+.fc-event-main-frame {
+    color : gray;
+    font-weight: bolder;
+}
 
 .a-venir-color {
     color: rgb(210, 210, 210) !important;
