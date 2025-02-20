@@ -40,13 +40,14 @@ class ControllerPlanningPPMeeting extends Controller{
     
         $data = DB::table('v_stat_ppmeeting')
         ->where('mois', $month)
-        ->select('nbppm', 'taux_achevement','taux_retard')
+        ->select('nbppm', 'taux_achevement','taux_retard','taux_abs')
         ->first();
 
         return response()->json([
             'nbppm' => $data->nbppm ?? 0, 
             'taux_achevement' => $data->taux_achevement ?? 0,
-            'taux_retard' => $data->taux_retard ?? 0
+            'taux_retard' => $data->taux_retard ?? 0,
+            'taux_abs' => $data->taux_abs ?? 0,
         ]);
     }
 
@@ -105,7 +106,7 @@ class ControllerPlanningPPMeeting extends Controller{
                 $validatedData = $request->validate([
                     'effectif_reel' => 'required|numeric|min:1',
                 ]);
-            } else
+            }
             $etat = (bool)$request->checkbox;
             $detail_meeting = DetailsMeeting::findOrFail($id);
             $detail_meeting->etat = $etat;

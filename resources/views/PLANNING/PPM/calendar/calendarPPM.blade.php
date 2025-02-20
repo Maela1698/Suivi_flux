@@ -63,7 +63,7 @@
                                     </div>
                                     <div class="stat-content d-inline-block">
                                         <div class="stat-text temps-color">Absence</div>
-                                        <div class="stat-digit temps-color">0%</div>
+                                        <div class="stat-digit temps-color"><span class="taux-abs">...</span></div>
                                     </div>
                                 </div>
                             </div>

@@ -40,7 +40,9 @@ document.addEventListener('DOMContentLoaded', function() {
                 }
                 if (dateInfo.view.type === 'timeGridWeek') {
                     let startDate = dateInfo.startStr.split('T')[0];
-                    let endDate = dateInfo.endStr.split('T')[0];
+                    let endDate = new Date(dateInfo.endStr);
+                    endDate.setDate(endDate.getDate());
+                    endDate = endDate.toISOString().split('T')[0];
                     updateStatWeek(startDate,endDate);
                 }
             },
@@ -132,6 +134,9 @@ document.addEventListener('DOMContentLoaded', function() {
                                     let effectifReelDiv = document.getElementById('effectifReelDiv');
                                     if (this.checked) {
                                         effectifReelDiv.style.display = 'flex';
+                                        let inputElement = document.getElementById('inputEffectifReel');
+                                        inputElement.setAttribute('name', 'effectif_reel');
+
                                     } else {
                                         effectifReelDiv.style.display = 'none';
                                     }
@@ -140,6 +145,8 @@ document.addEventListener('DOMContentLoaded', function() {
                                 // Initialiser l'affichage en fonction de l'état initial de la case à cocher
                                 if (terminateCheckbox.checked) {
                                     document.getElementById('effectifReelDiv').style.display = 'flex';
+                                    let inputElement = document.getElementById('inputEffectifReel');
+                                    inputElement.setAttribute('name', 'effectif_reel');
                                 } else {
                                     document.getElementById('effectifReelDiv').style.display = 'none';
                                 }
@@ -192,6 +199,7 @@ function updateStat(month) {
             document.querySelector('.nb-ppm').textContent = `${data.nbppm}`;
             document.querySelector('.taux-achevement').textContent = `${(data.taux_achevement * 100).toFixed(2)}%`;
             document.querySelector('.taux-retard').textContent = `${(data.taux_retard * 100).toFixed(2)}%`;
+            document.querySelector('.taux-abs').textContent = `${(data.taux_abs * 100).toFixed(2)}%`;
         })
         .catch(error => console.error('Erreur:', error));
 }
