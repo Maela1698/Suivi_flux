@@ -1,3 +1,5 @@
+ALTER TABLE public.details_meeting ADD is_deleted bool DEFAULT false NOT NULL;
+
 CREATE OR REPLACE VIEW public.v_ppmeeting
 AS SELECT vd.id,
     vd.id_tiers,
@@ -42,7 +44,8 @@ AS SELECT vd.id,
         WHEN dm.effectif_prevu - dm.effectif_reel > 0 THEN
             dm.effectif_prevu - dm.effectif_reel
         ELSE 0
-    END AS total_abs
+    END AS total_abs,
+    dm.is_deleted
    FROM v_general_final_recap vd
      LEFT JOIN datedisponibiliteforppmeeting d ON vd.id = d.id_demande_client
      LEFT JOIN dateprevisionfortrace dp ON vd.id = dp.id_demande_client
@@ -55,7 +58,7 @@ AS SELECT vd.id,
      LEFT JOIN tauxretarppmeeting tr ON dm.id = tr.id_detail_meeting
      LEFT JOIN tauxretartrace t ON dp.id = t.id_trace
      JOIN v_demandeclient vdm ON vd.id = vdm.id
-  WHERE vd.etat = 0 AND vd.id_etat = 2;
+  WHERE vd.etat = 0 AND vd.id_etat = 2 AND dm.is_deleted = false;
 
 CREATE OR REPLACE VIEW public.v_stat_ppmeeting AS
     SELECT 
@@ -94,3 +97,57 @@ CREATE OR REPLACE VIEW public.v_stat_ppmeeting AS
             GROUP BY (to_char(v_retard_ppmeeting.dateppm::timestamp with time zone, 'YYYY-MM'::text))) retard ON to_char(v_ppmeeting.dateppm::timestamp with time zone, 'YYYY-MM'::text) = retard.mois
     WHERE v_ppmeeting.dateppm IS NOT NULL
     GROUP BY (to_char(v_ppmeeting.dateppm::timestamp with time zone, 'YYYY-MM'::text)), retard.nb_retard;
+
+DROP FUNCTION f_stat_week_ppm(date,date);
+
+CREATE OR REPLACE FUNCTION public.f_stat_week_ppm(date_debut date, date_fin date)
+ RETURNS TABLE(
+    date_debut_return date, 
+    date_fin_return date, 
+    nbppm bigint, 
+    nb_fini bigint, 
+    taux_fini numeric, 
+    nb_retard bigint, 
+    taux_retard numeric, 
+    total_eff_prev bigint,
+    total_eff_reel bigint,
+    total_abs bigint,
+    taux_abs numeric
+)
+ LANGUAGE plpgsql
+AS $function$
+BEGIN
+    RETURN QUERY
+    SELECT
+        date_debut,
+        date_fin,
+        COUNT(*) AS nbppm,
+        SUM(CASE WHEN vp.details_meeting_etat THEN 1 ELSE 0 END) AS nb_fini,
+        CASE
+            WHEN COUNT(*) > 0 THEN
+                (SUM(CASE WHEN vp.details_meeting_etat THEN 1 ELSE 0 END)::DECIMAL / COUNT(*))
+            ELSE 0
+        END AS taux_fini,
+        SUM(CASE WHEN vp.isretard THEN 1 ELSE 0 END) AS nb_retard,
+        CASE
+            WHEN COUNT(*) > 0 THEN
+                (SUM(CASE WHEN vp.isretard THEN 1 ELSE 0 END)::DECIMAL / COUNT(*))
+            ELSE 0
+        END AS taux_retard,
+        SUM(CASE WHEN vp.details_meeting_etat = true THEN vp.effectif_prevu ELSE 0 END) AS total_eff_prev,
+        SUM(CASE WHEN vp.details_meeting_etat = true THEN vp.effectif_reel ELSE 0 END) AS total_eff_reel,
+        SUM(CASE WHEN vp.details_meeting_etat = true THEN vp.total_abs ELSE 0 END) AS total_abs,
+        CASE 
+            WHEN SUM(CASE WHEN vp.details_meeting_etat = true THEN vp.effectif_prevu ELSE 0 END) > 0 THEN
+                SUM(CASE WHEN vp.details_meeting_etat = true THEN vp.total_abs ELSE 0 END) / SUM(CASE WHEN vp.details_meeting_etat = true THEN vp.effectif_prevu ELSE 0 END)::DECIMAL
+            ELSE 0::DECIMAL
+        END AS taux_abs
+    FROM
+        v_ppmeeting vp
+    WHERE
+        vp.dateppm BETWEEN date_debut AND date_fin;
+END; 
+$function$
+;
+
+

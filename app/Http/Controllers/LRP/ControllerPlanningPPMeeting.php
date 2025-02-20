@@ -66,6 +66,7 @@ class ControllerPlanningPPMeeting extends Controller{
                 'nbppm' => $data[0]->nbppm ?? 0,
                 'taux_fini' =>  $data[0]->taux_fini ?? 0,
                 'taux_retard' => $data[0]->taux_retard ?? 0,
+                'taux_abs' => $data[0]->taux_abs ?? 0
             ]);
         } else {
             return response()->json(['nbppm' => 0]);
@@ -131,7 +132,8 @@ class ControllerPlanningPPMeeting extends Controller{
                 $meeting->date = $request->dateppm;
                 $meeting->save();
                 
-                $detail_meeting->delete();
+                $detail_meeting->is_deleted = true;
+                $detail_meeting->save();
 
                 $new_detail_meeting = new DetailsMeeting();
                 $new_detail_meeting->id_meeting = $meeting->id;

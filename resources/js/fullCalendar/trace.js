@@ -37,7 +37,9 @@ document.addEventListener('DOMContentLoaded', function() {
                 }
                 if (info.view.type === 'timeGridWeek') {
                     let startDate = info.startStr.split('T')[0];
-                    let endDate = info.endStr.split('T')[0];
+                    let endDate = new Date(dateInfo.endStr);
+                    endDate.setDate(endDate.getDate());
+                    endDate = endDate.toISOString().split('T')[0];
                     updateStatWeek(startDate,endDate);
                 }
             },

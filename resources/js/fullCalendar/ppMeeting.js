@@ -224,6 +224,7 @@ function updateStatWeek(startDate,endDate) {
             document.querySelector('.nb-ppm').textContent = `${data.nbppm}`;
             document.querySelector('.taux-achevement').textContent = `${(data.taux_fini * 100).toFixed(2)}%`;
             document.querySelector('.taux-retard').textContent = `${(data.taux_retard * 100).toFixed(2)}%`;
+            document.querySelector('.taux-abs').textContent = `${(data.taux_abs * 100).toFixed(2)}%`;
         })
         .catch(error => console.error('Erreur:', error));
 }
