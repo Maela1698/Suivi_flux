@@ -1,4 +1,4 @@
-<div class="row">
+<div class="row fixed-header">
     <div class="col-xl-8 col-lg-8 col-md-8">
         <nav
             class="navbar navbar-expand-lg navbar-light"

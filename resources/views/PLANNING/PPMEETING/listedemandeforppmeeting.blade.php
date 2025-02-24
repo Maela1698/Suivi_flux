@@ -92,7 +92,24 @@
                 <div class="card-header text-center" style="display: flex; justify-content: start;">
                     <h3 class="entete">LISTE DEMANDE FOR PPMEETING</h3>
                 </div>
+
                 <div class="card-body" style="margin-top: -15px;overflow: auto;">
+                    {{-- KPI--}}
+                    <div class="row">
+                        {{-- KPI PPMEETING--}}
+                        <div class="col-lg-6 col-sm-6">
+                            <div class="card">
+                                <div class="card-header">
+                                    <h4 class="card-title">PPMeeting</h4>
+                                </div>
+                                <div class="card-body">
+                                    <canvas id="myChart" width="400" height="400"></canvas>
+                                </div>
+                            </div>
+                        </div>
+                        {{-- KPI PPMEETING END--}}
+                    </div>
+                    {{-- KPI END --}}
                     <form action="{{ route('LRP.listeDemandeForPpmeeting') }}" method="get" autocomplete="off">
                         @csrf
                         <div class="recherche" style="display: flex; flex-wrap: wrap; align-items: center;">
