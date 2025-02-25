@@ -8,3 +8,31 @@
     max-height: 400px; /* Ajustez cette valeur selon vos besoins */
     overflow-y: auto;
 }
+
+.stat-widget-one .stat-icon i {
+    font-size: 103%;
+    border-width: 3px;
+    border-style: solid;
+    border-radius: 100px;
+    padding: 15px;
+    font-weight: 900;
+    display: inline-block;
+}
+
+.total-nbr{
+    color : #BCAF4D;
+}
+
+.fini{
+    color : #6D8C00 ;
+}
+
+.retard{
+    color : #AA1803 ;
+}
+
+.absence{
+    color : #F1BAA1 ;
+}
+
+

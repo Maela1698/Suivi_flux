@@ -12,8 +12,7 @@ use Illuminate\Support\Facades\DB;
 
 class ControllerPpmeeting extends Controller
 {
-    public static function listeDemandeForPpmeeting(Request $request)
-    {
+    public static function listeDemandeForPpmeeting(Request $request){
         $listes = DB::table('v_ppmeeting')->where('id_etat', 2)->where('etat', 0);
         $hasFilters = false;
         $hasFilters = false;
@@ -42,6 +41,36 @@ class ControllerPpmeeting extends Controller
             $listes->limit(100);
         }
         $liste = $listes->get();
+        $ids = $liste->pluck('id')->toArray();
+        $idsString = implode(',', $ids);
+        $statPPM = DB::select("SELECT * FROM f_stat_liste_ppm(ARRAY[$idsString])");
+        $statTrace = DB::select("SELECT * FROM f_stat_liste_trace(ARRAY[$idsString])");
+        if (!empty($statPPM)) {
+            $stat_ppm = $statPPM[0];
+            $stat_ppm->taux_fini = (number_format($stat_ppm->taux_fini, 2)*100);
+            $stat_ppm->taux_retard = (number_format($stat_ppm->taux_retard, 2)*100);
+            $stat_ppm->taux_abs = (number_format($stat_ppm->taux_abs, 2)*100);
+        }
+        else {
+            $stat_ppm = (object) [
+                'nb_ppm' => 0,
+                'taux_fini' => 0,
+                'taux_retard' => 0,
+                'taux_abs' => 0
+            ];
+        }
+        if(!empty($statTrace)){
+            $stat_trace = $statTrace[0];
+            $stat_trace->taux_fini = (number_format($stat_trace->taux_fini, 2)*100);
+            $stat_trace->taux_retard = (number_format($stat_trace->taux_retard, 2)*100);
+        }
+        else {
+            $stat_trace = (object) [
+                'nb_trace' => 0,
+                'taux_fini' => 0,
+                'taux_retard' => 0
+            ];
+        } 
         $chaine = Ppmeeting::getAllChaine();
         $nomTiers=$request->input('nomTiers');
         $idTiers=$request->input('idTiers');
@@ -49,8 +78,9 @@ class ControllerPpmeeting extends Controller
         if($nomTiers==null){
             $idTiers="";
         }
-        return view('PLANNING.PPMEETING.listedemandeforppmeeting', data: compact('nomTiers','idTiers','modele','chaine', 'liste'));
+        return view('PLANNING.PPMEETING.listedemandeforppmeeting', data: compact('nomTiers','idTiers','modele','chaine', 'liste','stat_ppm','stat_trace'));
     }
+
     public static function ajoutedisponibilite(Request $request)
     {
         $iddemande = $request->input('iddemande');

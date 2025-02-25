@@ -1,6 +1,8 @@
 @include('CRM.header')
 @include('CRM.sidebar')
+@include('STYLE.PLANNING.PPM.styleListePPMTrace')
 <style>
+    
     .code {
         display: flex;
         gap: 4px;
@@ -103,11 +105,116 @@
                                     <h4 class="card-title">PPMeeting</h4>
                                 </div>
                                 <div class="card-body">
-                                    <canvas id="myChart" width="400" height="400"></canvas>
+                                    <div class="row">
+                                        <div class="col-lg">
+                                            <div class="card">
+                                                <div class="stat-widget-one card-body ppm">
+                                                    <div class="stat-icon d-inline-block">
+                                                        <i class="fas fa-calendar total-nbr"></i>
+                                                    </div>
+                                                    <div class="stat-content d-inline-block">
+                                                        <div class="stat-text ppm-color">PPM</div>
+                                                        <div class="stat-digit ppm-color"><span class="nb-ppm">{{ $stat_ppm->nb_ppm }}</span></div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-lg">
+                                            <div class="card">
+                                                <div class="stat-widget-one card-body achevement">
+                                                    <div class="stat-icon d-inline-block">
+                                                        <i class="fas fa-check-circle fini"></i>
+                                                    </div>
+                                                    <div class="stat-content d-inline-block">
+                                                        <div class="stat-text achevement-color">Fini</div>
+                                                        <div class="stat-digit achevement-color"><span class="taux-achevement">{{ $stat_ppm->taux_fini }}%</span></div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-lg">
+                                            <div class="card">
+                                                <div class="stat-widget-one card-body retard">
+                                                    <div class="stat-icon d-inline-block">
+                                                        <i class="fas fa-clock retard"></i>
+                                                    </div>
+                                                    <div class="stat-content d-inline-block">
+                                                        <div class="stat-text retard-color">Retard</div>
+                                                        <div class="stat-digit retard-color"><span class="taux-retard">{{ $stat_ppm->taux_retard }}%</span></div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-lg">
+                                            <div class="card">
+                                                <div class="stat-widget-one card-body temps">
+                                                    <div class="stat-icon d-inline-block">
+                                                        <i class="fas fa-user-slash absence"></i>
+                                                    </div>
+                                                    <div class="stat-content d-inline-block">
+                                                        <div class="stat-text temps-color">Absence</div>
+                                                        <div class="stat-digit temps-color"><span class="taux-abs">{{ $stat_ppm->taux_abs }}%</span></div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
                         </div>
                         {{-- KPI PPMEETING END--}}
+                        {{-- KPI TRACE--}}
+                        <div class="col-lg-6 col-sm-6">
+                            <div class="card">
+                                <div class="card-header">
+                                    <h4 class="card-title">TRACE</h4>
+                                </div>
+                                <div class="card-body">
+                                    <div class="row">
+                                        <div class="col-lg">
+                                            <div class="card">
+                                                <div class="stat-widget-one card-body ppm">
+                                                    <div class="stat-icon d-inline-block">
+                                                        <i class="fas fa-calendar total-nbr"></i>
+                                                    </div>
+                                                    <div class="stat-content d-inline-block">
+                                                        <div class="stat-text ppm-color">TRACE</div>
+                                                        <div class="stat-digit ppm-color"><span class="nb-ppm">{{ $stat_trace->nb_trace }}</span></div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-lg">
+                                            <div class="card">
+                                                <div class="stat-widget-one card-body achevement">
+                                                    <div class="stat-icon d-inline-block">
+                                                        <i class="fas fa-check-circle fini"></i>
+                                                    </div>
+                                                    <div class="stat-content d-inline-block">
+                                                        <div class="stat-text achevement-color">COMPLETION</div>
+                                                        <div class="stat-digit achevement-color"><span class="taux-achevement">{{ $stat_trace->taux_fini }}%</span></div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-lg">
+                                            <div class="card">
+                                                <div class="stat-widget-one card-body retard">
+                                                    <div class="stat-icon d-inline-block">
+                                                        <i class="fas fa-clock retard"></i>
+                                                    </div>
+                                                    <div class="stat-content d-inline-block">
+                                                        <div class="stat-text retard-color">RETARD</div>
+                                                        <div class="stat-digit retard-color"><span class="taux-retard">{{ $stat_trace->taux_retard }}%</span></div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        {{-- KPI TRACE END--}}
                     </div>
                     {{-- KPI END --}}
                     <form action="{{ route('LRP.listeDemandeForPpmeeting') }}" method="get" autocomplete="off">
