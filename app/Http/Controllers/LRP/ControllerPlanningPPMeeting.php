@@ -14,7 +14,7 @@ use Illuminate\Support\Facades\DB;
 class ControllerPlanningPPMeeting extends Controller{
     
     public function getMeetings(){
-        $meetings = VPPMeeting::all();
+        $meetings = VPPMeeting::where('is_deleted',false)->get();
         // Formater les données pour FullCalendar
         $formattedMeetings = $meetings->map(function ($meeting) {
             return [
