@@ -7,6 +7,8 @@ use App\Models\DataPro;
 use App\Models\FiltreDemande;
 use App\Models\Ppmeeting;
 use App\Models\Saison;
+use App\Models\Tiers;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
@@ -17,60 +19,76 @@ class ControllerPpmeeting extends Controller
         $hasFilters = false;
         $hasFilters = false;
         $nomSaison = null;
-        if ($request->idSaison) {
-            $listes->where('id_saison', $request->input('idSaison'));
-            $nomSaison = Saison::where('id', $request->idSaison)->pluck('type_saison')->first();
-            $hasFilters = true;
+        $clients = Tiers::where('idacteur',1)->get();
+     
+        $selectedClient = $request->id_client ?? null;
+        if (!empty($selectedClient)) {
+            $listes = $listes->where('id_tiers', $selectedClient);
         }
-        $nomTiers = null;
-        if ($request->idTiers) {
-            $listes->where('id_tiers', $request->input('idTiers'));
-            $nomTiers = FiltreDemande::where('id_tiers', $request->idTiers)->pluck('nomtier')->first();
-            $hasFilters = true;
+      
+        $selectedModele = $request->nom_modele ?? '';
+        if (!empty($selectedModele)) {
+            $listes = $listes->where('nom_modele', 'ilike', '%' . $selectedModele . '%');
         }
-        if ($request->modele) {
-            $listes->where('nom_modele', 'ILIKE', '%' . $request->input('modele') . '%');
-            $hasFilters = true;
+
+        $selectedDatePPM = $request->date_ppm ?? '';
+        if (!empty($selectedDatePPM)) {
+            list($ppm_debut,$ppm_fin) = explode(' au ',$selectedDatePPM);
+            $ppm_debut = Carbon::createFromFormat('d-m-y', $ppm_debut);
+            $ppm_fin = Carbon::createFromFormat('d-m-y', $ppm_fin); 
+            $listes = $listes->whereBetween('dateppm',[$ppm_debut,$ppm_fin]);
         }
-        $nomStyle = null;
-        if ($request->idStyle) {
-            $listes->where('id_style', $request->input('idStyle'));
-            $nomStyle = FiltreDemande::where('id_style', $request->idStyle)->pluck('nom_style')->first();
+
+        $selectedDateTrace = $request->date_trace ?? '';
+        if (!empty($selectedDateTrace)){
+            list($trace_debut,$trace_fin) = explode(' au ',$selectedDateTrace);
+            $trace_debut = Carbon::createFromFormat('d-m-y', $trace_debut);
+            $trace_fin = Carbon::createFromFormat('d-m-y', $trace_fin); 
+            $listes = $listes->whereBetween('datetrace',[$trace_debut,$trace_fin]);
+        }
+
+        $selectedDateEx = $request->date_ex ?? '';
+        if (!empty($selectedDateEx)) {
+            list($ex_debut,$ex_fin) = explode(' au ',$selectedDateEx);
+            $ex_debut = Carbon::createFromFormat('d-m-y', $ex_debut);
+            $ex_fin = Carbon::createFromFormat('d-m-y', $ex_fin);
+            $listes = $listes->whereBetween('ex_factory',[$ex_debut,$ex_fin]);
         }
         if (!$hasFilters) {
             $listes->limit(100);
         }
         $liste = $listes->get();
-        $ids = $liste->pluck('id')->toArray();
-        $idsString = implode(',', $ids);
-        $statPPM = DB::select("SELECT * FROM f_stat_liste_ppm(ARRAY[$idsString])");
-        $statTrace = DB::select("SELECT * FROM f_stat_liste_trace(ARRAY[$idsString])");
-        if (!empty($statPPM)) {
+
+        if ($liste->isNotEmpty()) {
+            $ids = $liste->pluck('id')->toArray();
+            $idsString = implode(',', $ids);
+            $statPPM = DB::select("SELECT * FROM f_stat_liste_ppm(ARRAY[$idsString])");
+
             $stat_ppm = $statPPM[0];
             $stat_ppm->taux_fini = (number_format($stat_ppm->taux_fini, 2)*100);
             $stat_ppm->taux_retard = (number_format($stat_ppm->taux_retard, 2)*100);
             $stat_ppm->taux_abs = (number_format($stat_ppm->taux_abs, 2)*100);
-        }
-        else {
+
+            $statTrace = DB::select("SELECT * FROM f_stat_liste_trace(ARRAY[$idsString])");
+            $stat_trace = $statTrace[0];
+            $stat_trace->taux_fini = (number_format($stat_trace->taux_fini, 2)*100);
+            $stat_trace->taux_retard = (number_format($stat_trace->taux_retard, 2)*100);
+        } else {
+            $statPPM = [];
             $stat_ppm = (object) [
                 'nb_ppm' => 0,
                 'taux_fini' => 0,
                 'taux_retard' => 0,
                 'taux_abs' => 0
             ];
-        }
-        if(!empty($statTrace)){
-            $stat_trace = $statTrace[0];
-            $stat_trace->taux_fini = (number_format($stat_trace->taux_fini, 2)*100);
-            $stat_trace->taux_retard = (number_format($stat_trace->taux_retard, 2)*100);
-        }
-        else {
+
+            $statTrace = [];
             $stat_trace = (object) [
                 'nb_trace' => 0,
                 'taux_fini' => 0,
                 'taux_retard' => 0
             ];
-        } 
+        }
         $chaine = Ppmeeting::getAllChaine();
         $nomTiers=$request->input('nomTiers');
         $idTiers=$request->input('idTiers');
@@ -78,7 +96,7 @@ class ControllerPpmeeting extends Controller
         if($nomTiers==null){
             $idTiers="";
         }
-        return view('PLANNING.PPMEETING.listedemandeforppmeeting', data: compact('nomTiers','idTiers','modele','chaine', 'liste','stat_ppm','stat_trace'));
+        return view('PLANNING.PPMEETING.listedemandeforppmeeting', data: compact('clients','nomTiers','idTiers','modele','chaine', 'liste','stat_ppm','stat_trace'));
     }
 
     public static function ajoutedisponibilite(Request $request)

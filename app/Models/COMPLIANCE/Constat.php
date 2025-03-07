@@ -10,6 +10,9 @@ class Constat extends Model
 {
     use HasFactory;
 
+    // $constat->insertConstat($dateConstat, $section, $priorite, $description, 1);
+
+
     public function insertConstat($dateconstat, $section_id, $priorite, $description, $typeaudit_id)
     {
         DB::table('constat')->insert([

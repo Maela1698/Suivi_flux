@@ -1,5 +1,8 @@
 <?php
 
+use Illuminate\Support\Facades\Route;
+
+
 use App\Http\Controllers\COMPLIANCECONTROLLER\ControllerCompliance;
 use App\Http\Controllers\COMPLIANCECONTROLLER\ControllerComplianceBudget;
 use App\Http\Controllers\COMPLIANCECONTROLLER\ControllerComplianceExterne;
@@ -11,7 +14,7 @@ use App\Http\Controllers\ControllerWMS;
 use App\Http\Controllers\QUALITETISSUCONTROLLER\ListeInspecterController;
 use App\Http\Controllers\WMSCONTROLLER\CRUDController;
 use App\Http\Controllers\WMSCONTROLLER\PageWMSController;
-use Illuminate\Support\Facades\Route;
+
 use App\Http\Controllers\controllerTier;
 use App\Http\Controllers\controllerPri;
 use App\Http\Controllers\ControllerEchantillon;

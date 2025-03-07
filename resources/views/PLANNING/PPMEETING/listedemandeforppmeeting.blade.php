@@ -219,7 +219,7 @@
                     {{-- KPI END --}}
                     <form action="{{ route('LRP.listeDemandeForPpmeeting') }}" method="get" autocomplete="off">
                         @csrf
-                        <div class="recherche" style="display: flex; flex-wrap: wrap; align-items: center;">
+                        {{--NOTIA <div class="recherche" style="display: flex; flex-wrap: wrap; align-items: center;">
 
                             <div class="col-auto my-1" style="flex-grow: 1; min-width: 200px;">
                                 <label class="mr-sm-2" for="inlineFormInput">Client</label>
@@ -238,6 +238,37 @@
                                 <label class="mr-sm-2" for="inlineFormInput" style="color: transparent;">Search</label>
                                 <input type="submit" style="background-color: rgb(51, 208, 51);width:80px;"
                                     class="form-control mr-sm-2" id="inlineFormInput" value="Filtrer">
+                            </div>
+                        </div> --}}
+                        <div class="row align-items-end">
+                            <div class="col-lg">
+                                <label>Client</label>
+                                <input class="form-control" list="clients" id="clientInput" name="client" placeholder="Client" value="{{ request('client') }}">
+                                <datalist id="clients">
+                                    @foreach ($clients as $client)
+                                        <option data-id="{{ $client->id }}" value="{{ $client->nomtier }}"></option>
+                                    @endforeach
+                                </datalist>
+                                <input type="hidden" id="id_client" name="id_client" value="{{ request('id_client') }}">
+                            </div>
+                            <div class="col-lg">
+                                <label>Modele</label>
+                                <input class="form-control" type="text" name="nom_modele" placeholder="Modele" value="{{ request('nom_modele') }}">
+                            </div>
+                            <div class="col-lg">
+                                <label>Date PPM</label>
+                                <input class="form-control" id="date_ppm" type="text" name="date_ppm" placeholder="Date PPMeeting" value="{{ request('date_ppm') }}">
+                            </div>
+                            <div class="col-lg">
+                                <label>Date Trace</label>
+                                <input class="form-control" id="date_trace" type="text" name="date_trace" placeholder="Date Trace" value="{{ request('date_trace') }}">
+                            </div>
+                            <div class="col-lg">
+                                <label>Date Ex-Usine</label>
+                                <input class="form-control" id="date_ex" type="text" name="date_ex" placeholder="Date Ex-Factory" value="{{ request('date_ex') }}">
+                            </div>
+                            <div class="col-lg d-flex align-items-end">
+                                <button class="btn btn-success" style="width: 100px">Filtrer</button>
                             </div>
                         </div>
                     </form>
@@ -574,6 +605,7 @@
 <!--**********************************
             Content body end
         ***********************************-->
+@include('PLANNING.JS.jsListeDemandePPM')
 
 @include('CRM.footer')
 

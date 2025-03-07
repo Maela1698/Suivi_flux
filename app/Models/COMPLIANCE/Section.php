@@ -10,6 +10,8 @@ class Section extends Model
 {
     use HasFactory;
 
+    protected $table = 'section';
+
     public static function getAllSection()
     {
         $select = DB::select('select * from section where etat=0 ');
