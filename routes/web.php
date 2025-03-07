@@ -442,4 +442,4 @@ require __DIR__.'/LRP/web_ppm.php';
  Route::match(['get', 'post'],'/calendrierTrace',[ControllerTracer::class,'calendrierTrace'])->name('LRP.calendrierTrace');
 
 /*------------------COMPLIANCE MAELA-------------------------------*/
-require __DIR__.'/COMPLIANCE/web_compliance.php';
+ require __DIR__.'/COMPLIANCE/web_compliance.php';
