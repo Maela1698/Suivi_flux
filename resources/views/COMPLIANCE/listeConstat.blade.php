@@ -28,6 +28,7 @@
             <div class="card col-12">
                 <div class="card-header d-flex justify-content-between align-items-center">
                     <h3 class="entete">LISTE CONSTAT</h3>
+                    
                     <button type="button" data-toggle="modal" data-target="#constat"
                         class="btn btn-primary">Ajouter</button>
                 </div>

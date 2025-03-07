@@ -7,12 +7,17 @@ use App\Models\COMPLIANCE\AvancementPlanAction;
 use App\Models\COMPLIANCE\Constat;
 use App\Models\COMPLIANCE\PlanAction;
 use App\Models\COMPLIANCE\Section;
+use App\Models\COMPLIANCE\VPlanAction;
+use App\Models\ListeEmploye;
 use App\Models\Planning;
+use App\Models\VListEmploye;
 use App\Services\ServicesConstat;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 
 class ControllerCompliance extends Controller
 {
+    
     public function listeConstat(Request $request)
     {
         $date = $request->input('date');
@@ -47,7 +52,7 @@ class ControllerCompliance extends Controller
         $section = $request->input('section');
         $priorite = $request->input('priorite');
         $description = $request->input('description');
-
+       
         $constat = new Constat();
         $constat->insertConstat($dateConstat, $section, $priorite, $description, 1);
 
@@ -129,24 +134,72 @@ class ControllerCompliance extends Controller
 
     public function listePlanAction(Request $request)
     {
-        $section = $request->input('section');
-        $priorite = $request->input('priorite');
-        $idEmploye = $request->input('idEmploye');
-        $condition = "";
-        if (!empty($section)) {
-            $condition = $condition . " and section='" . $section . "'";
+        $section = Section::all();
+
+        $employees = VListEmploye::all();
+
+        $planActions = VPlanAction::where('audit_id',null);
+
+        $deadline_debut = null;
+        $deadline_fin = null;
+
+        $selectedSection = null;
+        if ($request->has('id_section') && $request->id_section != '') {
+            $selectedSection = Section::where('id',$request->id_section)->first();
+            if($selectedSection){
+                $planActions = $planActions->where('id_section', $selectedSection->id);
+            }
         }
-        if (!empty($priorite)) {
-            $condition = $condition . " and priorite=" . $priorite;
+
+        $selectedPriorite = $request->priorite ?? '';
+        if (!empty($selectedPriorite)) {
+            $planActions = $planActions->where('priorite', $selectedPriorite);
         }
-        if (!empty($idEmploye)) {
-            $condition = $condition . " and responsable_id=" . $idEmploye;
+
+        $selectedResponsableId = $request->responsable_id ?? null;
+        if (!empty($selectedResponsableId)) {
+            $planActions = $planActions->where('responsable_id', $selectedResponsableId);
         }
-        $condition = $condition . " order by planaction_id desc";
-        $planAction = PlanAction::listePlanAction($condition);
-        $section = Section::getAllSection();
-        return view('COMPLIANCE.planAction', compact('section', 'planAction'));
+
+        $selectedDateRange = $request->daterange ?? '';
+        if (!empty($selectedDateRange)) {
+            list($deadline_debut,$deadline_fin) = explode(' au ',$selectedDateRange);
+            $deadline_debut = Carbon::createFromFormat('d-m-Y', $deadline_debut);
+            $deadline_fin = Carbon::createFromFormat('d-m-Y', $deadline_fin); 
+            $planActions = $planActions->whereBetween('deadline',[$deadline_debut,$deadline_fin]);
+        }
+
+        $planActions = $planActions->orderBy('planaction_id','desc')->get();
+        return view('COMPLIANCE.planAction', compact('section', 'planActions','selectedSection','selectedPriorite', 'employees','selectedResponsableId'));
     }
+
+    public function planActionApercu(Request $request){
+        $planActions = VPlanAction::where('audit_id',null);
+        $section = null;
+        $priorite = '';
+        $responsable = null;
+    
+        if ($request->has('id_section') && !empty($request->id_section)) {
+            $planActions->where('id_section', $request->id_section);
+            $section = Section::find($request->id_section);
+        }
+    
+        if ($request->has('priorite') && !empty($request->priorite)) {
+            $planActions->where('priorite', $request->priorite);
+        }
+    
+        if ($request->has('responsable_id') && !empty($request->responsable_id)) {
+            $planActions->where('responsable_id', $request->responsable_id);
+            $responsable = ListeEmploye::find($request->responsable_id);
+        }
+
+        
+    
+        $planActions = $planActions->orderBy('planaction_id','desc')->get();
+    
+        return view('COMPLIANCE.auditInterne.planActionApercuPdf', compact('planActions','section','responsable'));
+    }
+    
 
     public function ajoutAvancement(Request $request)
     {
@@ -183,5 +236,5 @@ class ControllerCompliance extends Controller
         $id = $request->input('id');
         $planAction = PlanAction::listePlanActionById($id);
         return view('COMPLIANCE.detailPlanAction', compact('planAction'));
-    }
+    } 
 }

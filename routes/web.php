@@ -440,3 +440,6 @@ require __DIR__.'/LRP/web_ppm.php';
  Route::post('modifprevision', [ControllerTracer::class, 'modifprevision'])->name('LRP.modifprevision');
  Route::post('updateTrace', [ControllerTracer::class, 'updateTrace'])->name('LRP.updateTrace');
  Route::match(['get', 'post'],'/calendrierTrace',[ControllerTracer::class,'calendrierTrace'])->name('LRP.calendrierTrace');
+
+/*------------------COMPLIANCE MAELA-------------------------------*/
+require __DIR__.'/COMPLIANCE/web_compliance.php';

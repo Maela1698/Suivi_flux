@@ -1,5 +1,6 @@
 @include('CRM.header')
 @include('CRM.sidebar')
+@include('COMPLIANCE.STYLE.stylePlanAction')
 <title>ListePlanAction</title>
 
 <!--**********************************
@@ -16,7 +17,6 @@
     .table td {
         color: #828282;
         /* Couleur noire intense */
-        font-weight: bold;
         /* Optionnel : Rend le texte plus épais */
     }
 
@@ -54,41 +54,46 @@
                 <form action="{{ route('COMPLIANCE.listePlanAction') }}" method="post" autocomplete="off">
                     @csrf
                     <div class="row">
-                        <div class="col-3">
+                        <div class="col-lg">
                             <div class="input-group">
-                               <select class="form-control" name="section">
+                               <select class="form-control" name="id_section">
                                 <option value="">Section</option>
                                 @for ($s=0; $s<count($section);$s++)
-                                <option value="{{ $section[$s]->designation }}">
-                                    {{ $section[$s]->designation }}</option>
+                                    <option value="{{ $section[$s]->id }}"
+                                        {{ request('id_section') == $section[$s]->id ? 'selected' : '' }}>
+                                        {{ $section[$s]->designation }}
+                                    </option>
                                 @endfor
                                </select>
                             </div>
                         </div>
-                        <div class="col-2">
+                        <div class="col-lg">
                             <div class="input-group">
                                 <select class="form-control" name="priorite">
                                     <option value="">Priorite</option>
-                                    <option value="1">Faible</option>
-                                    <option value="2">Moyenne</option>
-                                    <option value="3">Elevée</option>
+                                    <option value="1" {{ request('priorite') == 1 ? 'selected' : '' }}>Faible</option>
+                                    <option value="2" {{ request('priorite') == 2 ? 'selected' : '' }}>Moyenne</option>
+                                    <option value="3" {{ request('priorite') == 3 ? 'selected' : '' }}>Elevée</option>
                                 </select>
                             </div>
                         </div>
-                        <div class="col-4">
-                            <input type="text" id="nomSaison" name="nomEmploye" class="form-control" value="" placeholder="Responsable">
-                            <input type="hidden" id="idSaison" name="idEmploye" value="">
-                            <ul id="suggestionsListSaison" class="list-group mt-2"
-                                style="display: none;">
-                            </ul>
+                        <div class="col-lg">
+                            <input class="form-control" list="responsableListe" id="responsableInput" name="responsable" placeholder="Responsable" value="{{ request('responsable') }}">
+                            <datalist id="responsableListe">
+                                @foreach ($employees as $employe)
+                                    <option data-id="{{ $employe->id }}" value="{{ $employe->nom }} {{ $employe->prenom }}"></option>
+                                @endforeach
+                            </datalist>
+                            <input type="hidden" id="responsableId" name="responsable_id" value="{{ request('responsable_id') }}">
                         </div>
-
-                        <div class="col-3">
+                        <div class="col-lg">
+                            <input class="form-control" id="daterange" type="text" name="daterange" placeholder="deadline" value="{{ request('daterange') }}">
+                        </div>
+                        <div class="col-lg">
                             <button class="btn btn-success" style="width: 100px">Filtrer</button>
+                            <button type="button" class="btn btn-primary" id="apercuPdfBtn">Apercu PDF</button>
                         </div>
                     </div>
-
-
                 </form>
 
                 <div class="table-responsive mt-3" style="margin-top: -15px;">
@@ -97,6 +102,7 @@
                             <tr>
                                 <th>ID</th>
                                 <th>Numero</th>
+                                <th>Debut</th>
                                 <th>Section</th>
                                 <th>Constat</th>
                                 <th>Moyens/Actions</th>
@@ -109,55 +115,57 @@
                             </tr>
                         </thead>
                         <tbody style="cursor: pointer;">
-                            @for ($i = 0; $i < count($planAction); $i++)
+                            @for ($i = 0; $i < count($planActions); $i++)
                                 <tr>
-                                    <td onclick="window.location.href = '{{ route('COMPLIANCE.detailPlanAction', ['id' => $planAction[$i]->planaction_id]) }}';"
-                                        style="cursor: pointer;"> {{ $planAction[$i]->planaction_id }}</td>
-                                    <td onclick="window.location.href = '{{ route('COMPLIANCE.detailPlanAction', ['id' => $planAction[$i]->planaction_id]) }}';"
-                                        style="cursor: pointer;">{{ $planAction[$i]->numero }}</td>
-                                    <td onclick="window.location.href = '{{ route('COMPLIANCE.detailPlanAction', ['id' => $planAction[$i]->planaction_id]) }}';"
-                                        style="cursor: pointer;">{{ $planAction[$i]->section }}</td>
-                                    <td onclick="window.location.href = '{{ route('COMPLIANCE.detailPlanAction', ['id' => $planAction[$i]->planaction_id]) }}';"
+                                    <td onclick="window.location.href = '{{ route('COMPLIANCE.detailPlanAction', ['id' => $planActions[$i]->planaction_id]) }}';"
+                                        style="cursor: pointer;"> {{ $planActions[$i]->planaction_id }}</td>
+                                    <td onclick="window.location.href = '{{ route('COMPLIANCE.detailPlanAction', ['id' => $planActions[$i]->planaction_id]) }}';"
+                                        style="cursor: pointer;">{{ $planActions[$i]->numero }}</td>
+                                    <td onclick="window.location.href = '{{ route('COMPLIANCE.detailPlanAction', ['id' => $planActions[$i]->planaction_id]) }}';"
+                                            style="cursor: pointer;">{{ $planActions[$i]->datedebut }}</td>
+                                    <td onclick="window.location.href = '{{ route('COMPLIANCE.detailPlanAction', ['id' => $planActions[$i]->planaction_id]) }}';"
+                                        style="cursor: pointer;">{{ $planActions[$i]->section }}</td>
+                                    <td onclick="window.location.href = '{{ route('COMPLIANCE.detailPlanAction', ['id' => $planActions[$i]->planaction_id]) }}';"
                                         style="cursor: pointer;">
                                         <?php
-                                        $descriptions1 = substr($planAction[$i]->constat, 0, 50);
-                                        $hasMore1 = strlen($planAction[$i]->constat) > 50; // Vérifie si le texte est plus long que 50 caractères
+                                        $descriptions1 = substr($planActions[$i]->constat, 0, 50);
+                                        $hasMore1 = strlen($planActions[$i]->constat) > 50; // Vérifie si le texte est plus long que 50 caractères
                                         ?>
                                         {{ $descriptions1 }} @if ($hasMore1)
                                             ...
                                         @endif
                                     </td>
-                                    <td onclick="window.location.href = '{{ route('COMPLIANCE.detailPlanAction', ['id' => $planAction[$i]->planaction_id]) }}';"
+                                    <td onclick="window.location.href = '{{ route('COMPLIANCE.detailPlanAction', ['id' => $planActions[$i]->planaction_id]) }}';"
                                         style="cursor: pointer;">
                                         <?php
-                                        $descriptions = substr($planAction[$i]->moyens, 0, 50);
-                                        $hasMore = strlen($planAction[$i]->moyens) > 50; // Vérifie si le texte est plus long que 50 caractères
+                                        $descriptions = substr($planActions[$i]->moyens, 0, 50);
+                                        $hasMore = strlen($planActions[$i]->moyens) > 50; // Vérifie si le texte est plus long que 50 caractères
                                         ?>
                                         {{ $descriptions }} @if ($hasMore)
                                             ...
                                         @endif
                                     </td>
-                                    <td onclick="window.location.href = '{{ route('COMPLIANCE.detailPlanAction', ['id' => $planAction[$i]->planaction_id]) }}';"
+                                    <td onclick="window.location.href = '{{ route('COMPLIANCE.detailPlanAction', ['id' => $planActions[$i]->planaction_id]) }}';"
                                         style="cursor: pointer;">
-                                        @if ($planAction[$i]->priorite == 1)
+                                        @if ($planActions[$i]->priorite == 1)
                                             Faible
-                                        @elseif ($planAction[$i]->priorite == 2)
+                                        @elseif ($planActions[$i]->priorite == 2)
                                             Moyenne
-                                        @elseif ($planAction[$i]->priorite == 3)
+                                        @elseif ($planActions[$i]->priorite == 3)
                                             Elevée
                                         @endif
                                     </td>
-                                    <td onclick="window.location.href = '{{ route('COMPLIANCE.detailPlanAction', ['id' => $planAction[$i]->planaction_id]) }}';"
-                                        style="cursor: pointer;"> {{ $planAction[$i]->prenom_responsable }}
+                                    <td onclick="window.location.href = '{{ route('COMPLIANCE.detailPlanAction', ['id' => $planActions[$i]->planaction_id]) }}';"
+                                        style="cursor: pointer;"> {{ $planActions[$i]->prenom_responsable }}
                                     </td>
-                                    <td onclick="window.location.href = '{{ route('COMPLIANCE.detailPlanAction', ['id' => $planAction[$i]->planaction_id]) }}';"
-                                        style="cursor: pointer;">{{ \Carbon\Carbon::parse($planAction[$i]->deadline)->format('d/m/y') }}</td>
-                                    <td onclick="window.location.href = '{{ route('COMPLIANCE.detailPlanAction', ['id' => $planAction[$i]->planaction_id]) }}';"
-                                        style="cursor: pointer;">{{ \Carbon\Carbon::parse($planAction[$i]->dateavancement)->format('d/m/y') }}</td>
-                                    <td onclick="window.location.href = '{{ route('COMPLIANCE.detailPlanAction', ['id' => $planAction[$i]->planaction_id]) }}';"
+                                    <td onclick="window.location.href = '{{ route('COMPLIANCE.detailPlanAction', ['id' => $planActions[$i]->planaction_id]) }}';"
+                                        style="cursor: pointer;">{{ $planActions[$i]->deadline }}</td>
+                                    <td onclick="window.location.href = '{{ route('COMPLIANCE.detailPlanAction', ['id' => $planActions[$i]->planaction_id]) }}';"
+                                        style="cursor: pointer;">{{ $planActions[$i]->dateavancement }}</td>
+                                    <td onclick="window.location.href = '{{ route('COMPLIANCE.detailPlanAction', ['id' => $planActions[$i]->planaction_id]) }}';"
                                         style="cursor: pointer;">
-                                        @if ($planAction[$i]->avancement != 0)
-                                            {{ $planAction[$i]->avancement }}%
+                                        @if ($planActions[$i]->avancement != 0)
+                                            {{ $planActions[$i]->avancement }}%
                                         @else
                                             0%
                                         @endif
@@ -165,7 +173,7 @@
                                     <td>
                                         <button type="button" class="btn btn-info btn-finish mt-1 btn-sm"
                                             style="width: 120px;" data-toggle="modal" data-target="#avancement"
-                                            data-id="{{ $planAction[$i]->planaction_id }}">
+                                            data-id="{{ $planActions[$i]->planaction_id }}">
                                             <i class="fas fa-hourglass-half"></i> Avancement
                                         </button>
                                     </td>
@@ -291,9 +299,6 @@
         });
     });
 </script>
-
-
-
 <script>
     // Afficher automatiquement le modal si une erreur est présente
     document.addEventListener('DOMContentLoaded', function() {
@@ -302,58 +307,7 @@
         @endif
     });
 </script>
-
-<script>
-    document.addEventListener('DOMContentLoaded', function() {
-        var nomSaison = document.getElementById('nomSaison');
-        var idSaison = document.getElementById('idSaison');
-        var suggestionsList = document.getElementById('suggestionsListSaison');
-
-        nomSaison.addEventListener('input', function() {
-            var query = nomSaison.value;
-
-            if (query.length < 1) {
-                suggestionsList.style.display = 'none';
-                return;
-            }
-
-            var xhr = new XMLHttpRequest();
-            xhr.open('GET', '{{ route('COMPLIANCE.rechercheEmployeByNomPrenom') }}?nom=' + encodeURIComponent(query),
-                true);
-            xhr.onload = function() {
-                if (xhr.status === 200) {
-                    var saisons = JSON.parse(xhr.responseText);
-                    suggestionsList.innerHTML = '';
-                    if (saisons.length > 0) {
-                        saisons.forEach(function(saison) {
-                            var li = document.createElement('li');
-                            li.className = 'list-group-item';
-                            li.textContent = saison.nom+' '+ saison.prenom;
-                            li.addEventListener('click', function() {
-                                nomSaison.value = saison.nom+' '+ saison.prenom;
-                                idSaison.value =  saison.id;
-                                suggestionsList.style.display = 'none';
-                            });
-                            suggestionsList.appendChild(li);
-                        });
-                        suggestionsList.style.display = 'block';
-                    } else {
-                        suggestionsList.style.display = 'none';
-                    }
-                }
-            };
-            xhr.send();
-        });
-
-        document.addEventListener('click', function(event) {
-            if (!nomSaison.contains(event.target) && !suggestionsList.contains(event.target)) {
-                suggestionsList.style.display = 'none';
-            }
-        });
-    });
-</script>
-
-
+@include('COMPLIANCE.JS.jsPlanAction')
 <!--**********************************
         Content body end
 ***********************************-->
