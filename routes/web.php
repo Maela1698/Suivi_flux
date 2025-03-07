@@ -589,3 +589,5 @@ Route::get('/exportCSVSortieTissu', [ControllerWMS::class, 'exportCSVSortieTissu
 Route::match(['get', 'post'], '/QUALITETISSU.listeEntreeTissuInspecter', [ListeInspecterController::class, 'listeEntreeTissuInspecter'])->name('QUALITETISSU.listeEntreeTissuInspecter');
 Route::match(['get', 'post'], '/QUALITETISSU.inspectionTissu', [ListeInspecterController::class, 'inspectionTissu'])->name('QUALITETISSU.inspectionTissu');
 Route::match(['get', 'post'], '/QUALITETISSU.ajoutInspectionQualite', [ListeInspecterController::class, 'ajoutInspectionQualite'])->name('QUALITETISSU.ajoutInspectionQualite');
+/*------------------COMPLIANCE MAELA-------------------------------*/
+ require __DIR__.'/COMPLIANCE/web_compliance.php';
