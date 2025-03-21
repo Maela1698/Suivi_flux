@@ -10,6 +10,11 @@ class Constat extends Model
 {
     use HasFactory;
 
+    protected $table = "constat";
+
+    public $timestamps = false;
+
+
     // $constat->insertConstat($dateConstat, $section, $priorite, $description, 1);
 
 

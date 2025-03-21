@@ -5,41 +5,183 @@ namespace App\Http\Controllers\COMPLIANCECONTROLLER;
 use App\Http\Controllers\Controller;
 use App\Models\COMPLIANCE\AvancementPlanAction;
 use App\Models\COMPLIANCE\Constat;
+use App\Models\COMPLIANCE\NewConstat;
 use App\Models\COMPLIANCE\PlanAction;
+use App\Models\COMPLIANCE\ResponsableSection;
 use App\Models\COMPLIANCE\Section;
+use App\Models\COMPLIANCE\VConstat;
 use App\Models\COMPLIANCE\VPlanAction;
+use App\Models\COMPLIANCE\VResponsableLibre;
+use App\Models\COMPLIANCE\VResponsableSection;
 use App\Models\ListeEmploye;
 use App\Models\Planning;
 use App\Models\VListEmploye;
 use App\Services\ServicesConstat;
 use Carbon\Carbon;
+use Exception;
 use Illuminate\Http\Request;
+use Illuminate\Database\QueryException;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Session;
+use Illuminate\Validation\ValidationException;
 
 class ControllerCompliance extends Controller
 {
-    
-    public function listeConstat(Request $request)
-    {
-        $date = $request->input('date');
-        $section = $request->input('section');
-        $priorite = $request->input('priorite');
-        $condition = "";
-        if (!empty($date)) {
-            $condition = $condition . " and dateconstat='" . $date . "'";
+        /**
+     * Vérifie si la nouvelle valeur d'avancement est inférieure à l'ancienne.
+     *
+     * @param int $newAvancement La nouvelle valeur d'avancement.
+     * @param int $currentAvancement La valeur actuelle d'avancement.
+     * @throws Exception Si la nouvelle valeur est inférieure à l'actuelle.
+     */
+    private function verifyAvancement(int $newAvancement, int $currentAvancement): void{
+        if ($newAvancement < $currentAvancement) {
+            throw new Exception('la valeur doit etre superieur à '.$currentAvancement.'%');
+            
         }
-        if (!empty($section)) {
-            $condition = $condition . " and section='" . $section . "'";
-        }
-        if (!empty($priorite)) {
-            $condition = $condition . " and priorite=" . $priorite;
-        }
-        $fichier = Constat::getAllFichier();
-        $section = Section::getAllSection();
-        $condition = $condition . " order by constat_id desc";
-        $constat = Constat::getConstatByTypeAudit(1, $condition);
-
-        return view('COMPLIANCE.listeConstat', compact('constat', 'section', 'fichier'));
     }
+
+
+    public function updateAvancement(Request $request){
+        try{
+            $constat = Constat::find($request->id_constat);
+            $this->verifyAvancement($request->avancement, $constat->avancement);
+            $constat->avancement = $request->avancement;
+            $constat->save();
+            return redirect()->route('COMPLIANCE.listeConstat');
+        }
+        catch (QueryException $e) {
+            if ($e->getCode() == 23514) {
+                Session::flash('check_violation', 'la valeur doit etre inferieur à 100%');
+                Session::flash('avancement_invalide', $request->avancement);
+            }
+            return redirect()->route('COMPLIANCE.listeConstat');
+        }
+        catch (Exception $e) {
+            Session::flash('check_violation', $e->getMessage());
+            Session::flash('avancement_invalide', $request->avancement);
+            return redirect()->route('COMPLIANCE.listeConstat');
+        }
+    }
+    
+    public function listeConstat(Request $request){
+        $sections = Section::where('etat',0)->get();
+        $constats = VConstat::where('typeaudit_id',1);
+
+        $selectedDateRange = $request->daterange ?? '';
+        if (!empty($selectedDateRange)) {
+            list($deadline_debut,$deadline_fin) = explode(' au ',$selectedDateRange);
+            $deadline_debut = Carbon::createFromFormat('d-m-Y', $deadline_debut);
+            $deadline_fin = Carbon::createFromFormat('d-m-Y', $deadline_fin); 
+            $constats = $constats->whereBetween('dateconstat',[$deadline_debut,$deadline_fin]);
+        }
+
+
+        $selectedResolution = $request->resolution ?? '';
+        if (!empty($selectedResolution)) {
+            if ($selectedResolution === 'true') {
+                $constats = $constats->where('constat_avancement', 100);
+            } elseif ($selectedResolution === 'false') {
+                $constats = $constats->where('constat_avancement', '<', 100);
+            }
+        }
+        $constats = $constats->orderBy('constat_id','desc')->get();
+        return view('COMPLIANCE.listeConstat', compact('constats', 'sections'));
+    }
+
+    public function getSections(){
+        $sections = Section::where('etat', 0)->get();
+        return response()->json($sections);
+    }
+
+    public function addSection(Request $request) {
+        try {
+            if (!$request->id_employe) {
+                $section = new Section();
+                $section->addSection($request->nom_section);
+            }
+            else{
+                DB::beginTransaction();       
+                $section = new Section();
+                $section->addSection($request->nom_section);
+                
+                $resp_section = new ResponsableSection();
+                $resp_section->addResponsableSection($section->id,$request->id_employe);
+                
+                DB::commit();
+            }
+            return redirect()->route('COMPLIANCE.listeConstat');
+        } 
+        catch (QueryException $e) {
+            DB::rollBack();
+            if ($e->getCode() == 23505) {
+                Session::flash('section-violation', 'Une section avec cette désignation existe déjà.');
+            }
+            return redirect()->route('COMPLIANCE.listeConstat');
+        }
+        catch (\Exception $e) {
+             DB::rollBack();
+            Session::flash('test_error', $e->getMessage());
+            return redirect()->route('COMPLIANCE.listeConstat');
+        }
+    }
+
+    public function getResponsableSection(){
+        $resp_sections = VResponsableSection::where('etat', 0)->get();
+        $resp_libres = VResponsableLibre::all();
+        return response()->json([
+            'resp_sections' => $resp_sections,
+            'resp_libres' => $resp_libres
+        ]);
+    }
+
+    public function newAjoutConstat(Request $request){
+        $request->validate([
+            'fichierConstat' => 'image|mimes:jpeg,png,jpg,gif',
+            'date_constat' => 'required|date',
+            'id_section' => 'required|integer',
+            'priorite' => 'required|string',
+            'description' => 'nullable|string',
+            'action' => 'nullable|string',
+            'deadline' => 'nullable|date',
+            'numero' => 'nullable|string',
+        ]);
+
+        $data = [
+            'dateconstat' => $request->date_constat,
+            'section_id' => $request->id_section,
+            'priorite' => $request->priorite,
+            'description' => $request->description ?? '',
+            'action' => $request->action ?? '',
+            'deadline' => $request->deadline ?? null,
+            'numero' => $request->numero ?? '',
+            'typeaudit_id' => 1
+        ];
+    
+        NewConstat::create($data);
+        return redirect()->route(route: 'COMPLIANCE.listeConstat');
+    }
+
+    public function getConstatDetail (Request $request) {
+        $constatId = $request->input('id');
+        $constat = VConstat::find($constatId);
+
+        if ($constat) {
+            return response()->json([
+                'constat_numero' => $constat->constat_numero,
+                'dateconstat' => $constat->dateconstat,
+                'description' => $constat->description,
+                'action' => $constat->action,
+                'constat_deadline' => $constat->constat_deadline,
+                'constat_avancement' => $constat->constat_avancement,
+                'section_id' => $constat->section_id,
+                'priorite' => $constat->priorite
+            ]);
+        }
+
+        return response()->json(['error' => 'Constat non trouvé'], 404);
+    }
+
 
     public function ajoutConstat(Request $request)
     {

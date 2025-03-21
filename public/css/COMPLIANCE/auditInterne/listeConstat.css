@@ -1,0 +1,23 @@
+.table th {
+    color: #000000;
+    /* Couleur noire intense */
+    font-weight: bold;
+    /* Optionnel : Rend le texte plus épais */
+}
+
+.table td {
+    color: #828282;
+    /* Couleur noire intense */
+    font-weight: bold;
+    /* Optionnel : Rend le texte plus épais */
+}
+
+.perso tr{
+    cursor: pointer;
+}
+
+/* Style pour le conteneur du bouton "Ajouter" */
+.form-group.col-lg.d-flex.align-items-end {
+    align-self: flex-start; /* Aligner le bouton en haut du conteneur */
+    margin-top: 29px;
+}
