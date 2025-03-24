@@ -1,21 +1,3 @@
--- public.vue_plans_action source
-ALTER TABLE public.constat ADD avancement integer DEFAULT 0 NOT NULL;
-ALTER TABLE public.constat ADD numero varchar NULL;
-ALTER TABLE public.constat ADD CONSTRAINT constat_unique UNIQUE (numero);
-ALTER TABLE public.constat ADD action text NULL;
-ALTER TABLE public.constat ADD COLUMN deadline DATE NULL;
-ALTER TABLE public.constat ADD CONSTRAINT chk_deadline CHECK (deadline > dateconstat);
-
-CREATE TABLE public.responsable_section (
-	matricule int4 NOT NULL,
-	id_section int4 NULL,
-	CONSTRAINT responsable_section_unique UNIQUE (matricule),
-	CONSTRAINT responsable_section_unique_1 UNIQUE (id_section),
-	CONSTRAINT responsable_section_id_section_fk FOREIGN KEY (id_section) REFERENCES public."section"(id),
-	CONSTRAINT responsable_section_matricule_fk FOREIGN KEY (matricule) REFERENCES public.listeemploye(id)
-);    
-
-ALTER TABLE public.responsable_section RENAME COLUMN matricule TO id_employe;
 
 CREATE OR REPLACE VIEW public.vue_constats
 AS SELECT c.id AS constat_id,
@@ -37,40 +19,54 @@ AS SELECT c.id AS constat_id,
     c.deadline AS constat_deadline,
     c.avancement AS constat_avancement,
     c.numero AS constat_numero,
-    r.matricule,
+    r.id_employe AS matricule,
     e.nom,
-    e.prenom
+    e.prenom,
+    f.chemin
    FROM constat c
      LEFT JOIN section s ON c.section_id = s.id
      LEFT JOIN typeaudit t ON c.typeaudit_id = t.id
      LEFT JOIN vue_questionnaires q ON c.id = c.question_id
      LEFT JOIN planaction p ON p.constat_id = c.id
      LEFT JOIN responsable_section r ON r.id_section = c.section_id
-     LEFT JOIN listeemploye e ON e.id = r.matricule;
+     LEFT JOIN listeemploye e ON e.id = r.id_employe
+     LEFT JOIN fichier f ON c.id = f.constat_id;
 
-
-CREATE OR REPLACE VIEW public.v_responsable_section
-AS SELECT s.id AS id_section,
-    rs.id_employe,
-    s.designation AS nom_section,
-    l.nom AS nom_employe,
-    l.prenom AS prenom_employe,
-    l.matricule,
-    s.etat
-FROM section s
-    LEFT JOIN responsable_section rs ON s.id = rs.id_section
-    LEFT JOIN listeemploye l ON l.id = rs.id_employe;
-
-CREATE OR REPLACE VIEW v_responsable_libre
-AS SELECT
-    e.id as id_employe,
-    e.nom AS nom_employe,
-    e.prenom AS prenom_employe
-FROM listeemploye e
-    LEFT JOIN responsable_section rs ON e.id = rs.id_employe
-WHERE e.id NOT IN (SELECT id_employe FROM responsable_section);
-
-ALTER TABLE public."section" ADD CONSTRAINT section_unique UNIQUE (designation);
-ALTER TABLE public.constat ADD CONSTRAINT constat_check CHECK (avancement <= 100);
-
-
+CREATE OR REPLACE FUNCTION public.f_stat_constat(ids integer[], id_typeaudit integer)
+RETURNS TABLE(
+    nb_constat bigint,
+    resolu bigint,
+    a_traiter bigint,
+    retard bigint,
+    taux_resolu numeric,
+    taux_a_traiter numeric,
+    taux_retard numeric
+)
+LANGUAGE plpgsql
+AS $$
+BEGIN
+    RETURN QUERY
+    SELECT
+        COUNT(*) AS nb_constat,
+        SUM(CASE WHEN v.constat_avancement = 100 THEN 1 ELSE 0 END) AS resolu,
+        SUM(CASE WHEN v.constat_avancement < 100 THEN 1 ELSE 0 END) AS a_traiter,
+        SUM(CASE WHEN v.constat_deadline < CURRENT_DATE AND v.constat_avancement < 100 THEN 1 ELSE 0 END) AS retard,
+        CASE
+            WHEN COUNT(*) > 0 THEN
+                SUM(CASE WHEN v.constat_avancement = 100 THEN 1 ELSE 0 END) / COUNT(*)::DECIMAL
+            ELSE 0::DECIMAL
+        END AS taux_resolu,
+        CASE
+            WHEN COUNT(*) > 0 THEN
+                SUM(CASE WHEN v.constat_avancement < 100 THEN 1 ELSE 0 END) / COUNT(*)::DECIMAL
+            ELSE 0::DECIMAL
+        END AS taux_a_traiter,
+        CASE
+            WHEN COUNT(*) > 0 THEN
+                SUM(CASE WHEN v.constat_deadline < CURRENT_DATE AND v.constat_avancement < 100 THEN 1 ELSE 0 END) / COUNT(*)::DECIMAL
+            ELSE 0::DECIMAL
+        END AS taux_retard
+    FROM vue_constats v
+    WHERE v.typeaudit_id = id_typeaudit AND v.constat_id = ANY(ids);
+END;
+$$;

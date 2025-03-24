@@ -7,7 +7,62 @@
     <div class="container-fluid">
         @include('COMPLIANCE.headerCompliance')
         <div class="row">
-            
+            <div class="col-lg-3 col-sm-6">
+                <div class="card">
+                    <div class="stat-widget-two card-body">
+                        <div class="stat-content">
+                            <div class="stat-text">Nombre Constat</div>
+                            <div class="stat-digit"></i>{{ $constat_stat->nb_constat }}</div>
+                        </div>
+                        <div class="progress" style="opacity: 0;">
+                            <div role="progressbar" aria-valuemin="0" aria-valuemax="100" style="background-color: white"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-3 col-sm-6">
+                <div class="card">
+                    <div class="stat-widget-two card-body">
+                        <div class="stat-content">
+                            <div class="stat-text">Resolu</div>
+                            <div class="stat-digit"></i>{{ $constat_stat->taux_resolu }}%</div>
+                        </div>
+                        <div class="progress">
+                            <div class="progress-bar progress-bar-success" role="progressbar" aria-valuemin="0" aria-valuemax="100" style="width: {{ $constat_stat->taux_resolu }}%;"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-3 col-sm-6">
+                <div class="card">
+                    <div class="stat-widget-two card-body">
+                        <div class="stat-content">
+                            <div class="stat-text">A Traiter</div>
+                            <div class="stat-digit"></i>{{ $constat_stat->taux_a_traiter }}%</div>
+                        </div>
+                        <div class="progress">
+                            <div class="progress-bar progress-bar-warning" role="progressbar" aria-valuemin="0" aria-valuemax="100" style="width: {{ $constat_stat->taux_a_traiter }}%;"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-3 col-sm-6">
+                <div class="card">
+                    <div class="stat-widget-two card-body">
+                        <div class="stat-content">
+                            <div class="stat-text">Retard</div>
+                            <div class="stat-digit"></i>{{ $constat_stat->taux_retard }}%</div>
+                        </div>
+                        <div class="progress">
+                            <div class="progress-bar progress-bar-danger" role="progressbar" aria-valuemin="0" aria-valuemax="100" style="width: {{ $constat_stat->taux_retard }}%;"></div>
+                        </div>
+                    </div>
+                </div>
+                <!-- /# card -->
+            </div>
+            <!-- /# column -->
+        </div>
+        <div class="row">
             <div class="card col-12">
                 <div class="card-header d-flex justify-content-between align-items-center">
                     <h3 class="entete">LISTE CONSTAT</h3>
@@ -25,6 +80,18 @@
                                     <option value="">Resolution</option>
                                     <option value="true" {{ request('resolution') === 'true' ? 'selected' : '' }}>Resolu</option>
                                     <option value="false" {{ request('resolution') === 'false' ? 'selected' : '' }}>En cours</option>
+                                </select>                                
+                            </div>
+                        </div>
+                        <div class="col-lg">
+                            <div class="input-group">
+                                <select class="form-control" name="id_section">
+                                    <option value="">Section</option>
+                                    @foreach ( $sections as $section )
+                                        <option value="{{ $section->id }}" {{ request('id_section') == $section->id ? 'selected' : '' }}>
+                                            {{ $section->designation }}
+                                        </option>
+                                    @endforeach
                                 </select>                                
                             </div>
                         </div>

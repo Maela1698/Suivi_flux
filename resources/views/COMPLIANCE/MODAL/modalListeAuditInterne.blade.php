@@ -91,17 +91,16 @@
                                 </div>
                             </div>
                         </div>
-                        {{-- <div class="col-12 mt-2">
+                        <div class="col-12 mt-2">
                             <div class="row no-gutters">
                                 <div class="col-12">
                                     <label class="col-form-label texte">Fichier</label>
                                 </div>
                                 <div class="col-12">
-                                    <input type="file" class="form-control" name="fichierConstat"
-                                        accept="image/*" capture="camera">
+                                    <input type="file" class="form-control" name="fichierConstat" accept="image/*" capture="camera">
                                 </div>
                             </div>
-                        </div> --}}
+                        </div>
                     </div>
                     <div class="modal-footer mt-3">
                         <button type="button" class="btn btn-secondary" data-dismiss="modal">Annuler</button>
@@ -123,6 +122,9 @@
             </div>
             <form action="{{ route('COMPLIANCE.updateAvancement') }}" method="GET">
                 <div class="modal-body">
+                    <div>
+                        <img src="" class="img-fluid rounded-start mb-5" alt="Logo" width="200px" height="200px" id="fichierConstat">
+                    </div>
                     <div class="basic-form">
                         <div class="form-row">
                             <input type="hidden" name="id_constat" id="id_constat">

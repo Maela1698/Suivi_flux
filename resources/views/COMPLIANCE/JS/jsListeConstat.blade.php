@@ -43,6 +43,17 @@
                 $('#description').val(response.description);
                 $('input[name="action"]').val(response.action);
                 $('input[name="deadline"]').val(convertToISOFormat(response.constat_deadline));
+                var fichier = response.fichier; // Remplacez ceci par la façon dont vous obtenez le nom du fichier
+                var basePath = '{{ asset('uploads/constat/') }}';
+
+                // Assurez-vous que basePath se termine par une barre oblique
+                if (!basePath.endsWith('/')) {
+                    basePath += '/';
+                }
+                var srcPath = basePath + fichier;
+
+                // Mettre à jour l'attribut src de l'image
+                $('#fichierConstat').attr('src', srcPath);
                 
                 @if(Session::has('avancement_invalide'))
                     $('input[name="avancement"]').val({{ Session::get('avancement_invalide') }});
