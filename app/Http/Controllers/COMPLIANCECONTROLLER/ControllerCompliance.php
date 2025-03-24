@@ -76,7 +76,6 @@ class ControllerCompliance extends Controller
             $constats = $constats->whereBetween('dateconstat',[$deadline_debut,$deadline_fin]);
         }
 
-
         $selectedResolution = $request->resolution ?? '';
         if (!empty($selectedResolution)) {
             if ($selectedResolution === 'true') {
@@ -85,8 +84,36 @@ class ControllerCompliance extends Controller
                 $constats = $constats->where('constat_avancement', '<', 100);
             }
         }
+
+        $selectedSection = $request->id_section ?? '';
+        if(!empty($selectedSection)){
+            $constats = $constats->where('section_id',$selectedSection);
+        }
+
         $constats = $constats->orderBy('constat_id','desc')->get();
-        return view('COMPLIANCE.listeConstat', compact('constats', 'sections'));
+
+        if($constats->isNotEmpty()) {
+            $ids = $constats->pluck('constat_id')->toArray();
+            $idsString = implode(',', $ids);
+            $constat_stat = DB::select("SELECT * FROM f_stat_constat(ARRAY[$idsString], 1)");
+
+            $constat_stat = $constat_stat[0];
+            // dd($constat_stat);
+            $constat_stat->taux_resolu = (number_format($constat_stat->taux_resolu, 2)*100);
+            $constat_stat->taux_a_traiter = (number_format($constat_stat->taux_a_traiter, 2)*100);
+            $constat_stat->taux_retard = (number_format($constat_stat->taux_retard, 2)*100);
+        }
+        else{
+            $constat_stat = [];
+            $constat_stat = (object) [
+                'nb_constat' => 0,
+                'resolu' => 0,
+                'taux_resolu' => 0,
+                'taux_a_traiter' => 0,
+                'taux_retard' => 0
+            ];
+        }
+        return view('COMPLIANCE.listeConstat', compact('constats', 'sections', 'constat_stat'));
     }
 
     public function getSections(){
@@ -157,8 +184,21 @@ class ControllerCompliance extends Controller
             'numero' => $request->numero ?? '',
             'typeaudit_id' => 1
         ];
-    
+
         NewConstat::create($data);
+        $dernierConstat = Constat::orderBy('id','DESC')->limit(1)->get();
+
+        if ($request->hasFile('fichierConstat')) {
+            $s = new ServicesConstat;
+            $file = $request->file('fichierConstat');
+            $filename = $s->uploadImage("uploads/constat",$file);
+            
+            $fichier = new Constat();
+            $fichier->insertFichierConstat($filename, $dernierConstat[0]->id);
+        }else{
+            $fichier = new Constat();
+            $fichier->insertFichierConstat("", $dernierConstat[0]->id);
+        }
         return redirect()->route(route: 'COMPLIANCE.listeConstat');
     }
 
@@ -175,8 +215,9 @@ class ControllerCompliance extends Controller
                 'constat_deadline' => $constat->constat_deadline,
                 'constat_avancement' => $constat->constat_avancement,
                 'section_id' => $constat->section_id,
-                'priorite' => $constat->priorite
-            ]);
+                'priorite' => $constat->priorite,
+                'fichier' => $constat->chemin
+             ]);
         }
 
         return response()->json(['error' => 'Constat non trouvé'], 404);
