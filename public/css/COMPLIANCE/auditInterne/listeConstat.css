@@ -27,6 +27,12 @@
 .img-fluid {
     max-width: 50%;
     height: auto;
+    /* margin-left: -56%; */
+}
+
+.img-loi {
+    max-width: 50%;
+    height: auto;
     margin-left: -56%;
 }
 

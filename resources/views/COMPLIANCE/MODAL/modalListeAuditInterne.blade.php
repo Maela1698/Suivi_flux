@@ -195,7 +195,7 @@
                     <div class="card-body" id="pdfContent">
                         <div class="row align-items-center">
                             <div class="col-auto text-center">
-                                <img src="./images/NEW LOGO.png" class="img-fluid" alt="Logo">
+                                <img src="./images/NEW LOGO.png" class="img-loi" alt="Logo">
                             </div>
                             <div class="col text-right">
                                 <h4 class="font-weight-bold">Rapport Plan Action</h4>
