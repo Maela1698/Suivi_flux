@@ -182,3 +182,79 @@
 </div>
 
 {{-- Modal Apercu pdf --}}
+<div class="modal fade bd-example-modal-lg" tabindex="-1" aria-hidden="true" id="pdf">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Audit Interne - <span id="numero"> </span></h5>
+                <button type="button" class="close" data-dismiss="modal"><span>&times;</span>
+                </button>
+            </div>
+            
+                <div class="modal-body">
+                    <div class="card-body" id="pdfContent">
+                        <div class="row align-items-center">
+                            <div class="col-auto text-center">
+                                <img src="./images/NEW LOGO.png" class="img-fluid" alt="Logo">
+                            </div>
+                            <div class="col text-right">
+                                <h4 class="font-weight-bold">Rapport Plan Action</h4>
+                                <p class="mb-1"><strong>Date début :</strong> <span id="dateDebut"></span></p>
+                                <p class="mb-1"><strong>Date fin :</strong> <span id="dateFin"></span></p>
+                                <p class="mb-1"><strong>Section :</strong> <span id="section"></span></p>
+                                <p class="mb-1"><strong>Priorite :</strong> <span id="priorite">--</span></p>
+                                <p class="mb-1"><strong>Responsable:</strong> <span id="responsable"></span></p>
+                            </div>
+                        </div>
+                        <div class="table-responsive mt-3">
+                            <table class="table table-bordered table-hover">
+                                <thead class="thead-light">
+                                    <tr>
+                                        <th>Numero</th>
+                                        <th>Debut</th>
+                                        <th>Section</th>
+                                        <th>Constat</th>
+                                        <th>Moyens/Actions</th>
+                                        <th>Priorité</th>
+                                        <th>Deadline</th>
+                                        <th>Avancement</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach ($constats as $constat)
+                                        <tr>
+                                            <td>{{ $constat->constat_numero }}</td>
+                                            <td>{{ $constat->dateconstat }}</td>
+                                            <td>{{ $constat->section }}</td>
+                                            <td>{{ $constat->description }}</td>
+                                            <td>{{ $constat->action }}</td>
+                                            <td>{{ $constat->priorite }}</td>
+                                            <td>{{ $constat->constat_deadline }}</td>
+                                            <td>{{ $constat->constat_avancement }}%</td>
+                                        </tr>
+                                    @endforeach
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>    
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    <button type="submit" class="btn btn-primary" onclick="exportToPDF()">Telechargez pdf</button>
+                </div>           
+        </div>
+    </div>
+</div>
+<script>
+    function exportToPDF() {
+        const element = document.getElementById("pdfContent");
+
+        const options = {
+            filename: 'Rapport_Plan_Action.pdf', // Vous pouvez dynamiser ce nom selon vos besoins
+            image: { type: 'jpeg', quality: 0.98 },
+            html2canvas: { scale: 2 },
+            jsPDF: { unit: 'mm', format: 'a4', orientation: 'landscape' }
+        };
+        html2pdf().set(options).from(element).save();
+    }
+</script>

@@ -97,7 +97,7 @@
                         </div>
                         <div class="col-lg">
                             <button class="btn btn-success" style="width: 100px">Filtrer</button>
-                            <button type="button" class="btn btn-primary" id="apercuPdfBtn">Apercu PDF</button>
+                            <button type="button" data-toggle="modal" data-target="#pdf" class="btn btn-primary" id="apercuPdfBtn">Apercu PDF</button>
                         </div>
                     </div>
                 </form>
