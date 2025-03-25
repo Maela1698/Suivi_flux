@@ -73,12 +73,11 @@ class ControllerCompliance extends Controller
         if (!empty($selectedDateRange)) {
             list($deadline_debut,$deadline_fin) = explode(' au ',$selectedDateRange);
             $deadline_debut = Carbon::createFromFormat('d-m-Y', $deadline_debut);
-            // dd($deadline_debut);
-            $deadline_fin = Carbon::createFromFormat('d-m-Y', $deadline_fin); 
+            $deadline_fin = Carbon::createFromFormat('d-m-Y', $deadline_fin);
+            $dateDebut = $deadline_debut->format('d-m-Y');
+            $dateFin = $deadline_fin->format('d-m-Y');
             $constats = $constats->whereBetween('dateconstat',[$deadline_debut,$deadline_fin]);
         }
-
-        
 
         $selectedResolution = $request->resolution ?? '';
         if (!empty($selectedResolution)) {
@@ -117,7 +116,7 @@ class ControllerCompliance extends Controller
                 'taux_retard' => 0
             ];
         }
-        return view('COMPLIANCE.listeConstat', compact('constats', 'sections', 'constat_stat','deadline_debut','deadline_fin'));
+        return view('COMPLIANCE.listeConstat', compact('constats', 'sections', 'constat_stat','dateDebut','dateFin'));
     }
 
     public function getSections(){

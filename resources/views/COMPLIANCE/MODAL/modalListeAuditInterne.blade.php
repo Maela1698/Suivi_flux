@@ -198,12 +198,9 @@
                                 <img src="./images/NEW LOGO.png" class="img-loi" alt="Logo">
                             </div>
                             <div class="col text-right">
-                                <h4 class="font-weight-bold">Rapport Plan Action</h4>
-                                <p class="mb-1"><strong>Date début :</strong> <span id="dateDebut">{{ $deadline_debut ? : '--' }}</span></p>
-                                <p class="mb-1"><strong>Date fin :</strong> <span id="dateFin"></span></p>
-                                <p class="mb-1"><strong>Section :</strong> <span id="section"></span></p>
-                                <p class="mb-1"><strong>Priorite :</strong> <span id="priorite">--</span></p>
-                                <p class="mb-1"><strong>Responsable:</strong> <span id="responsable"></span></p>
+                                <h4 class="font-weight-bold">Rapport Audit Interne</h4>
+                                <p class="mb-1"><strong>Début Constat :</strong> <span id="dateDebut">{{ $dateDebut ? : '--' }}</span></p>
+                                <p class="mb-1"><strong>Fin Constat :</strong> <span id="dateFin">{{ $dateFin ? : '--' }}</span></p>
                             </div>
                         </div>
                         <div class="table-responsive mt-3">
@@ -250,7 +247,7 @@
         const element = document.getElementById("pdfContent");
 
         const options = {
-            filename: 'Rapport_Plan_Action.pdf', // Vous pouvez dynamiser ce nom selon vos besoins
+            filename: 'Rapport_Plan_Action.pdf',
             image: { type: 'jpeg', quality: 0.98 },
             html2canvas: { scale: 2 },
             jsPDF: { unit: 'mm', format: 'a4', orientation: 'landscape' }
