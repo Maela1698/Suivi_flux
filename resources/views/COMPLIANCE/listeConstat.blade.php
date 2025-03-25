@@ -105,6 +105,7 @@
                     <table class="table student-data-table m-t-20 table-hover mt-3 perso" style="color: black">
                         <thead>
                             <tr>
+                                <th>Code</th>
                                 <th>Numero</th>
                                 <th>Date</th>
                                 <th>Constat</th>
@@ -118,6 +119,15 @@
                         <tbody>
                             @foreach ($constats as $constat)
                                 <tr data-toggle="modal" data-target="#cinConstat" data-id="{{ $constat->constat_id }}">
+                                    <td>
+                                        <div class="code">
+                                            <div class="circle
+                                                {{ $constat->etat_constat == 1 ? 'resolu' : '' }}
+                                                {{ $constat->etat_constat == 2 ? 'a_traiter' : '' }}
+                                                {{ $constat->etat_constat == 3 ? 'retard' : '' }}
+                                            "></div>
+                                        </div>
+                                    </td>
                                     <td>{{ $constat->constat_numero }}</td>
                                     <td>{{ $constat->dateconstat }}</td>
                                     <td>

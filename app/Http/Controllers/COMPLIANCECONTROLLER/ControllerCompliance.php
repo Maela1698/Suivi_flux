@@ -37,7 +37,6 @@ class ControllerCompliance extends Controller
     private function verifyAvancement(int $newAvancement, int $currentAvancement): void{
         if ($newAvancement < $currentAvancement) {
             throw new Exception('la valeur doit etre superieur à '.$currentAvancement.'%');
-            
         }
     }
 
@@ -68,13 +67,18 @@ class ControllerCompliance extends Controller
         $sections = Section::where('etat',0)->get();
         $constats = VConstat::where('typeaudit_id',1);
 
+        $deadline_debut = null;
+        $deadline_fin = null;
         $selectedDateRange = $request->daterange ?? '';
         if (!empty($selectedDateRange)) {
             list($deadline_debut,$deadline_fin) = explode(' au ',$selectedDateRange);
             $deadline_debut = Carbon::createFromFormat('d-m-Y', $deadline_debut);
+            // dd($deadline_debut);
             $deadline_fin = Carbon::createFromFormat('d-m-Y', $deadline_fin); 
             $constats = $constats->whereBetween('dateconstat',[$deadline_debut,$deadline_fin]);
         }
+
+        
 
         $selectedResolution = $request->resolution ?? '';
         if (!empty($selectedResolution)) {
@@ -113,7 +117,7 @@ class ControllerCompliance extends Controller
                 'taux_retard' => 0
             ];
         }
-        return view('COMPLIANCE.listeConstat', compact('constats', 'sections', 'constat_stat'));
+        return view('COMPLIANCE.listeConstat', compact('constats', 'sections', 'constat_stat','deadline_debut','deadline_fin'));
     }
 
     public function getSections(){

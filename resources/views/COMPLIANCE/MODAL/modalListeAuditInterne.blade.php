@@ -199,7 +199,7 @@
                             </div>
                             <div class="col text-right">
                                 <h4 class="font-weight-bold">Rapport Plan Action</h4>
-                                <p class="mb-1"><strong>Date début :</strong> <span id="dateDebut"></span></p>
+                                <p class="mb-1"><strong>Date début :</strong> <span id="dateDebut">{{ $deadline_debut ? : '--' }}</span></p>
                                 <p class="mb-1"><strong>Date fin :</strong> <span id="dateFin"></span></p>
                                 <p class="mb-1"><strong>Section :</strong> <span id="section"></span></p>
                                 <p class="mb-1"><strong>Priorite :</strong> <span id="priorite">--</span></p>
