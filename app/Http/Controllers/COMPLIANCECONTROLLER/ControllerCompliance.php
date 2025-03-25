@@ -67,8 +67,8 @@ class ControllerCompliance extends Controller
         $sections = Section::where('etat',0)->get();
         $constats = VConstat::where('typeaudit_id',1);
 
-        $deadline_debut = null;
-        $deadline_fin = null;
+        $dateDebut = null;
+        $dateFin = null;
         $selectedDateRange = $request->daterange ?? '';
         if (!empty($selectedDateRange)) {
             list($deadline_debut,$deadline_fin) = explode(' au ',$selectedDateRange);
