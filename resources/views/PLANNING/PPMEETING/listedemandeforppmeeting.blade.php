@@ -2,7 +2,7 @@
 @include('CRM.sidebar')
 @include('STYLE.PLANNING.PPM.styleListePPMTrace')
 <style>
-    
+
     .code {
         display: flex;
         gap: 4px;
