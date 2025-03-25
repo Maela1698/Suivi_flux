@@ -21,3 +21,48 @@
     align-self: flex-start; /* Aligner le bouton en haut du conteneur */
     margin-top: 29px;
 }
+
+
+/* Style pour le logo */
+.img-fluid {
+    max-width: 50%;
+    height: auto;
+    margin-left: -56%;
+}
+
+/* Style pour les titres et les paragraphes */
+h4 {
+    color: #333;
+}
+
+/* Style pour la table */
+.table {
+    margin-top: 20px;
+    font-size: 1em;
+}
+
+.table th, .table td {
+    padding: 10px;
+    text-align: left;
+}
+
+.table thead th {
+    background-color: #f7f7f7;
+    border-color: #ddd;
+}
+
+.table-bordered {
+    border: 1px solid #ddd;
+}
+
+
+.table-responsive td {
+    word-wrap: break-word; /* Permet au texte de passer à la ligne */
+    white-space: normal;   /* Permet les retours à la ligne */
+    max-width: 200px;      /* Limite la largeur de la cellule */
+}
+
+.table tr {
+    page-break-inside: avoid;
+}
+
