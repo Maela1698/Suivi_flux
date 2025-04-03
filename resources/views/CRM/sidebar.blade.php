@@ -32,7 +32,7 @@
             </li>
         </ul>
         <ul class="metismenu" id="menu">
-            <li><a class="has-arrow" href="{{ route('COMPLIANCE.listeConstat') }}" aria-expanded="false">
+            <li><a class="has-arrow" href="{{ route('COMPLIANCE.readAuditInterne') }}" aria-expanded="false">
                 <i class="fa fa-balance-scale"></i><span class="nav-text">COMPLIANCE</span></a>
             </li>
         </ul>
