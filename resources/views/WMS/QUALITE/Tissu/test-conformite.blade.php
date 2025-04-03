@@ -201,7 +201,8 @@
                                         @error('datedebut')
                                             <p class="text-danger">{{ $message }}</p>
                                         @enderror
-                                        <input type="date" class="form-control" name="datedebut">
+                                        <input type="date" class="form-control" name="datedebut"
+                                            value="{{ date('Y-m-d') }}" readonly>
                                     </div>
                                 </div>
                             </div>
@@ -244,7 +245,8 @@
                                         @error('qtecde')
                                             <p class="text-danger">{{ $message }}</p>
                                         @enderror
-                                        <input type="text" class="form-control" name="qtecde">
+                                        <input type="text" class="form-control" name="qtecde"
+                                            value="{{ $historyEntree->qtecommande }}">
                                     </div>
                                 </div>
                             </div>
@@ -257,7 +259,8 @@
                                         @error('qterecupl')
                                             <p class="text-danger">{{ $message }}</p>
                                         @enderror
-                                        <input type="text" class="form-control" name="qterecupl">
+                                        <input type="text" class="form-control" name="qterecupl"
+                                            value="{{ $historyEntree->qterecu }}">
                                     </div>
                                 </div>
                             </div>

@@ -20,6 +20,35 @@ use Illuminate\Support\Facades\Validator;
 
 class WMSController extends Controller
 {
+    function modif_entree_wms(Request $request)
+    {
+        $data = $request->all();
+        // Check if idstockwms exists in Sortiewms
+        $sortiewms = SortieWMS::where('idstockwms', $data['idstockwms'])->first();
+        if ($sortiewms) {
+            return redirect()->back()->withErrors(['error' => "Cette entrée a déja une ou plusieurs sortie donc ne peu plus être modifier"]);
+        }
+
+        // Update Entreewms
+        $entreewms = EntreeWMS::find($data['identreewms']);
+        $data['tauxecart'] = ($entreewms->qterecu / $data['qtecommande']) * 100;
+        $data['resterecevoir'] = $data['qtecommande'] - $entreewms->qterecu;
+        if ($entreewms) {
+            $entreewms->update($data);
+        } else {
+            return redirect()->back()->withErrors(['error' => 'Entree not found.']);
+        }
+
+        // Update Stockwms
+        $stockwms = StockWMS::find($data['idstockwms']);
+        if ($stockwms) {
+            $stockwms->update($data);
+        } else {
+            return redirect()->back()->withErrors(['error' => 'Stock not found.']);
+        }
+
+        return redirect()->back()->with('success', 'Entree modifier avec succès');
+    }
     public function verif_parite($date)
     {
         $carbonDate = Carbon::parse($date);
@@ -86,7 +115,7 @@ class WMSController extends Controller
             if (empty($cellule)) {
                 $errors->add('cellule', 'Veuillez choisir la/les cellules à utiliser');
             }
-            dd($errors);
+
             return redirect()->back()->withErrors($errors)->withInput($data);
         }
         try {
@@ -329,7 +358,6 @@ class WMSController extends Controller
         $data['idfamillewms'] = $dataStock->idfamillewms;
         $data['idclassematierepremiere'] = $dataStock->idclassematierepremiere;
         $data['designation'] = $dataStock->designation;
-        $data['designation'] = $dataStock->designation;
         $data['reference'] = $dataStock->reference;
         $data['idunitemesurematierepremiere'] = $dataStock->idunitemesurematierepremiere;
         $data['saison'] = $dataStock->saison;
@@ -338,17 +366,72 @@ class WMSController extends Controller
         return $data;
     }
     // TODO: A faire
+    // public function insert_rajout(Request $request)
+    // {
+    //     $data = $request->except('cellule');
+    //     $DataStock = StockWMS::find($data['idstockwms']);
+    //     $DataStockCLient = EntreeWMS::where('idstockwms', $data['idstockwms'])->first();
+    //     $data = $this->map_entree_wms($data, $DataStock, $DataStockCLient);
+    //     $parite = $this->verif_parite($data['datefacturation']);
+    //     $data['resterecevoir'] = $data['qtecommande'] - $data['qteentree'];
+    //     // dd($data);
+    //     $cellule = $request->input('cellule');
+    //     $validationData = EntreeWMS::getValidationRules();
+    //     $rules = $validationData['rules'];
+    //     $validator = Validator::make($data, $rules);
+    //     if ($parite == false) {
+    //         $errorMessage = 'Il n\'y a pas encore de parité sur le mois choisi';
+
+    //         return back()->withErrors(['error' => $errorMessage]);
+    //     }
+    //     // $data['prixunitaire'] = $this->conversion_devise_euro($data['prixunitaire'], $data['idunitemonetaire'], $data['datefacturation']);
+    //     if ($validator->fails() || empty($cellule)) {
+    //         $errors = $validator->errors();
+    //         if (empty($cellule)) {
+    //             $errors->add('cellule', 'Veuillez choisir la/les cellules à utiliser');
+    //         }
+    //         // dd($errors);
+    //         return redirect()->back()->withErrors($errors)->withInput();
+    //     }
+    //     try {
+            // DB::beginTransaction();
+            // $this->rajout_stock_wms($data, $cellule);
+            // $entreeWMS = new EntreeWMS($data);
+            // $res = $entreeWMS->save();
+            // $this->ajout_cellule_wms_entree($cellule, $entreeWMS->id);
+            // $this->ajout_magasin($data);
+            // DB::commit();
+    //     } catch (\Exception $e) {
+            // DB::rollBack();
+            // $errorMessage = 'Une anomalie est survenue lors du processus d\'enregistrement des données, veuillez réessayer.' . $e;
+
+            // return back()->withInput()->withErrors(['error' => $errorMessage]);
+    //     }
+    //     $message = $res ? 'La procédure d\'enregistrement s\'est déroulée avec succès.' : 'Une erreur est survenue, empêchant l\'enregistrement des données.';
+    //     $status = $res ? 'success' : 'error';
+
+        // return back()->with($status, $message);
+    // }
+
     public function insert_rajout(Request $request)
     {
+          
         $data = $request->except('cellule');
+       
         $DataStock = StockWMS::find($data['idstockwms']);
-        $DataStockCLient = Client_StockWMS::where('idstockwms', $data['idstockwms'])->first();
+        
+        // $DataStockCLient = EntreeWMS::where('idstockwms', $data['idstockwms'])->first();
+        $DataStockCLient = EntreeWMS::getEntreeWMSByStock($data['idstockwms']);
+        $DataStockCLient = $DataStockCLient[0];
+        // dd($DataStockCLient);
         $data = $this->map_entree_wms($data, $DataStock, $DataStockCLient);
+        
         $parite = $this->verif_parite($data['datefacturation']);
+        
         $data['resterecevoir'] = $data['qtecommande'] - $data['qteentree'];
-        // dd($data);
         $cellule = $request->input('cellule');
         $validationData = EntreeWMS::getValidationRules();
+        
         $rules = $validationData['rules'];
         $validator = Validator::make($data, $rules);
         if ($parite == false) {
@@ -356,16 +439,22 @@ class WMSController extends Controller
 
             return back()->withErrors(['error' => $errorMessage]);
         }
+        
         $data['prixunitaire'] = $this->conversion_devise_euro($data['prixunitaire'], $data['idunitemonetaire'], $data['datefacturation']);
-        if ($validator->fails() || empty($cellule)) {
-            $errors = $validator->errors();
-            if (empty($cellule)) {
-                $errors->add('cellule', 'Veuillez choisir la/les cellules à utiliser');
-            }
-            dd($errors);
-            return redirect()->back()->withErrors($errors)->withInput();
-        }
+        // dd($data);
+        // if ($validator->fails() || empty($cellule)) {
+        //     $errors = $validator->errors();
+        //     if (empty($cellule)) {
+        //         $errors->add('cellule', 'Veuillez choisir la/les cellules à utiliser');
+        //     }
+
+        //     return redirect()->back()->withErrors($errors)->withInput($data);
+        // }
+        //$data['tauxecart'] = ($data['qterecu'] / $data['qtecommande']) * 100;
+        // $data['resterecevoir'] = $data['qtecommande'] - $data['qterecu'];
+       
         try {
+          
             DB::beginTransaction();
             $this->rajout_stock_wms($data, $cellule);
             $entreeWMS = new EntreeWMS($data);
@@ -383,6 +472,7 @@ class WMSController extends Controller
         $status = $res ? 'success' : 'error';
 
         return back()->with($status, $message);
+
     }
 
     public function rajout_stock_wms($data, $cellule)
@@ -397,9 +487,9 @@ class WMSController extends Controller
         $stockwms->prixunitaire = ($prixTotaleEntree + $prixTotaleStock) / $stockwms->qtestock;
 
         $stockwms->save();
-        $dataStockTiersModele['idstockwms'] = $stockwms->id;
-        $stockTiersModele = Client_StockWMS::firstOrCreate($dataStockTiersModele);
-        $stockTiersModele->save();
+        // $dataStockTiersModele['idstockwms'] = $stockwms->id;
+        // $stockTiersModele = Client_StockWMS::firstOrCreate($dataStockTiersModele);
+        // $stockTiersModele->save();
         // TODO: A voir si on va faire les cellules unique ou avec doublon
         $this->ajout_cellule_wms_stock($cellule, $data['idstockwms']);
     }
@@ -535,7 +625,7 @@ class WMSController extends Controller
             if ($quantiteRetour > $stockwms->qtestock) {
                 return redirect()->back()->withErrors(['error' => 'Quantité selectionner est supérieur à la quantité reçue']);
             }
-            $stockwms->qtestock = $stockwms->qtestock - $quantiteRetour;
+            $stockwms->qtestock = $stockwms->qtestock + $quantiteRetour;
             $data['prixunitaire'] = $stockwms->prixunitaire;
             $validationData = WMS_WMS_RETOUR::getValidationRules();
             $rules = $validationData['rules'];

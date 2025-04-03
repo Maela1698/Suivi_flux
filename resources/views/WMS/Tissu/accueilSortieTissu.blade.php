@@ -4,27 +4,119 @@
 
     <div class="container-fluid">
         @include('WMS.headerWMS')
+        <div class="row">
+            <div class="col-md-6 col-xl-3 mb-4">
+                <a href="#" class="card h-100 shadow border-left-primary py-2">
+                    <div class="card-body">
+                        <div class="row align-items-center no-gutters">
+                            <div class="col mr-2">
+                                <div class="text-uppercase text-primary font-weight-bold text-xs mb-1"><span>Total Sortie
+                                    </span></div>
+                                <div class="text-dark font-weight-light mb-0">
+                                    <span
+                                        style="font-weight: bold;font-size: 20px">{{ number_format($totalSortie ?? 0, 0, ',', ' ') }}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </a>
+            </div>
+            <div class="col-md-6 col-xl-3 mb-4">
+                <a href="#" class="card h-100 shadow border-left-success py-2">
+                    <div class="card-body">
+                        <div class="row align-items-center no-gutters">
+                            <div class="col mr-2">
+                                <div class="text-uppercase text-success font-weight-bold text-xs mb-1"><span>Fréquence
+                                        moyenne sortie
+                                    </span></div>
+                                <div class="text-dark font-weight-bold h5 mb-0">
+                                    <span
+                                        style="font-size: 20px">{{ number_format($frequenceSortie ?? 0, 3, ',', ' ') }}</span>
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+                </a>
+            </div>
+            <div class="col-md-6 col-xl-3 mb-4">
+                <a href="#" class="card h-100 shadow border-left-info py-2">
+                    <div class="card-body">
+                        <div class="row align-items-center no-gutters">
+                            <div class="col mr-2">
+                                <div class="text-uppercase text-info font-weight-bold text-xs mb-1"><span>Prix Total
+                                    </span></div>
+                                <div class="text-dark font-weight-bold h5 mb-0">
+                                    <span style="font-size: 20px">{{ number_format($prixTotal ?? 0, 3, ',', ' ') }}
+                                        €</span>
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+                </a>
+            </div>
+            <div class="col-md-6 col-xl-3 mb-4">
+                <a href="#" class="card h-100 shadow border-left-warning py-2">
+                    <div class="card-body">
+                        <div class="row align-items-center no-gutters">
+                            <div class="col mr-2">
+                                <div class="text-uppercase text-warning font-weight-bold text-xs mb-1"><span>Total
+                                        métrage</span></div>
+                                <div class="text-dark font-weight-bold h5 mb-0">
+                                    <span style="font-size: 20px">{{ number_format($totalMetrage ?? 0, 3, ',', ' ') }}
+                                        m</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </a>
+            </div>
+        </div>
+
         <div class="card">
 
-            <div class="card-header py-3">
-                <h4 class="text-primary m -0 font-weight-bold">Sortie</h4>
-                <form action="#" method="get">
-                    @csrf
-                    <div class="input-group">
-                        <button class="btn btn-secondary">Ajout nouvelle entrée</button>
-                    </div>
+            <div class="card-header py-3 d-flex justify-content-between align-items-center">
+                <h4 class="text-primary m-0 font-weight-bold">
+                    Sortie {{ $familleTissu->famille_tissus }}
+                </h4>
+
+                <form action="{{ route('WMS.exportCSVStockTissu') }}" method="GET">
+                    <input type="hidden" name="idcategorietissu" value="{{ $idCategorie }}/{{ $nomCategorie }}">
+                    <input type="hidden" value="{{ $familleTissu->id }}" name="idfamilletissu">
+                    <input type="hidden" value="{{ $idClasse }}/{{ $nomClasse }}" name="idclassematierepremiere">
+                    <input type="hidden" value="{{ $idUtilisationWMS }}/{{ $nomUtilisationWMS }}" name="idutilisationwms">
+                    <input type="hidden" value="{{ $idClient }}/{{ $nomClient }}" name="idclient">
+                    <input type="hidden" value="{{ $idFournisseur }}/{{ $nomFournisseur }}" name="idfournisseur">
+                    <input type="hidden" value="{{ $recherche }}" name="recherche">
+
+                    <button type="submit" class="btn btn-info">
+                        <i class="fas fa-file-csv"></i> Exporter CSV
+                    </button>
                 </form>
             </div>
+
+
             <div class="card-body">
-                <form action="#" method="get" autocomplete="off">
+                <form class="mb-4"
+                    action="{{ route('WMS.filtre-sortie-tissu', ['idfamilletissu' => $familleTissu->id]) }}"
+                    method="get" autocomplete="off">
                     @csrf
+                    <input type="hidden" name="idfamilletissu" value="{{ $familleTissu->id }}">
                     <div class="row">
                         <div class="col-md-3 col-lg-2 mb-3">
                             <div class="input-group">
                                 <select class="form-control w-50" name="idcategorietissu">
                                     <optgroup label="Catégorie du tissu">
-                                        <option value="#">BIO</option>
-                                        <option value="#">NON-BIO</option>
+                                        @if ($idCategorie == null)
+                                        <option value="">Selection du catégorie du tissu</option>
+                                    @else
+                                        <option value="{{ $idCategorie }}/{{ $nomCategorie }}">{{ $nomCategorie }}</option>
+                                        <option value="">Selection du catégorie du tissu</option>
+                                    @endif
+                                    @foreach ($categorie as $categories)
+                                        <option value="{{ $categories->id }}/{{ $categories->categorie }}">{{ $categories->categorie }}</option>
+                                    @endforeach
                                     </optgroup>
                                 </select>
                             </div>
@@ -32,9 +124,17 @@
                         <div class="col-md-3 col-lg-2 mb-3">
                             <div class="input-group">
                                 <select class="form-control w-50" name="idclassematierepremiere">
-                                    <optgroup label="Catégorie de la matière">
-                                        <option value="#">Current</option>
-                                        <option value="#">En cours</option>
+                                    <optgroup label="Classe du tissu">
+                                        @if ($idClasse == null)
+                                            <option value="">Selection de la classe du tissu</option>
+                                        @else
+                                            <option value="{{ $idClasse }}/{{ $nomClasse }}">{{ $nomClasse }}</option>
+                                            <option value="">Selection de la classe du tissu</option>
+                                        @endif
+                                        @foreach ($classeMatiere as $classeMatieres)
+                                            <option value="{{ $classeMatieres->id }}/{{ $classeMatieres->classe }}">{{ $classeMatieres->classe }}
+                                            </option>
+                                        @endforeach
                                     </optgroup>
                                 </select>
                             </div>
@@ -43,8 +143,17 @@
                             <div class="input-group">
                                 <select class="form-control w-50" name="idutilisationwms">
                                     <optgroup label="Utilisation">
-                                        <option value="#">Coupe type</option>
-                                        <option value="#">Production</option>
+                                        @if ($idUtilisationWMS == null)
+                                            <option value="">Sélection de l'utilisation</option>
+                                        @else
+                                            <option value="{{ $idUtilisationWMS }}/{{ $nomUtilisationWMS }}">{{ $nomUtilisationWMS }}
+                                            </option>
+                                            <option value="">Sélection de l'utilisation</option>
+                                        @endif
+                                        @foreach ($utilisation as $utilisations)
+                                            <option value="{{ $utilisations->id }}/{{ $utilisations->utilisation }}">{{ $utilisations->utilisation }}
+                                            </option>
+                                        @endforeach
                                     </optgroup>
                                 </select>
                             </div>
@@ -53,8 +162,16 @@
                             <div class="input-group">
                                 <select class="form-control w-50" name="idclient">
                                     <optgroup label="Client">
-                                        <option value="#">JACADI</option>
-                                        <option value="#">ORCHESTRA</option>
+                                        @if ($idClient == null)
+                                            <option value="">Sélection du client</option>
+                                        @else
+                                            <option value="{{ $idClient }}/{{ $nomClient }}">{{ $nomClient }}</option>
+                                            <option value="">Sélection du client</option>
+                                        @endif
+                                        @foreach ($client as $clients)
+                                            <option value="{{ $clients->id }}/{{ $clients->nomtier }}">{{ $clients->nomtier }}
+                                            </option>
+                                        @endforeach
                                     </optgroup>
                                 </select>
                             </div>
@@ -63,29 +180,36 @@
                             <div class="input-group">
                                 <select class="form-control w-50" name="idfournisseur">
                                     <optgroup label="Fournisseur">
-                                        <option value="#">SOMACOU</option>
-                                        <option value="#">SOCOTA</option>
+                                        @if ($idFournisseur == null)
+                                            <option value="">Sélection du fournisseur</option>
+                                        @else
+                                            <option value="{{ $idFournisseur }}/{{ $nomFournisseur }}">{{ $nomFournisseur }}</option>
+                                            <option value="">Sélection du fournisseur</option>
+                                        @endif
+                                        @foreach ($fournisseur as $fournisseurs)
+                                            <option value="{{ $fournisseurs->id }}/{{ $fournisseurs->nomtier }}">{{ $fournisseurs->nomtier }}
+                                            </option>
+                                        @endforeach
                                     </optgroup>
                                 </select>
                             </div>
                         </div>
-                    </div>
-
-                    <div class="row">
                         <div class="col-3">
                             <div class="input-group" id="date-range">
-                                <input type="date" class="form-control" name="startEntree"
-                                    value="{{ request()->startEntree }}">
+                                <input type="date" class="form-control" name="debut" value="{{ $debut }}">
                                 <span class="input-group-addon b-0 text-white"
                                     style="width: 20px; text-align: center; justify-content: center; background-color: gray;">à</span>
-                                <input type="date" class="form-control" name="endEntree"
-                                    value="{{ request()->endEntree }}">
+                                <input type="date" class="form-control" name="fin" value="{{ $fin }}">
                             </div>
                         </div>
                         <div class="col-3">
                             <div class="input-group" id="date-range">
-                                <input type="text" class="form-control" name="startEntree" placeholder="Recherche"
-                                    value="{{ request()->startEntree }}">
+                                <input type="text" class="form-control" name="recherche" placeholder="Recherche" value="{{ $recherche }}">
+                            </div>
+                        </div>
+                         <div class="col-3">
+                            <div class="input-group" id="date-range">
+                                <input type="text" class="form-control" name="commentaire" placeholder="Commentaire" value="{{  $commentaire }}">
                             </div>
                         </div>
 
@@ -108,13 +232,12 @@
                         </div>
                     @endif
                     <table class="table my-0" id="dataTable">
-                        <thead>
+                        <thead class="thead-dark">
                             <tr>
                                 <th>Date sortie</th>
                                 <th>NumeroBCI</th>
                                 <th>Catégorie</th>
-                                <th>Classe</th>
-                                <th>Utilisation</th>
+                                <th>Classe de la matière</th>
                                 <th>Référence tissu</th>
                                 <th>Désignation</th>
                                 <th>Composition</th>
@@ -132,20 +255,19 @@
                                 <th></th>
                             </tr>
                         </thead>
-                        <tbody>
+                        <tbody style="color: black">
                             @foreach ($sortie as $sorties)
                                 <tr>
                                     <th>{{ $sorties->datesortie }}</th>
                                     <th>{{ $sorties->numbci }}</th>
                                     <th>{{ $sorties->categorie }}</th>
                                     <th>{{ $sorties->classe }}</th>
-                                    <th>{{ $sorties->utilisation }}</th>
                                     <th>{{ $sorties->reference }}</th>
                                     <th>{{ $sorties->designation }}</th>
                                     <th>{{ $sorties->composition }}</th>
                                     <th>{{ $sorties->couleur }}</th>
                                     <th>{{ $sorties->fournisseur }}</th>
-                                    <th>{{ $sorties->client }}</th>
+                                    <th>{{ $sorties->nomtier }}</th>
                                     <th>{{ $sorties->modele }}</th>
                                     <th>{{ $sorties->saison }}</th>
                                     <th>{{ $sorties->laize }}</th>
@@ -163,7 +285,8 @@
                                                     <i class="fa fa-arrow-circle-o-left"></i>
                                                 </button>
                                             </div>
-                                            <div>
+                                            {{-- TODO: A FAIRE --}}
+                                            {{-- <div>
                                                 <a class="btn" href="#"
                                                     style="border-radius: 50%; background-color: #f57c00; color: white;margin-right:10px"
                                                     title="Sortie de Stock">
@@ -176,7 +299,7 @@
                                                     style="border-radius: 50%">
                                                     <i class="fa fa-trash"></i>
                                                 </button>
-                                            </div>
+                                            </div> --}}
                                         </div>
 
                                     </td>
@@ -261,6 +384,49 @@
                         </tbody>
                     </table>
                 </div>
+                {{--  <div class="pagination justify-content-center">
+                    @if ($sortie->lastPage() > 1)
+                        <ul class="pagination justify-content-center">
+                            <!-- Previous Page Link -->
+                            <li class="page-item {{ $sortie->onFirstPage() ? 'disabled' : '' }}">
+                                <a class="page-link" href="{{ $sortie->previousPageUrl() }}" aria-label="Previous">
+                                    <span aria-hidden="true">&laquo; Previous</span>
+                                </a>
+                            </li>
+
+                            <!-- Pagination Links -->
+                            @php
+                                $currentPage = $sortie->currentPage();
+                                $lastPage = $sortie->lastPage();
+                                $visiblePages = min($lastPage, 4); // Maximum number of visible pages
+                                $startPage = max(1, $currentPage - floor($visiblePages / 2));
+                                $endPage = min($lastPage, $startPage + $visiblePages - 1);
+                            @endphp
+
+                            @if ($startPage > 1)
+                                <li class="page-item disabled"><span class="page-link">...</span></li>
+                            @endif
+
+                            @for ($i = $startPage; $i <= $endPage; $i++)
+                                <li class="page-item {{ $sortie->currentPage() == $i ? 'active' : '' }}">
+                                    <a class="page-link" href="{{ $sortie->url($i) }}">{{ $i }}</a>
+                                </li>
+                            @endfor
+
+                            @if ($endPage < $lastPage)
+                                <li class="page-item disabled"><span class="page-link">...</span></li>
+                            @endif
+
+                            <!-- Next Page Link -->
+                            <li
+                                class="page-item {{ $sortie->currentPage() == $sortie->lastPage() ? 'disabled' : '' }}">
+                                <a class="page-link" href="{{ $sortie->nextPageUrl() }}" aria-label="Next">
+                                    <span aria-hidden="true">Next &raquo;</span>
+                                </a>
+                            </li>
+                        </ul>
+                    @endif
+                </div>  --}}
             </div>
         </div>
     </div>

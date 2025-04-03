@@ -10,8 +10,8 @@
             <div class="card-body">
                 <div class="form-validation">
                     {{-- !route! --}}
-                    <form class="form-valide" action="" method="post" enctype="multipart/form-data"
-                        autocomplete="off">
+                    <form class="form-valide" action="{{ route('QUALITE.test-liste-rouleau-fabric-inspection') }}"
+                        method="post" enctype="multipart/form-data" autocomplete="off">
                         @csrf
                         <h4 class="text-center"></h4>
                         @if (Session::has('success'))
@@ -37,7 +37,7 @@
                                             <p class="text-danger">{{ $message }}</p>
                                         @enderror
                                         <input type="text" class="form-control" name="laizeutilisable"
-                                            value="{{ $testConformite->laizerecuepl }}">
+                                            value="{{ isset($rouleaufabrictissu->laizeutilisable) ? $rouleaufabrictissu->laizeutilisable : $rouleau->laize }}">
                                     </div>
                                 </div>
                             </div>
@@ -51,7 +51,7 @@
                                             <p class="text-danger">{{ $message }}</p>
                                         @enderror
                                         <input type="text" class="form-control" name="metragereel"
-                                            value="{{ $testConformite->qterecupl }}">
+                                            value="{{ isset($rouleaufabrictissu->metragereel) ? $rouleaufabrictissu->metragereel : $rouleau->metrage }}">
                                     </div>
                                 </div>
                             </div>
@@ -64,7 +64,8 @@
                                         @error('longueurinspect')
                                             <p class="text-danger">{{ $message }}</p>
                                         @enderror
-                                        <input type="text" class="form-control" name="longueurinspect">
+                                        <input type="text" class="form-control" name="longueurinspect"
+                                            {{ isset($rouleaufabrictissu->longueurinspect) ? 'value=' . $rouleaufabrictissu->longueurinspect : '' }}>
                                     </div>
                                 </div>
                             </div>
@@ -78,7 +79,23 @@
                                             <p class="text-danger">{{ $message }}</p>
                                         @enderror
                                         <input type="text" class="form-control" name="poidsreel"
-                                            value="{{ $testConformite->qterecuplkg }}">
+                                            value="{{ isset($rouleaufabrictissu->poidsreel) ? $rouleaufabrictissu->poidsreel : $rouleau->poids }}">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <div class="col-12">
+                                <div class="row no-gutters">
+                                    <div class="col-12">
+                                        <label class="col-form-label">Observation</label>
+                                    </div>
+                                    <div class="col-12">
+                                        @error('observation')
+                                            <p class="text-danger">{{ $message }}</p>
+                                        @enderror
+                                        <textarea class="form-control" cols="10" rows="10" name="observation">{{ isset($rouleaufabrictissu->observation) ? $rouleaufabrictissu->observation : '' }}
+                                        </textarea>
                                     </div>
                                 </div>
                             </div>
@@ -98,8 +115,8 @@
                                     <th>Metrage</th>
                                     <th>Defaut</th>
                                     <th>Demerit</th>
-                                    <th></th>
-                                    <th></th>
+                                    {{-- <th></th>
+                                    <th></th> --}}
                                 </tr>
                             </thead>
                             <tbody>
@@ -112,10 +129,15 @@
                                             </a>
                                         </td>
                                         <td>{{ $inspectionDefauts->metrage }}</td>
-                                        <td>{{ $inspectionDefauts->defaut }}</td>
+                                        @foreach ($defectFabricType as $defectFabricTypes)
+                                            @if ($inspectionDefauts->iddefectfabrictype == $defectFabricTypes->id)
+                                                <td>{{ $defectFabricTypes->typedefaut }}</td>
+                                            @endif
+                                        @endforeach
+
                                         <td>{{ $inspectionDefauts->defectpoint . '.' . $inspectionDefauts->demeritpoint . '.' . $inspectionDefauts->sonnette }}
                                         </td>
-                                        <td>
+                                        {{-- <td>
                                             <button class="btn btn-primary" type="button" data-toggle="modal"
                                                 data-target="#modification-modal-" style="border-radius: 50%">
                                                 <i class="fa fa-pencil"></i>
@@ -126,7 +148,7 @@
                                                 data-target="#suppression-modal-" style="border-radius: 50%">
                                                 <i class="fa fa-trash"></i>
                                             </button>
-                                        </td>
+                                        </td> --}}
 
                                     </tr>
 
@@ -134,7 +156,7 @@
                                     {{--
                                     * Modification modal
                                 --}}
-                                    <div class="modal" id="modification-modal-">
+                                    {{-- <div class="modal" id="modification-modal-">
                                         <div class="modal-dialog">
                                             <div class="modal-content" style="background-color: white">
                                                 <div class="modal-header" style="text-align: left;">
@@ -159,13 +181,13 @@
                                                 </div>
                                             </div>
                                         </div>
-                                    </div>
+                                    </div> --}}
                                     {{-- ---------------------------------------------------------------------------- --}}
                                     {{-- ---------------------------------------------------------------------------- --}}
                                     {{--
                                     * Suppression
                                 --}}
-                                    <div class="modal" id="suppression-modal-">
+                                    {{-- <div class="modal" id="suppression-modal-">
                                         <div class="modal-dialog">
                                             <div class="modal-content" style="background-color: white">
                                                 <div class="modal-header" style="text-align: left;">
@@ -188,7 +210,7 @@
                                                 </div>
                                             </div>
                                         </div>
-                                    </div>
+                                    </div> --}}
                                 @endforeach
                             </tbody>
                         </table>
@@ -236,12 +258,14 @@
                                         @error('defaut')
                                             <p class="text-danger">{{ $message }}</p>
                                         @enderror
-                                        <select class="form-control" name="defaut" id="">
+                                        <select class="form-control" name="iddefectfabrictype">
                                             <optgroup>
-                                                <option value="BLANCHIMENT_PLI">BLANCHIMENT_PLI</option>
-                                                <option value="BLANCHIMENT_RAPPLICAGE">BLANCHIMENT_RAPPLICAGE</option>
-                                                <option value="TISSAGE_MARQUE_ARRET">TISSAGE_MARQUE_ARRET</option>
-                                                <option value="FIL_NOEUD">FIL_NOEUD</option>
+                                                <option value="">Choisir le defaut</option>
+                                                @foreach ($defectFabricType as $defectFabricTypes)
+                                                    <option value="{{ $defectFabricTypes->id }}">
+                                                        {{ $defectFabricTypes->typedefaut }}
+                                                    </option>
+                                                @endforeach
                                             </optgroup>
                                         </select>
                                     </div>

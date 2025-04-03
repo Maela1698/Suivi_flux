@@ -114,7 +114,7 @@
                         @endif
                         <input type="hidden" name="identreetissu" value="{{ $identreetissu }}">
                         <div class="form-group row">
-                            <div class="col-4">
+                            <div class="col-6">
                                 <div class="row no-gutters">
                                     <div class="col-12">
                                         <label class="col-form-label">Date</label>
@@ -124,11 +124,12 @@
                                             <p class="text-danger">{{ $message }}</p>
                                         @enderror
                                         <input type="date" class="form-control" name="datedebut"
-                                            {{ isset($inspectionData) ? 'value=' . $inspectionData->datedebut : '' }}>
+                                            {{ isset($inspectionData) ? 'value=' . $inspectionData->datedebut : 'value=' . date('Y-m-d') }}
+                                            readonly>
                                     </div>
                                 </div>
                             </div>
-                            <div class="col-4">
+                            <div class="col-6">
                                 <div class="row no-gutters">
                                     <div class="col-12">
                                         <label class="col-form-label">Tolerance</label>
@@ -142,7 +143,7 @@
                                     </div>
                                 </div>
                             </div>
-                            <div class="col-4">
+                            {{-- <div class="col-4">
                                 <div class="row no-gutters">
                                     <div class="col-12">
                                         <label class="col-form-label">Inspecteur</label>
@@ -156,16 +157,11 @@
                                                 <option value="">Sélection de l'inspecteur</option>
                                                 <option value="">Eric</option>
                                                 <option value="">Njaka</option>
-                                                {{-- @foreach ($listeemployee as $listeemployees)
-                                                    <option value="{{ $listeemployees->id }}">
-                                                        {{ $listeemployees->nom . ' ' . $listeemployees->prenom }}
-                                                    </option>
-                                                @endforeach --}}
                                             </optgroup>
                                         </select>
                                     </div>
                                 </div>
-                            </div>
+                            </div> --}}
                         </div>
                         <div class="form-group row">
                             <div class="col-3">

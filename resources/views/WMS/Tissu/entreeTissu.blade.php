@@ -39,7 +39,8 @@
                                         @error('dateentree')
                                             <p class="text-danger">{{ $message }}</p>
                                         @enderror
-                                        <input type="date" class="form-control" name="dateentree">
+                                        <input type="date" class="form-control" name="dateentree"
+                                            value="{{ old('dateentree') }}">
                                     </div>
                                 </div>
                             </div>
@@ -52,7 +53,8 @@
                                         @error('datefacturation')
                                             <p class="text-danger">{{ $message }}</p>
                                         @enderror
-                                        <input type="date" class="form-control" name="datefacturation">
+                                        <input type="date" class="form-control" name="datefacturation"
+                                            value="{{ old('datefacturation') }}">
                                     </div>
                                 </div>
                             </div>
@@ -71,6 +73,7 @@
                                             <option value="">Selectionner la catégorie</option>
                                             @foreach ($catTissu as $catTissus)
                                                 <option value="{{ $catTissus->id }}"
+                                                    {{ old('idcategorietissus') == $catTissus->id ? 'selected' : '' }}
                                                     {{ isset($data) && $data->categorie == $catTissus->categorie ? 'selected' : '' }}>
                                                     {{ $catTissus->categorie }}
                                                 </option>
@@ -132,8 +135,7 @@
                                         @enderror
                                         <input type="text" name="numerobc" class="form-control"
                                             placeholder="Numéro du BC"
-                                            {{ isset($data->numerobc) ? 'value=' . $data->numerobc . '' : '' }}
-                                            readonly>
+                                            {{ isset($data->numerobc) ? 'value=' . $data->numerobc . '' : '' }}>
                                     </div>
                                 </div>
                             </div>
@@ -324,7 +326,7 @@
                                         @error('laize')
                                             <p class="text-danger">{{ $message }}</p>
                                         @enderror
-                                        <input type="number" name="laize" class="form-control"
+                                        <input type="text" name="laize" class="form-control"
                                             placeholder="Laize"
                                             {{ isset($data->laize) ? 'value=' . $data->laize . '' : '' }}>
                                     </div>
@@ -339,7 +341,7 @@
                                         @error('qtecommande')
                                             <p class="text-danger">{{ $message }}</p>
                                         @enderror
-                                        <input type="number" name="qtecommande" class="form-control"
+                                        <input type="text" name="qtecommande" class="form-control"
                                             placeholder="Quantité commandé"
                                             {{ isset($data->quantite) ? 'value=' . $data->quantite . '' : '' }}>
                                     </div>
@@ -350,7 +352,7 @@
 
 
                         <div class="form-group row">
-                            <div class="col-4">
+                            <div class="col-3">
                                 <div class="row no-gutters">
                                     <div class="col-12">
                                         <label class="col-form-label">Unité QC</label>
@@ -380,7 +382,7 @@
                                     </div>
                                 </div>
                             </div>
-                            <div class="col-4">
+                            <div class="col-3">
                                 <div class="row no-gutters">
                                     <div class="col-12">
                                         <label class="col-form-label">Quantité reçu</label>
@@ -389,12 +391,26 @@
                                         @error('qterecu')
                                             <p class="text-danger">{{ $message }}</p>
                                         @enderror
-                                        <input type="number" name="qterecu" class="form-control"
+                                        <input type="text" name="qterecu" class="form-control"
                                             placeholder="Quantité reçu">
                                     </div>
                                 </div>
                             </div>
-                            <div class="col-4">
+                            <div class="col-3">
+                                <div class="row no-gutters">
+                                    <div class="col-12">
+                                        <label class="col-form-label">Grammage</label>
+                                    </div>
+                                    <div class="col-12">
+                                        @error('grammage')
+                                            <p class="text-danger">{{ $message }}</p>
+                                        @enderror
+                                        <input type="text" name="grammage" class="form-control"
+                                            placeholder="Grammage">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-3">
                                 <div class="row no-gutters">
                                     <div class="col-12">
                                         <label class="col-form-label">Nombre de rouleau</label>
@@ -410,7 +426,21 @@
                             </div>
                         </div>
                         <div class="form-group row">
-                            <div class="col-4">
+                            <div class="col-3">
+                                <div class="row no-gutters">
+                                    <div class="col-12">
+                                        <label class="col-form-label">Taux reçu</label>
+                                    </div>
+                                    <div class="col-12">
+                                        @error('qterecu')
+                                            <p class="text-danger">{{ $message }}</p>
+                                        @enderror
+                                        <input type="text" name="tauxecart" class="form-control"
+                                            placeholder="Taux reçu">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-3">
                                 <div class="row no-gutters">
                                     <div class="col-12">
                                         <label class="col-form-label">Nombre de lot</label>
@@ -424,7 +454,7 @@
                                     </div>
                                 </div>
                             </div>
-                            <div class="col-4">
+                            <div class="col-3">
                                 <div class="row no-gutters">
                                     <div class="col-12">
                                         <label class="col-form-label">Prix Unitaire</label>
@@ -433,13 +463,13 @@
                                         @error('prixunitaire')
                                             <p class="text-danger">{{ $message }}</p>
                                         @enderror
-                                        <input type="number" name="prixunitaire" class="form-control"
+                                        <input type="text" name="prixunitaire" class="form-control"
                                             placeholder="Prix Unitaire"
                                             {{ isset($data->prix_unitaire) ? 'value=' . $data->prix_unitaire . '' : '' }}>
                                     </div>
                                 </div>
                             </div>
-                            <div class="col-4">
+                            <div class="col-3">
                                 <div class="row no-gutters">
                                     <div class="col-12">
                                         <label class="col-form-label">Unité monétaire</label>

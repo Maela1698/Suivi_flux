@@ -15,6 +15,7 @@
         color: black;
     }
 </style>
+
 <div class="content-body">
     <div class="container-fluid">
         @include('WMS.headerWMS')
@@ -192,26 +193,47 @@
                         <div class="static-field">{{ $historyEntree->couleur }}</div>
                     </div>
                 </div>
+                @if (Session::has('success'))
+                    <div class="alert alert-success">{{ Session::get('success') }}</div>
+                @endif
+                @if (Session::has('error'))
+                    <div class="alert alert-danger">{{ Session::get('erreur') }}</div>
+                @endif
+                @if ($errors->has('error'))
+                    <div class="alert alert-danger">
+                        {{ $errors->first('error') }}
+                    </div>
+                @endif
                 <div class="form-validation mt-4">
-                    <form action="{{ route('enregistrer', ['modelName' => 'QualiteRouleauTissu']) }}"method="post"
+                    <form action="{{ route('QUALITE.import-rouleau-qualite-tissu') }}" method="post"
                         enctype="multipart/form-data">
                         @csrf
-                        @if (Session::has('success'))
-                            <div class="alert alert-success">{{ Session::get('success') }}</div>
-                        @endif
-                        @if (Session::has('error'))
-                            <div class="alert alert-danger">{{ Session::get('erreur') }}</div>
-                        @endif
-                        @if ($errors->has('error'))
-                            <div class="alert alert-danger">
-                                {{ $errors->first('error') }}
-                            </div>
-                        @endif
                         <input type="hidden" name="identreetissu" value="{{ $identreetissu }}">
                         <div class="row">
                             <div class="col-md-3 col-lg-2 mb-3">
                                 <div class="input-group">
-                                    <input type="text" class="form-control" name="reference" placeholder="Reference">
+                                    <input type="file" class="form-control" name="csvImport" accept=".csv"
+                                        required>
+                                </div>
+                            </div>
+                            <div class="col-md-3 col-lg-2 mb-3">
+                                <div class="input-group">
+                                    <button class="btn btn-success">Importer des Rouleaux</button>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                <div class="form-validation mt-4">
+                    <form action="{{ route('enregistrer', ['modelName' => 'QualiteRouleauTissu']) }}"method="post"
+                        enctype="multipart/form-data">
+                        @csrf
+                        <input type="hidden" name="identreetissu" value="{{ $identreetissu }}">
+                        <div class="row">
+                            <div class="col-md-3 col-lg-2 mb-3">
+                                <div class="input-group">
+                                    <input type="text" class="form-control" name="reference"
+                                        placeholder="Reference">
                                 </div>
                             </div>
                             <div class="col-md-3 col-lg-2 mb-3">

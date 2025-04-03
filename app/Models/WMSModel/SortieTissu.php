@@ -16,24 +16,12 @@ class SortieTissu extends Model
         'numbci',
         'idfamilletissus',
         'qtesortie',
-        'designation',
-        'reference',
-        'modele',
-        'saison',
         'receveur',
         'destinataire',
-        'idcategorietissus',
-        'idclassematierepremiere',
-        'idunitemesurematierepremiere',
-        'idutilisationwms',
-        'idfournisseur',
-        'idclient',
-        'composition',
-        'couleur',
-        'laize',
         'prixunitaire',
         'commentaire',
         'idstocktissu',
+        'obsolete',
     ];
 
     public $timestamps = false; //disable timestamps
@@ -45,27 +33,13 @@ class SortieTissu extends Model
             'numbci' => 'required',
             'idfamilletissus' => 'required|numeric',
             'qtesortie' => 'required|numeric',
-            'designation' => 'required',
-            'reference' => 'required',
-            'modele' => 'required',
-            'saison' => 'required',
             'receveur' => 'required',
             'destinataire' => 'required',
-            'idcategorietissus' => 'required|numeric',
-            'idclassematierepremiere' => 'required|numeric',
-            'idutilisationwms' => 'required|numeric',
-            'idfournisseur' => 'required|numeric',
-            'idclient' => 'required|numeric',
-            'composition' => 'required',
-            'couleur' => 'required',
-            'laize' => 'required',
-            'idunitemesurematierepremiere' => 'required|numeric',
             'prixunitaire' => 'required|numeric',
             'idstocktissu' => 'required|numeric',
+            'obsolete' => 'required|numeric',
         ];
-        $messages = [
-
-        ];
+        $messages = [];
 
         return compact('rules', 'messages');
     }

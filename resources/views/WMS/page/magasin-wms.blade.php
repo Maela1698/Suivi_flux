@@ -86,9 +86,9 @@
             </section>
         </div>
         {{-- ?TSCF? --}}
-        @if ($idtypewms == 1)
+        {{-- @if ($idtypewms == 1)
             @include('WMS.page.tscf-accessoire')
-        @endif
+        @endif --}}
         {{-- ?TSCF? --}}
 
     </div>

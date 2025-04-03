@@ -37,21 +37,24 @@
                         @error('deviseeuro')
                             <span class="text-danger mb-1">{{ $message }}</span>
                         @enderror
-                        <input class="form-control w-50" type="text" name="deviseeuro" placeholder="Devise euro">
+                        <input class="form-control w-50" type="text" name="deviseeuro" id="deviseeuro"
+                            placeholder="Devise euro">
                     </div>
 
                     <div class="form-group d-flex flex-column align-items-center">
                         @error('devisedollar')
                             <span class="text-danger mb-1">{{ $message }}</span>
                         @enderror
-                        <input class="form-control w-50" type="text" name="devisedollar" placeholder="Devise dollar">
+                        <input class="form-control w-50" type="text" name="devisedollar" id="devisedollar"
+                            placeholder="Devise dollar">
                     </div>
 
                     <div class="form-group d-flex flex-column align-items-center">
                         @error('valeur')
                             <span class="text-danger mb-1">{{ $message }}</span>
                         @enderror
-                        <input class="form-control w-50" type="text" name="valeur" placeholder="Valeur">
+                        <input class="form-control w-50" type="text" name="valeur" id="valeur"
+                            placeholder="Valeur" readonly>
                     </div>
                     <div class="form-group d-flex flex-column align-items-center">
                         <button class="btn btn-primary" type="submit">Ajouter</button>
@@ -73,7 +76,7 @@
                         <tbody>
                             @foreach ($parite as $parites)
                                 <tr>
-                                    <td>{{ $parites->dateparite }}</td>
+                                    <td>{{ \App\Models\WMSModel\FormatDate::formatFR($parites->dateparite) }}</td>
                                     <td>{{ $parites->deviseeuro }}</td>
                                     <td>{{ $parites->devisedollar }}</td>
                                     <td>{{ $parites->valeur }}</td>
@@ -229,4 +232,27 @@
         // Reset the form fields to their initial values
         document.getElementById(`modification-modal-${id}`).reset();
     }
+</script>
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const deviseEuroInput = document.getElementById('deviseeuro');
+        const deviseDollarInput = document.getElementById('devisedollar');
+        const valeurInput = document.getElementById('valeur');
+
+        function calculateRatio() {
+            const deviseEuro = parseFloat(deviseEuroInput.value);
+            const deviseDollar = parseFloat(deviseDollarInput.value);
+
+            if (!isNaN(deviseEuro) && !isNaN(deviseDollar) && deviseDollar !== 0) {
+                const ratio = deviseEuro / deviseDollar;
+                valeurInput.value = ratio.toFixed(2); // Format the result to 2 decimal places
+            } else {
+                valeurInput.value = ''; // Clear the value if the inputs are not valid
+            }
+        }
+
+        // Add event listeners to trigger the calculation on input change
+        deviseEuroInput.addEventListener('input', calculateRatio);
+        deviseDollarInput.addEventListener('input', calculateRatio);
+    });
 </script>

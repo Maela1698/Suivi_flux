@@ -10,7 +10,7 @@ class UniteMesureMatierePremiere extends Model
 {
     use HasFactory;
 
-    protected $table = 'uniteMesureMatierePremiere';
+    protected $table = 'unitemesurematierepremiere';
     protected $fillable = [
         'unite_mesure',
         'etat',

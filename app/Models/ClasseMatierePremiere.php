@@ -11,7 +11,7 @@ class ClasseMatierePremiere extends Model
     use HasFactory;
 
 
-    protected $table = 'classeMatierePremiere';
+    protected $table = 'classematierepremiere';
     protected $fillable = [
         'classe',
         'etat',

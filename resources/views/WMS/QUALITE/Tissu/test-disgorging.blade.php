@@ -117,10 +117,9 @@
                     <div class="table-responsive table mt-2" id="dataTable" role="grid"
                         aria-describedby="dataTable_info">
                         <table class="table my-0" id="dataTable">
-                            <thead>
+                            <thead class="thead-dark">
                                 <tr>
                                     <th>PHOTO</th>
-                                    <th>Image</th>
                                     <th>TYPE DE FROTTEMENT</th>
                                     <th>ECHELLE DE GRIS</th>
                                     <th>DUREE</th>
@@ -130,53 +129,74 @@
                             </thead>
                             <tbody>
                                 @foreach ($rouleau as $rouleaus)
+                                    <tr>
+                                        <td>
+                                            <a href="data:image/jpeg;base64,{{ $rouleaus->image }}">
+                                                <img src="data:image/jpeg;base64,{{ $rouleaus->image }}"
+                                                    style="width: 50px; height: 50px;" />
+                                            </a>
+                                        </td>
+                                        <td>{{ $rouleaus->typefrottement }}</td>
+                                        <td>{{ $rouleaus->echellegris }}</td>
+                                        <td>{{ $rouleaus->duree }}</td>
+                                        <td>{{ $rouleaus->validationtest == 0 ? 'Avec disgorging' : 'Sans disgorging' }}
+                                        </td>
+                                        <td>{{ $rouleaus->remarque }}</td>
+                                    </tr>
+                                @endforeach
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="table-responsive table mt-2" id="dataTable" role="grid"
+                        aria-describedby="dataTable_info">
+                        <table class="table my-0" id="dataTable">
+                            <thead>
+                                <tr>
+                                    <th>PHOTO</th>
+                                    <th>TYPE DE FROTTEMENT</th>
+                                    <th>ECHELLE DE GRIS</th>
+                                    <th>DUREE</th>
+                                    <th>VALIDATION TEST</th>
+                                    <th>REMARQUES</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach ($rouleauTissu as $rouleauTissus)
                                     <form action="{{ route('QUALITE.test-disgorging-rouleau') }}" method="post"
                                         enctype="multipart/form-data" autocomplete="off">
                                         @csrf
-                                        <input type="hidden" name="idqualiterouleautissu" value="{{ $rouleaus->id }}">
+                                        <input type="hidden" name="idqualiterouleautissu"
+                                            value="{{ $rouleauTissus->id }}">
                                         <tr>
                                             <td>
                                                 <input type="file" class="form-control" name="image"
                                                     accept="image/*" capture="camera">
                                             </td>
                                             <td>
-                                                <a href="data:image/jpeg;base64,{{ $rouleaus->image }}">
-                                                    <img src="data:image/jpeg;base64,{{ $rouleaus->image }}"
-                                                        style="width: 50px; height: 50px;" />
-                                                </a>
-                                            </td>
-                                            <td>
                                                 <select class="form-control" name="typefrottement">
                                                     <optgroup label="Frottement">
                                                         <option value="">Selectionner</option>
-                                                        <option value="FROTTEMENT A SEC"
-                                                            {{ isset($rouleaus->typefrottement) && $rouleaus->typefrottement == 'FROTTEMENT A SEC' ? 'selected' : '' }}>
+                                                        <option value="FROTTEMENT A SEC">
                                                             FROTTEMENT A SEC</option>
-                                                        <option value="FROTTEMENT MOUILLE"
-                                                            {{ isset($rouleaus->typefrottement) && $rouleaus->typefrottement == 'FROTTEMENT MOUILLE' ? 'selected' : '' }}>
+                                                        <option value="FROTTEMENT MOUILLE">
                                                             FROTTEMENT MOUILLE</option>
                                                     </optgroup>
                                                 </select>
                                             </td>
-                                            <td><input type="text" class="form-control" name="echellegris"
-                                                    value="{{ $rouleaus->echellegris }}"></td>
-                                            <td><input type="text" class="form-control" name="duree"
-                                                    value="{{ $rouleaus->duree }}"></td>
+                                            <td><input type="text" class="form-control" name="echellegris"></td>
+                                            <td><input type="text" class="form-control" name="duree"></td>
                                             <td>
                                                 <select class="form-control" name="validationtest">
                                                     <optgroup label="Validation">
                                                         <option value="">Selectionner</option>
-                                                        <option value="0"
-                                                            {{ isset($rouleaus->typefrottement) && $rouleaus->validationtest == 0 ? 'selected' : '' }}>
+                                                        <option value="0">
                                                             Avec disgorging</option>
-                                                        <option value="1"
-                                                            {{ isset($rouleaus->typefrottement) && $rouleaus->validationtest == 1 ? 'selected' : '' }}>
+                                                        <option value="1">
                                                             Sans disgorging</option>
                                                     </optgroup>
                                                 </select>
                                             </td>
-                                            <td><input type="text" class="form-control" name="remarque"
-                                                    value="{{ $rouleaus->remarque }}"></td>
+                                            <td><input type="text" class="form-control" name="remarque"></td>
                                             <td><button type="submit" class="btn btn-success">Enregistrer</button>
                                         </tr>
                                     </form>

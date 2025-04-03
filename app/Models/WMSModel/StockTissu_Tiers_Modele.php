@@ -34,9 +34,7 @@ class StockTissu_Tiers_Modele extends Model
             'modele' => 'required',
         ];
 
-        $messages = [
-
-        ];
+        $messages = [];
 
         return compact('rules', 'messages');
     }

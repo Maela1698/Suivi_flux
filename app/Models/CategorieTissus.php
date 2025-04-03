@@ -10,7 +10,7 @@ class CategorieTissus extends Model
 {
     use HasFactory;
 
-    protected $table = 'categorieTissus';
+    protected $table = 'categorietissus';
     protected $fillable = [
         'categorie',
         'etat',

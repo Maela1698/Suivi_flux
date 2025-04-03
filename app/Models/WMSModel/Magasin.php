@@ -26,9 +26,7 @@ class Magasin extends Model
             'numero' => 'required',
         ];
 
-        $messages = [
-
-        ];
+        $messages = [];
 
         return compact('rules', 'messages');
     }

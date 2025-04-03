@@ -11,16 +11,25 @@ class CRUDController extends Controller
 {
     public function inserer(Request $request, $modelName)
     {
-        $name = 'App\Models\WMSModel\\'.$modelName;
+        $name = 'App\Models\WMSModel\\' . $modelName;
+        if (! class_exists($name)) {
+            $name = 'App\Models\QUALITEModel\\' . $modelName;
+        }
         $data = $request->all();
         $validationData = $name::getValidationRules();
+
         $rules = $validationData['rules'];
         $messages = $validationData['messages'];
 
         $validator = Validator::make($data, $rules, $messages);
+
         if ($validator->fails()) {
+            // Display validation errors using dd and preserve them for redirection
+            // dd($validator->errors()->all());
+
             return redirect()->back()->withErrors($validator)->withInput();
         }
+
         try {
             DB::beginTransaction();
             $model = new $name($data);
@@ -28,7 +37,7 @@ class CRUDController extends Controller
             DB::commit();
         } catch (\Exception $e) {
             DB::rollBack();
-            $errorMessage = 'Une anomalie est survenue lors du processus d\'enregistrement des données, veuillez réessayer.'.$e;
+            $errorMessage = 'Une anomalie est survenue lors du processus d\'enregistrement des données, veuillez réessayer.' . $e;
 
             return back()->withInput()->withErrors(['error' => $errorMessage]);
         }
@@ -41,7 +50,10 @@ class CRUDController extends Controller
     //Fonction pour mettre à jour les données des tables dans la base
     public function modifier(Request $request, $modelName, $id)
     {
-        $name = 'App\Models\WMSModel\\'.$modelName;
+        $name = 'App\Models\WMSModel\\' . $modelName;
+        if (! class_exists($name)) {
+            $name = 'App\Models\QUALITEModel\\' . $modelName;
+        }
         $data = $request->except('id');
         $validationData = $name::getValidationRules($id);
         $rules = $validationData['rules'];
@@ -55,7 +67,7 @@ class CRUDController extends Controller
         try {
             $model = $name::find($id);
             if (! $model) {
-                return back()->with('error', $modelName.' non trouvé');
+                return back()->with('error', $modelName . ' non trouvé');
             }
             $model->fill($data);
             $res = $model->save();
@@ -74,10 +86,13 @@ class CRUDController extends Controller
     //Fonction pour supprimer des données dans la base
     public function supprimer($modelName, $id)
     {
-        $name = 'App\Models\WMSModel\\'.$modelName;
+        $name = 'App\Models\WMSModel\\' . $modelName;
+        if (! class_exists($name)) {
+            $name = 'App\Models\QUALITEModel\\' . $modelName;
+        }
         $model = $name::find($id);
         if (! $model) {
-            return back()->with('error', $modelName.' non trouvé');
+            return back()->with('error', $modelName . ' non trouvé');
         }
 
         // Update the 'etat' column to 1

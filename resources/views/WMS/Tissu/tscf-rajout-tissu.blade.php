@@ -44,6 +44,12 @@
             <div class="card" style="border-radius: 10px;width: 105%;margin-left: -31.5px;">
                 <div class="card-header text-center" style="display: flex; justify-content: center;">
                     <h3 class="entete">VEUILLER CHOISIR LE TISSU</h3>
+                    <form action="{{ route('WMS.rajout-tissu-sans-tscf', ['idStock' => $stock->id]) }}" method="get">
+                        @csrf
+                        <div class="input-group">
+                            <button class="btn btn-secondary">Ajout nouvelle entrée</button>
+                        </div>
+                    </form>
                 </div>
                 <div class="card-body" style="margin-top: -15px;overflow: auto;">
                     <form action="{{ route('CRM.nouvelleBc') }}" method="get">

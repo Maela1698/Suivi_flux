@@ -49,7 +49,8 @@ class Parite extends Model
     {
         $parsedDate = Carbon::parse($date);
         $query = self::whereYear('dateparite', $parsedDate->year)
-            ->whereMonth('dateparite', $parsedDate->month);
+            ->whereMonth('dateparite', $parsedDate->month)
+            ->where('etat', 0);
 
         if ($id) {
             $query->where('id', '!=', $id);

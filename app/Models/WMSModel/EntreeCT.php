@@ -77,9 +77,7 @@ class EntreeCT extends Model
             'idcellule' => 'required',
             'fret' => 'required',
         ];
-        $messages = [
-
-        ];
+        $messages = [];
 
         return compact('rules', 'messages');
     }

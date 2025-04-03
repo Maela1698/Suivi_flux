@@ -14,12 +14,24 @@ use App\Models\WMSModel\WMS\FamilleWMS;
 use App\Models\WMSModel\WMS\SortieWMS;
 use App\Models\WMSModel\WMS\Type_wms;
 use App\Models\WMSModel\WMS\V_ENTREE_WMS;
+use App\Models\WMSModel\WMS\V_PRIX_TOTAL_WMS_FAMILLE_ENTREE;
+use App\Models\WMSModel\WMS\V_PRIX_TOTAL_WMS_FAMILLE_SORTIE;
+use App\Models\WMSModel\WMS\V_PRIX_TOTAL_WMS_FAMILLE_STOCK;
+use App\Models\WMSModel\WMS\V_PRIX_TOTAL_WMS_OBSOLETE_STOCK;
 use App\Models\WMSModel\WMS\V_RESERVATION_WMS;
 use App\Models\WMSModel\WMS\V_RETOUR_WMS;
 use App\Models\WMSModel\WMS\V_SORTIE_WMS;
 use App\Models\WMSModel\WMS\V_STOCK_WMS;
+use App\Models\WMSModel\WMS\V_TOTAL_ENTREE_WMS;
+use App\Models\WMSModel\WMS\V_TOTAL_METRAGE_WMS_FAMILLE_SORTIE;
+use App\Models\WMSModel\WMS\V_TOTAL_METRAGE_WMS_FAMILLE_STOCK;
+use App\Models\WMSModel\WMS\V_TOTAL_METRAGE_WMS_OBSOLETE_STOCK;
+use App\Models\WMSModel\WMS\V_TOTAL_SORTIE_WMS;
+use App\Models\WMSModel\WMS\V_TOTAL_STOCK_WMS;
+use App\Models\WMSModel\WMS\V_TOTAL_STOCK_WMS_OBSOLETE;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
+use Illuminate\Pagination\LengthAwarePaginator;
 
 class PageWMSController extends Controller
 {
@@ -136,13 +148,23 @@ class PageWMSController extends Controller
         $client = Tiers::where('idacteur', 1)->get();
         $fournisseur = Tiers::where('idacteur', 2)->get();
         $typeWMS = Type_wms::find($idtypewms);
-        $entreeWMS = V_ENTREE_WMS::where('idwms_type', $idtypewms)->get();
-        $totalEntree = $entreeWMS->count();
-        $prixTotal = 0;
-        for ($i = 0; $i < $entreeWMS->count(); $i++) {
-            $prixTotal += $entreeWMS[$i]->qteentree * $entreeWMS[$i]->prixunitaire;
-        }
-        return view('WMS.WMS-Autre.accueil-entree-wms', compact('typeWMS', 'entreeWMS', 'totalEntree', 'prixTotal', 'client', 'fournisseur', 'familleWMS', 'classeMatiere'));
+        $entreeWMS = V_ENTREE_WMS::where('idwms_type', $idtypewms)
+            ->orderBy('dateentree', 'desc')
+            ->paginate(100);
+        $totalEntree = V_TOTAL_ENTREE_WMS::where('idwms_type', $idtypewms)->value('entree');
+        $prixTotal = V_PRIX_TOTAL_WMS_FAMILLE_ENTREE::where('idwms_type', $idtypewms)->value('prixtotal');
+        $nomClasse="";
+        $idClasse="";
+        $nomFournisseur="";
+        $idFournisseur="";
+        $nomClient="";
+        $idClient="";
+        $debut="";
+        $fin="";
+        $recherche="";
+        $idFamillewms="";
+        $nomFamille="";
+        return view('WMS.WMS-Autre.accueil-entree-wms', compact('nomFamille','idFamillewms','fin','debut','recherche','idFournisseur','nomFournisseur','idClient','nomClient','nomClasse','idClasse','typeWMS', 'entreeWMS', 'totalEntree', 'prixTotal', 'client', 'fournisseur', 'familleWMS', 'classeMatiere'));
     }
     function page_entree_wms($idtypewms)
     {
@@ -153,6 +175,7 @@ class PageWMSController extends Controller
         $uniteCommande = UniteMesureMatierePremiere::where('etat', 0)->get();
         $uniteMonetaire = UniteMonetaire::where('etat', 0)->get();
         $typeWMS = Type_wms::find($idtypewms);
+
         return view('WMS.WMS-Autre.entree-wms', compact('typeWMS', 'classeMatiere', 'client', 'fournisseur', 'uniteCommande', 'uniteMonetaire', 'familleWMS'));
     }
     function page_stock_wms($idtypewms)
@@ -164,18 +187,46 @@ class PageWMSController extends Controller
             ->get();
 
         foreach ($WMSStock as $WMSStocks) {
-            // Include idunitemonetaire in the WMSStock collection
-            $WMSStocks->idunitemonetaire = EntreeWMS::where('idstockwms', $WMSStocks->id)->first()->value('idunitemonetaire');
-            $WMSStocks->numbc = EntreeWMS::where('idstockwms', $WMSStocks->id)->first()->value('numbc');
-            $WMSStocks->qtecommande = EntreeWMS::where('idstockwms', $WMSStocks->id)->first()->value('qtecommande');
+            // Récupérer les données de EntreeWMS
+            $entreeWMS = EntreeWMS::where('idstockwms', $WMSStocks->id)->first();
+
+            // Vérifier si une entrée a été trouvée
+            if ($entreeWMS) {
+                $WMSStocks->idunitemonetaire = $entreeWMS->idunitemonetaire;
+                $WMSStocks->numbc = $entreeWMS->numbc;
+                $WMSStocks->qtecommande = $entreeWMS->qtecommande;
+            }
+
+            // Ajouter à la collection
             $stockWMS[] = $WMSStocks;
         }
+        $page = LengthAwarePaginator::resolveCurrentPage() ?: 1;
+        // Items per page
+        $perPage = 100;
+        // Get current items
+        $items = array_slice($stockWMS, ($page - 1) * $perPage, $perPage);
+        // Create paginator
+        $stockWMS = new LengthAwarePaginator($items, count($stockWMS), $perPage, $page, [
+            'path' => LengthAwarePaginator::resolveCurrentPath(),
+        ]);
         $classeMatiere = ClasseMatierePremiere::where('etat', 0)->get();
         $client = Tiers::where('idacteur', 1)->get();
         $fournisseur = Tiers::where('idacteur', 2)->get();
         $typeWMS = Type_wms::find($idtypewms);
         $uniteMonetaire = UniteMonetaire::where('etat', 0)->get();
-        return view('WMS.WMS-Autre.stock-wms', compact('familleWMS', 'typeWMS', 'classeMatiere', 'client', 'fournisseur', 'stockWMS', 'uniteMonetaire'));
+        $totalEntree = V_TOTAL_STOCK_WMS::where('idwms_type', $idtypewms)->value('stock');
+        $prixTotal = V_PRIX_TOTAL_WMS_FAMILLE_STOCK::where('idwms_type', $idtypewms)->value('prixtotal');
+        $totalMetrage = V_TOTAL_METRAGE_WMS_FAMILLE_STOCK::where('idwms_type', $idtypewms)->value('metrage');
+        $nomClasse="";
+        $idClasse="";
+        $nomFournisseur="";
+        $idFournisseur="";
+        $nomClient="";
+        $idClient="";
+        $recherche="";
+        $idFamillewms="";
+        $nomFamille="";
+        return view('WMS.WMS-Autre.stock-wms', compact('nomFamille','idFamillewms','recherche','idFournisseur','nomFournisseur','idClient','nomClient','nomClasse','idClasse','familleWMS', 'typeWMS', 'classeMatiere', 'client', 'fournisseur', 'stockWMS', 'uniteMonetaire', 'totalEntree', 'prixTotal', 'totalMetrage'));
     }
     function page_obsolete_accessoire()
     {
@@ -191,22 +242,54 @@ class PageWMSController extends Controller
             $WMSStocks->qtecommande = EntreeWMS::where('idstockwms', $WMSStocks->id)->first()->value('qtecommande');
             $stockWMS[] = $WMSStocks;
         }
+        $page = LengthAwarePaginator::resolveCurrentPage() ?: 1;
+        // Items per page
+        $perPage = 100;
+        // Get current items
+        $items = array_slice($stockWMS, ($page - 1) * $perPage, $perPage);
+        // Create paginator
+        $StockWMS = new LengthAwarePaginator($items, count($stockWMS), $perPage, $page, [
+            'path' => LengthAwarePaginator::resolveCurrentPath(),
+        ]);
         $classeMatiere = ClasseMatierePremiere::where('etat', 0)->get();
         $client = Tiers::where('idacteur', 1)->get();
         $fournisseur = Tiers::where('idacteur', 2)->get();
         $typeWMS = Type_wms::find(1);
         $uniteMonetaire = UniteMonetaire::where('etat', 0)->get();
-        return view('WMS.WMS-Autre.obsolete-accessoire', compact('familleWMS', 'typeWMS', 'classeMatiere', 'client', 'fournisseur', 'stockWMS', 'uniteMonetaire'));
+        $totalEntree = V_TOTAL_STOCK_WMS_OBSOLETE::value('stock');
+        $prixTotal = V_PRIX_TOTAL_WMS_OBSOLETE_STOCK::value('prixtotal');
+        $totalMetrage = V_TOTAL_METRAGE_WMS_OBSOLETE_STOCK::value('metrage');
+        return view('WMS.WMS-Autre.obsolete-accessoire', compact('familleWMS', 'typeWMS', 'classeMatiere', 'client', 'fournisseur', 'StockWMS', 'stockWMS', 'uniteMonetaire', 'totalEntree', 'prixTotal', 'totalMetrage'));
     }
     function page_accueil_sortie_wms($idtypewms)
     {
         $familleWMS = FamilleWMS::where('idwms_type', $idtypewms)->where('etat', 0)->get();
-        $sortieWMS = V_SORTIE_WMS::where('idwms_type', $idtypewms)->get();
+        $sortieWMS = V_SORTIE_WMS::where('idwms_type', $idtypewms)->where(function ($query) {
+            $query->where('obsolete', '!=', 1)
+                ->orWhereNull('obsolete'); // Use orWhereNull for 'IS NULL'
+        })
+            ->orderBy('datesortie', 'desc')
+            ->paginate(50);
         $classeMatiere = ClasseMatierePremiere::where('etat', 0)->get();
         $client = Tiers::where('idacteur', 1)->get();
         $fournisseur = Tiers::where('idacteur', 2)->get();
         $typeWMS = Type_wms::find($idtypewms);
-        return view('WMS.WMS-Autre.accueil-sortie-wms', compact('typeWMS', 'classeMatiere', 'client', 'fournisseur', 'sortieWMS'));
+        $totalSortie = V_TOTAL_SORTIE_WMS::where('idwms_type', $idtypewms)
+            ->where(function ($query) {
+                $query->where('obsolete', '!=', 1)
+                    ->orWhereNull('obsolete'); // Use orWhereNull for 'IS NULL'
+            })->value('sortie');
+        $prixTotal = V_PRIX_TOTAL_WMS_FAMILLE_SORTIE::where('idwms_type', $idtypewms)
+            ->where(function ($query) {
+                $query->where('obsolete', '!=', 1)
+                    ->orWhereNull('obsolete'); // Use orWhereNull for 'IS NULL'
+            })->value('prixtotal');
+        $totalMetrage = V_TOTAL_METRAGE_WMS_FAMILLE_SORTIE::where('idwms_type', $idtypewms)
+            ->where(function ($query) {
+                $query->where('obsolete', '!=', 1)
+                    ->orWhereNull('obsolete'); // Use orWhereNull for 'IS NULL'
+            })->value('metrage');
+        return view('WMS.WMS-Autre.accueil-sortie-wms', compact('familleWMS', 'typeWMS', 'classeMatiere', 'client', 'fournisseur', 'sortieWMS', 'totalSortie', 'prixTotal', 'totalMetrage'));
     }
     // function page_sortie_wms($idtypewms)
     // {

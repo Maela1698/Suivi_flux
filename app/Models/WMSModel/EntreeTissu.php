@@ -4,6 +4,7 @@ namespace App\Models\WMSModel;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\DB;
 
 class EntreeTissu extends Model
 {
@@ -44,6 +45,7 @@ class EntreeTissu extends Model
         'image',
         'commentaire',
         'idstocktissu',
+        'grammage',
     ];
 
     public $timestamps = false; //disable timestamps
@@ -52,36 +54,47 @@ class EntreeTissu extends Model
     {
         $rules = [
             'idfamilletissus' => 'required',
-            'dateentree' => 'required',
-            'datefacturation' => 'required',
+            'dateentree' => 'required|date',
+            'datefacturation' => 'required|date',
             'idcategorietissus' => 'required',
             'idclassematierepremiere' => 'required',
             'idutilisationwms' => 'required',
             'numerobc' => 'required',
             'numerobl' => 'required',
             'numerofacture' => 'required',
-            'idfournisseur' => 'required',
-            'idclient' => 'required',
+            'idfournisseur' => 'required|numeric',
+            'idclient' => 'required|numeric',
             'modele' => 'required',
             'saison' => 'required',
             'designation' => 'required',
-            'reftissu' => 'required',
             'composition' => 'required',
             'couleur' => 'required',
             'laize' => 'required',
-            'qtecommande' => 'required|min:1',
-            'idunitemesurematierepremiere' => 'required',
-            'qterecu' => 'required',
-            'nbrouleau' => 'required',
-            'nblot' => 'required',
-            'prixunitaire' => 'required',
-            'idunitemonetaire' => 'required',
-            'fret' => 'required',
+            'qtecommande' => 'required|numeric|min:1',
+            'idunitemesurematierepremiere' => 'required|numeric',
+            'qterecu' => 'required|numeric',
+            'nbrouleau' => 'required|numeric',
+            'nblot' => 'required|numeric',
+            'prixunitaire' => 'required|numeric',
+            'idunitemonetaire' => 'required|numeric',
+            'grammage' => 'nullable',
         ];
-        $messages = [
-
-        ];
+        $messages = [];
 
         return compact('rules', 'messages');
+    }
+
+    public static function insertCelluleEntree($identreetissu,$idcellule)
+    {
+        return DB::table('cellule_entreetissu')->insert([
+            'identreetissu' => $identreetissu,
+            'idcellule' => $idcellule
+        ]);
+    }
+
+    public static function getEntreeTissuByStock($idstocktissu)
+    {
+        $select = DB::select("select id from entreetissu e where idstocktissu =".$idstocktissu);
+        return self::hydrate($select);
     }
 }

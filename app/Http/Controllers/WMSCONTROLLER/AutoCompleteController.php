@@ -13,7 +13,7 @@ class AutoCompleteController extends Controller
     public function autocomplete_num_bc(Request $request)
     {
         $query = $request->get('query');
-        $data = V_donne_bc::where('numerobc', 'ilike', '%'.$query.'%')
+        $data = V_donne_bc::where('numerobc', 'ilike', '%' . $query . '%')
             ->select('id_donne_bc', 'numerobc')
             ->distinct()
             ->get();
@@ -25,7 +25,7 @@ class AutoCompleteController extends Controller
     public function autocomplete_des_tissu(Request $request)
     {
         $query = $request->get('query');
-        $data = V_donne_bc::where('numerobc', 'ilike', '%'.$query.'%')
+        $data = V_donne_bc::where('numerobc', 'ilike', '%' . $query . '%')
             ->select('id_donne_bc', 'des_tissus')
             ->get();
 
@@ -41,8 +41,8 @@ class AutoCompleteController extends Controller
 
         $query = $request->get('query');
         $data = V_donne_bc::where(function ($q) use ($query) {
-            $q->where('numerobc', 'ilike', '%'.$query.'%')
-                ->orWhere('des_tissu', 'ilike', '%'.$query.'%');
+            $q->where('numerobc', 'ilike', '%' . $query . '%')
+                ->orWhere('des_tissu', 'ilike', '%' . $query . '%');
         })
             ->select('id_donne_bc', 'ref_tissus')
             ->get();
@@ -63,9 +63,9 @@ class AutoCompleteController extends Controller
 
         $query = $request->get('query');
         $data = V_donne_bc::where(function ($q) use ($query) {
-            $q->where('numerobc', 'ilike', '%'.$query.'%')
-                ->orWhere('des_tissu', 'ilike', '%'.$query.'%')
-                ->orWhere('ref_tissus', 'ilike', '%'.$query.'%');
+            $q->where('numerobc', 'ilike', '%' . $query . '%')
+                ->orWhere('des_tissu', 'ilike', '%' . $query . '%')
+                ->orWhere('ref_tissus', 'ilike', '%' . $query . '%');
         })
             ->select('id_donne_bc', 'couleur')
             ->get();
@@ -81,7 +81,7 @@ class AutoCompleteController extends Controller
     {
         $query = $request->get('query');
         $data = V_Rack_Cellule::where(function ($q) use ($query) {
-            $q->where('designation', 'ilike', '%'.$query.'%');
+            $q->where('designation', 'ilike', '%' . $query . '%');
         })
             ->select('idcellule', 'des_cellule', 'des_rack', 'designation')
             ->get();
@@ -97,7 +97,7 @@ class AutoCompleteController extends Controller
     {
         $query = $request->get('query');
         $data = Tiers::where(function ($q) use ($query) {
-            $q->where('nomtier', 'ilike', '%'.$query.'%')
+            $q->where('nomtier', 'ilike', '%' . $query . '%')
                 ->orwhere('idacteur', 2);
         })
             ->select('id', 'nomtier')
@@ -115,7 +115,7 @@ class AutoCompleteController extends Controller
     {
         $query = $request->get('query');
         $data = Tiers::where(function ($q) use ($query) {
-            $q->where('nomtier', 'ilike', '%'.$query.'%')
+            $q->where('nomtier', 'ilike', '%' . $query . '%')
                 ->orwhere('idacteur', 1);
         })
             ->select('id', 'nomtier')

@@ -60,16 +60,64 @@
                 <h4 class="text-primary m -0 font-weight-bold">Stock {{ $typeWMS->type }}</h4>
             </div>
             <div class="card-body">
-                {{-- <form class="mb-4" action="#" method="get">
+                <form class="mb-4" action="{{ route('WMS.filtre-stock-wms') }}" method="get">
                     @csrf
                     <div class="row">
+                        <input type="hidden" name="idwms_type" value="{{ $typeWMS->id }}">
+                        <div class="col-md-3 col-lg-2 mb-3">
+                            <div class="input-group">
+                                <select class="form-control w-50" name="idfamillewms">
+                                    <optgroup label="Famille">
+                                        @if ($idFamillewms == null)
+                                            <option value="">Sélection de la famille</option>
+                                        @else
+                                            <option value="{{ $idFamillewms }}/{{ $nomFamille }}">{{ $nomFamille }}
+                                            </option>
+                                            <option value="">Sélection de la famille</option>
+                                        @endif
+                                        @foreach ($familleWMS as $familleWMSs)
+                                            <option value="{{ $familleWMSs->id }}/{{ $familleWMSs->nom }}">
+                                                {{ $familleWMSs->nom }}
+                                            </option>
+                                        @endforeach
+                                    </optgroup>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-md-3 col-lg-2 mb-3">
+                            <div class="input-group">
+                                <select class="form-control w-50" name="idclassematierepremiere">
+                                    <optgroup label="Classe">
+                                        @if ($idClasse == null)
+                                            <option value="">Selection de la classe du tissu</option>
+                                        @else
+                                            <option value="{{ $idClasse }}/{{ $nomClasse }}">
+                                                {{ $nomClasse }}</option>
+                                            <option value="">Selection de la classe du tissu</option>
+                                        @endif
+                                        @foreach ($classeMatiere as $classeMatieres)
+                                            <option value="{{ $classeMatieres->id }}/{{ $classeMatieres->classe }}">
+                                                {{ $classeMatieres->classe }}
+                                            </option>
+                                        @endforeach
+                                    </optgroup>
+                                </select>
+                            </div>
+                        </div>
                         <div class="col-md-3 col-lg-2 mb-3">
                             <div class="input-group">
                                 <select class="form-control w-50" name="idclient">
                                     <optgroup label="Client">
-                                        <option value="">Sélection du client</option>
+                                        @if ($idClient == null)
+                                            <option value="">Sélection du client</option>
+                                        @else
+                                            <option value="{{ $idClient }}/{{ $nomClient }}">
+                                                {{ $nomClient }}</option>
+                                            <option value="">Sélection du client</option>
+                                        @endif
                                         @foreach ($client as $clients)
-                                            <option value="{{ $clients->id }}">{{ $clients->nomtier }}
+                                            <option value="{{ $clients->id }}/{{ $clients->nomtier }}">
+                                                {{ $clients->nomtier }}
                                             </option>
                                         @endforeach
                                     </optgroup>
@@ -80,9 +128,16 @@
                             <div class="input-group">
                                 <select class="form-control w-50" name="idfournisseur">
                                     <optgroup label="Fournisseur">
-                                        <option value="">Sélection du fournisseur</option>
+                                        @if ($idFournisseur == null)
+                                            <option value="">Sélection du fournisseur</option>
+                                        @else
+                                            <option value="{{ $idFournisseur }}/{{ $nomFournisseur }}">
+                                                {{ $nomFournisseur }}</option>
+                                            <option value="">Sélection du fournisseur</option>
+                                        @endif
                                         @foreach ($fournisseur as $fournisseurs)
-                                            <option value="{{ $fournisseurs->id }}">{{ $fournisseurs->nomtier }}
+                                            <option value="{{ $fournisseurs->id }}/{{ $fournisseurs->nomtier }}">
+                                                {{ $fournisseurs->nomtier }}
                                             </option>
                                         @endforeach
                                     </optgroup>
@@ -91,15 +146,7 @@
                         </div>
                         <div class="col-3">
                             <div class="input-group" id="date-range">
-                                <input type="date" class="form-control" name="debut">
-                                <span class="input-group-addon b-0 text-white"
-                                    style="width: 20px; text-align: center; justify-content: center; background-color: gray;">à</span>
-                                <input type="date" class="form-control" name="fin">
-                            </div>
-                        </div>
-                        <div class="col-3">
-                            <div class="input-group" id="date-range">
-                                <input type="text" class="form-control" name="recherche" placeholder="Recherche">
+                                <input type="text" class="form-control" name="recherche" placeholder="Recherche" value="{{ $recherche }}">
                             </div>
                         </div>
 
@@ -107,7 +154,7 @@
                             <button class="btn btn-success">Filtrer</button>
                         </div>
                     </div>
-                </form> --}}
+                </form>
                 <div class="table-responsive table mt-2" id="dataTable" role="grid"
                     aria-describedby="dataTable_info">
                     @if (Session::has('success'))
@@ -125,32 +172,42 @@
                         <thead class="thead-dark">
                             <tr>
                                 <th>Désignation</th>
+                                <th>Cellule</th>
                                 {{-- TODO: Corrige faute ortho --}}
                                 <th>Reference</th>
                                 <th>Couleur</th>
                                 <th>Classe</th>
                                 <th>Somme Entrée</th>
                                 <th>Somme Sortie</th>
+                                <th>Retour Manque</th>
+                                <th>Retour Surplus</th>
+                                <th>Retour Inventaire</th>
                                 <th>Fournisseur</th>
+                                <th>Client</th>
+                                <th>Modèle</th>
                                 <th>Quantité en stock</th>
                                 <th>Prix Unitaire</th>
-                                <th>Commentaire</th>
                                 <th></th>
                             </tr>
                         </thead>
                         <tbody>
                             @foreach ($stockWMS as $WMSStock)
                                 <tr style="color: black">
-                                    <th>{{ $WMSStock->designation }}</th>
+                                    <th>{{ $WMSStock->designation }}/{{ $WMSStock->id }}</th>
+                                    <th>{{ $WMSStock->designations }}</th>
                                     <th>{{ $WMSStock->reference }}</th>
                                     <th>{{ $WMSStock->couleur }}</th>
                                     <th>{{ $WMSStock->classe }}</th>
                                     <th>{{ $WMSStock->sommeqterecu }}</th>
                                     <th>{{ $WMSStock->sommeqtesortie ? $WMSStock->sommeqtesortie : 0 }}</th>
+                                    <th>{{ $WMSStock->retour_manque }}</th>
+                                    <th>{{ $WMSStock->retour_surplus }}</th>
+                                    <th>{{ $WMSStock->retour_inventaire }}</th>
                                     <th>{{ $WMSStock->fournisseur }}</th>
+                                    <th>{{ $WMSStock->nomtier }}</th>
+                                    <th>{{ $WMSStock->modele }}</th>
                                     <th>{{ $WMSStock->qtestock }}</th>
                                     <th>{{ $WMSStock->prixunitaire }}</th>
-                                    <th>{{ $WMSStock->commentaire }}</th>
                                     <td>
                                         <div class="dropdown" style="position: relative;">
                                             <button class="btn btn-secondary dropdown-toggle" type="button"
@@ -161,8 +218,10 @@
                                             <div class="dropdown-menu" aria-labelledby="dropdownMenuButton"
                                                 style="max-height: 200px; overflow-y: auto; position: absolute; z-index: 1050; width: 300px; border: 1px solid #ccc; background: #fff;">
                                                 <div class="col-12 mt-2 mb-2 w-100">
-                                                    <a class="btn btn-primary w-100" type="button" data-toggle="modal"
-                                                        data-target="#rajout-modal-{{ $WMSStock->id }}" href="#">
+                                                    <a class="btn btn-primary w-100" type="button"
+                                                        data-toggle="modal"
+                                                        data-target="#rajout-modal-{{ $WMSStock->id }}"
+                                                        href="#">
                                                         Faire un rajout de stock
                                                     </a>
                                                 </div>
@@ -173,7 +232,8 @@
                                                 </div>
                                                 <div class="col-12 mt-2 mb-2">
                                                     <a class="btn w-100" data-toggle="modal"
-                                                        data-target="#sortie-modal-{{ $WMSStock->id }}" href="#"
+                                                        data-target="#sortie-modal-{{ $WMSStock->id }}"
+                                                        href="#"
                                                         style="background-color: #f57c00; color: white;"
                                                         title="Sortie de Stock">
                                                         Faire une sortie
@@ -336,6 +396,11 @@
                                                         <input class="form-control" type="date"
                                                             name="datefacturation">
                                                     </div>
+                                                    <div class="mb-3"><label class="form-label">Numéro de
+                                                            facture</label>
+                                                        <input class="form-control" type="text"
+                                                            name="numerofacture">
+                                                    </div>
                                                     <div class="mb-3"><label class="form-label">Num BC</label>
                                                         <input class="form-control" type="text" name="numbc"
                                                             {{ isset($WMSStock->numbc) ? 'value=' . $WMSStock->numbc : '' }}>
@@ -407,11 +472,12 @@
                                                     enctype="multipart/form-data">
                                                     @csrf
                                                     {{-- TODO: Remplir la value --}}
+                                                    <input type="hidden" name="typeSortie" value="1">
                                                     <input type="hidden" name="idstockwms"
                                                         value="{{ $WMSStock->id }}">
                                                     <div class="mb-3"><label class="form-label">Date de
                                                             sortie</label>
-                                                        <input class="form-control" type="date" name="datesortie">
+                                                        <input class="form-control" type="date" name="datesortie" value="{{ date('Y-m-d')}}">
                                                     </div>
                                                     <div class="mb-3"><label class="form-label">Num BCI</label>
                                                         <input class="form-control" type="text" name="numbci">
@@ -476,6 +542,50 @@
                         </tbody>
                     </table>
                 </div>
+                <div class="pagination justify-content-center">
+                    @if ($stockWMS->lastPage() > 1)
+                        <ul class="pagination justify-content-center">
+                            <!-- Previous Page Link -->
+                            <li class="page-item {{ $stockWMS->onFirstPage() ? 'disabled' : '' }}">
+                                <a class="page-link" href="{{ $stockWMS->previousPageUrl() }}"
+                                    aria-label="Previous">
+                                    <span aria-hidden="true">&laquo; Previous</span>
+                                </a>
+                            </li>
+
+                            <!-- Pagination Links -->
+                            @php
+                                $currentPage = $stockWMS->currentPage();
+                                $lastPage = $stockWMS->lastPage();
+                                $visiblePages = min($lastPage, 4); // Maximum number of visible pages
+                                $startPage = max(1, $currentPage - floor($visiblePages / 2));
+                                $endPage = min($lastPage, $startPage + $visiblePages - 1);
+                            @endphp
+
+                            @if ($startPage > 1)
+                                <li class="page-item disabled"><span class="page-link">...</span></li>
+                            @endif
+
+                            @for ($i = $startPage; $i <= $endPage; $i++)
+                                <li class="page-item {{ $stockWMS->currentPage() == $i ? 'active' : '' }}">
+                                    <a class="page-link" href="{{ $stockWMS->url($i) }}">{{ $i }}</a>
+                                </li>
+                            @endfor
+
+                            @if ($endPage < $lastPage)
+                                <li class="page-item disabled"><span class="page-link">...</span></li>
+                            @endif
+
+                            <!-- Next Page Link -->
+                            <li
+                                class="page-item {{ $stockWMS->currentPage() == $stockWMS->lastPage() ? 'disabled' : '' }}">
+                                <a class="page-link" href="{{ $stockWMS->nextPageUrl() }}" aria-label="Next">
+                                    <span aria-hidden="true">Next &raquo;</span>
+                                </a>
+                            </li>
+                        </ul>
+                    @endif
+                </div>
             </div>
         </div>
     </div>
@@ -500,6 +610,7 @@
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
 <script>
+    // Initialize Select2 for all elements with the "cellule-select" class
     $('#cellule').select2({
         placeholder: 'Selection de cellule',
         ajax: {

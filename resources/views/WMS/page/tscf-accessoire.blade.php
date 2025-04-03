@@ -151,13 +151,13 @@
                                         aria-expanded="false">
                                         Nouvelle entrées
                                     </button>
-                                    <div class="dropdown-menu" aria-labelledby="dropdownMenuButtonEntree">
+                                    {{-- <div class="dropdown-menu" aria-labelledby="dropdownMenuButtonEntree">
 
                                         @foreach ($familleTissu as $familleTissus)
                                             <a class="dropdown-item"
                                                 href="{{ route('WMS.ajout-entree-tissu-par-bc', ['iddonnebc' => $d->id_donne_bc, 'idfamilletissu' => $familleTissus->id]) }}">{{ $familleTissus->famille_tissus }}</a>
                                         @endforeach
-                                    </div>
+                                    </div> --}}
                                 </div>
 
                             </td>

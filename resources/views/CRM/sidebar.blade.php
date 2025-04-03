@@ -36,6 +36,15 @@
                 <i class="fa fa-balance-scale"></i><span class="nav-text">COMPLIANCE</span></a>
             </li>
         </ul>
+        <ul class="metismenu" id="menu">
+            <li>
+                <a class="has-arrow" href="{{ route('WMS.accueil') }}" aria-expanded="false">
+                    <i class="fas fa-box"></i>
+                    <span class="nav-text">WMS</span>
+                </a>
+            </li>
+
+        </ul>
     </div>
 </div>
 <!--**********************************

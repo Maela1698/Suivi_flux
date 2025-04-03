@@ -69,16 +69,23 @@
             </div>
             <div class="card-body">
                 <form class="mb-4" action="{{ route('WMS.filtre-entree-wms', ['idtypewms' => $typeWMS->id]) }}"
-                    method="get">
+                    method="get" autocomplete="off">
                     @csrf
                     <div class="row">
                         <div class="col-md-3 col-lg-2 mb-3">
                             <div class="input-group">
                                 <select class="form-control w-50" name="idfamillewms">
                                     <optgroup label="Famille">
-                                        <option value="">Sélection de la famille</option>
+                                        @if ($idFamillewms == null)
+                                            <option value="">Sélection de la famille</option>
+                                        @else
+                                            <option value="{{ $idFamillewms }}/{{ $nomFamille }}">{{ $nomFamille }}
+                                            </option>
+                                            <option value="">Sélection de la famille</option>
+                                        @endif
                                         @foreach ($familleWMS as $familleWMSs)
-                                            <option value="{{ $familleWMSs->id }}">{{ $familleWMSs->nom }}
+                                            <option value="{{ $familleWMSs->id }}/{{ $familleWMSs->nom }}">
+                                                {{ $familleWMSs->nom }}
                                             </option>
                                         @endforeach
                                     </optgroup>
@@ -89,9 +96,16 @@
                             <div class="input-group">
                                 <select class="form-control w-50" name="idclassematierepremiere">
                                     <optgroup label="Classe">
-                                        <option value="">Sélection de la Classe</option>
+                                        @if ($idClasse == null)
+                                            <option value="">Selection de la classe du tissu</option>
+                                        @else
+                                            <option value="{{ $idClasse }}/{{ $nomClasse }}">
+                                                {{ $nomClasse }}</option>
+                                            <option value="">Selection de la classe du tissu</option>
+                                        @endif
                                         @foreach ($classeMatiere as $classeMatieres)
-                                            <option value="{{ $classeMatieres->id }}">{{ $classeMatieres->classe }}
+                                            <option value="{{ $classeMatieres->id }}/{{ $classeMatieres->classe }}">
+                                                {{ $classeMatieres->classe }}
                                             </option>
                                         @endforeach
                                     </optgroup>
@@ -102,9 +116,16 @@
                             <div class="input-group">
                                 <select class="form-control w-50" name="idclient">
                                     <optgroup label="Client">
-                                        <option value="">Sélection du client</option>
+                                        @if ($idClient == null)
+                                            <option value="">Sélection du client</option>
+                                        @else
+                                            <option value="{{ $idClient }}/{{ $nomClient }}">
+                                                {{ $nomClient }}</option>
+                                            <option value="">Sélection du client</option>
+                                        @endif
                                         @foreach ($client as $clients)
-                                            <option value="{{ $clients->id }}">{{ $clients->nomtier }}
+                                            <option value="{{ $clients->id }}/{{ $clients->nomtier }}">
+                                                {{ $clients->nomtier }}
                                             </option>
                                         @endforeach
                                     </optgroup>
@@ -115,9 +136,16 @@
                             <div class="input-group">
                                 <select class="form-control w-50" name="idfournisseur">
                                     <optgroup label="Fournisseur">
-                                        <option value="">Sélection du fournisseur</option>
+                                        @if ($idFournisseur == null)
+                                            <option value="">Sélection du fournisseur</option>
+                                        @else
+                                            <option value="{{ $idFournisseur }}/{{ $nomFournisseur }}">
+                                                {{ $nomFournisseur }}</option>
+                                            <option value="">Sélection du fournisseur</option>
+                                        @endif
                                         @foreach ($fournisseur as $fournisseurs)
-                                            <option value="{{ $fournisseurs->id }}">{{ $fournisseurs->nomtier }}
+                                            <option value="{{ $fournisseurs->id }}/{{ $fournisseurs->nomtier }}">
+                                                {{ $fournisseurs->nomtier }}
                                             </option>
                                         @endforeach
                                     </optgroup>
@@ -126,15 +154,16 @@
                         </div>
                         <div class="col-3">
                             <div class="input-group" id="date-range">
-                                <input type="date" class="form-control" name="debut">
+                                <input type="date" class="form-control" name="debut" value="{{ $debut }}">
                                 <span class="input-group-addon b-0 text-white"
                                     style="width: 20px; text-align: center; justify-content: center; background-color: gray;">à</span>
-                                <input type="date" class="form-control" name="fin">
+                                <input type="date" class="form-control" name="fin" value="{{ $fin }}">
                             </div>
                         </div>
                         <div class="col-3">
                             <div class="input-group" id="date-range">
-                                <input type="text" class="form-control" name="recherche" placeholder="Recherche">
+                                <input type="text" class="form-control" name="recherche" placeholder="Recherche"
+                                    value="{{ $recherche }}">
                             </div>
                         </div>
 
@@ -171,6 +200,7 @@
                                 <th>Classe</th>
                                 <th>Date d'entrée</th>
                                 <th>Date de facturation</th>
+                                <th>Numéro de facture</th>
                                 <th>Numéro BC</th>
                                 <th>Numéro BL</th>
                                 <th>Quantité commander</th>
@@ -179,6 +209,7 @@
                                 <th>Unité commande</th>
                                 <th>Prix unitaire</th>
                                 <th>Unité monétaire</th>
+                                <th>QTE retourner au fournisseur</th>
                                 <th>Parité</th>
                                 <th>Fret</th>
                                 <th>Commentaire</th>
@@ -201,17 +232,26 @@
                                     <th>{{ $entrees->classe }}</th>
                                     <th>{{ $entrees->dateentree }}</th>
                                     <th>{{ $entrees->datefacturation }}</th>
+                                    <th>{{ $entrees->numerofacture }}</th>
                                     <th>{{ $entrees->numbc }}</th>
                                     <th>{{ $entrees->numbl }}</th>
                                     <th>{{ $entrees->qtecommande }}</th>
                                     <th>{{ $entrees->qteentree }}</th>
-                                    <th>{{ $entrees->resterecevoir }}</th>
+                                    <th>{{ $entrees->resterecevoir < 0 ? 0 : $entrees->resterecevoir }}</th>
                                     <th>{{ $entrees->unite_mesure }}</th>
                                     <th>{{ $entrees->prixunitaire }}</th>
                                     <th>{{ $entrees->unite_monetaire }}</th>
+                                    <th>{{ $entrees->retour_fournisseur }}</th>
                                     <th>{{ $entrees->valeur }}</th>
                                     <th>{{ $entrees->fret }}</th>
                                     <th>{{ $entrees->commentaire }}</th>
+                                    <td>
+                                        <a class="btn" href="#" data-toggle="modal"
+                                            data-target="#modification-modal-{{ $entrees->id }}"
+                                            style="border-radius: 50%; background-color: #281acb; color: white;">
+                                            <i class="fa fa-pencil-alt"></i>
+                                        </a>
+                                    </td>
                                     <td>
                                         <a class="btn" href="#" data-toggle="modal"
                                             data-target="#retour-modal-{{ $entrees->id }}"
@@ -280,7 +320,7 @@
                                 {{--
                                     * Modification modal
                                 --}}
-                                <div class="modal" id="modification-modal">
+                                <div class="modal" id="modification-modal-{{ $entrees->id }}">
                                     <div class="modal-dialog">
                                         <div class="modal-content" style="background-color: white">
                                             <div class="modal-header" style="text-align: left;">
@@ -288,45 +328,41 @@
                                                     Modification</h4>
                                             </div>
                                             <div class="modal-body">
-                                                <p class="text-center alert alert-info">Modification de la rack</p>
-                                                <form id="modification-form" action="#" method="post"
+                                                <p class="text-center alert alert-info">Modification de l'entrée</p>
+                                                <form id="modification-form"
+                                                    action="{{ route('WMS.modif-entree-wms') }}" method="post"
                                                     enctype="multipart/form-data">
                                                     @csrf
-                                                    <div class="mb-3"><label class="form-label">Section</label>
-                                                        <select class="form-control" name="idsectionwms">
-                                                            <optgroup label="Section">
-                                                                <option value="#">Tissu</option>
-                                                                <option value="#">Tissu obsolète</option>
-                                                            </optgroup>
-                                                        </select>
+                                                    <input type="hidden" name="identreetissu"
+                                                        value="{{ $entrees->id }}">
+                                                    <input type="hidden" name="idstocktissu"
+                                                        value="{{ $entrees->idstocktissu }}">
+                                                    <div class="mb-3"><label class="form-label">Date de
+                                                            facturation</label>
+                                                        <input class="form-control" type="text"
+                                                            name="datefacturation"
+                                                            value="{{ $entrees->datefacturation }}">
                                                     </div>
-                                                    <div class="mb-3"><label class="form-label">Catégorie du
-                                                            tissu</label>
-                                                        <select class="form-control" name="idcategorietissu">
-                                                            <optgroup label="Catégorie de tissu">
-                                                                <option value="#">BIO</option>
-                                                                <option value="#">NON-BIO</option>
-                                                            </optgroup>
-                                                        </select>
+                                                    <div class="mb-3"><label class="form-label">Numéro BL</label>
+                                                        <input class="form-control" type="text" name="numbl"
+                                                            value="{{ $entrees->numbl }}">
                                                     </div>
-                                                    <div class="mb-3"><label class="form-label">Désignation</label>
-                                                        <input class="form-control" type="text" name="designation"
-                                                            value="">
+                                                    <div class="mb-3"><label class="form-label">Numéro BC</label>
+                                                        <input class="form-control" type="text" name="numbc"
+                                                            value="{{ $entrees->numbc }}">
                                                     </div>
-                                                    <div class="mb-3"><label class="form-label">Largeur</label>
-                                                        <input class="form-control" type="number" name="largeur"
-                                                            value="">
+                                                    <div class="mb-3"><label class="form-label">Modèle</label>
+                                                        <input class="form-control" type="text" name="modele"
+                                                            value="{{ $entrees->modele }}">
                                                     </div>
-                                                    <div class="mb-3"><label class="form-label">Longueur</label>
-                                                        <input class="form-control" type="number" name="longueur"
-                                                            value="">
+                                                    <div class="mb-3"><label class="form-label">Qte
+                                                            commander</label>
+                                                        <input class="form-control" type="text" name="qtecommande"
+                                                            value="{{ $entrees->qtecommande }}">
                                                     </div>
-                                                    <div class="mb-3"><label class="form-label">Hauteur</label>
-                                                        <input class="form-control" type="number" name="hauteur"
-                                                            value="">
-                                                    </div>
+
                                                     <div class="mb-3"><label class="form-label">Commentaire</label>
-                                                        <textarea class="form-control" type="text" name="commentaire" value=""></textarea>
+                                                        <textarea class="form-control" type="text" name="commentaire">{{ $entrees->commentaire }}</textarea>
                                                     </div>
                                             </div>
                                             <div style="text-align: center">

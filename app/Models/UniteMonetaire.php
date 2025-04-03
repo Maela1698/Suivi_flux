@@ -11,7 +11,7 @@ class UniteMonetaire extends Model
 {
     use HasFactory;
 
-    protected $table = 'uniteMonetaire';
+    protected $table = 'unitemonetaire';
     protected $fillable = [
         'unite',
         'etat',

@@ -34,9 +34,7 @@ class Retour_Tissu extends Model
             'dateretour' => 'required',
         ];
 
-        $messages = [
-
-        ];
+        $messages = [];
 
         return compact('rules', 'messages');
     }

@@ -6,12 +6,11 @@
         @include('WMS.headerWMS')
         <div class="card col-12">
             <div class="card-header d-flex justify-content-between align-items-center entete">
-                {{-- TODO: Detailler ceci avec la famille de tissu --}}
-                <h3 class="entete">Nouvelle Entree {{ $familleTissu->famille_tissus }}</h3>
+                <h3 class="entete">Nouvelle Entree de Consommable</h3>
             </div>
             <div class="card-body">
                 <div class="form-validation">
-                    <form class="form-valide" action="{{ route('WMS.ajout-entree-tissu') }}" method="post"
+                    <form class="form-valide" action="{{ route('WMS.ajout-entree-consommable') }}" method="post"
                         enctype="multipart/form-data" autocomplete="off">
                         @csrf
                         @if (Session::has('success'))
@@ -25,34 +24,30 @@
                                 {{ $errors->first('error') }}
                             </div>
                         @endif
-                        <input type="hidden" name="idfamilletissus" value="{{ $familleTissu->id }}">
-                        @if (isset($iddonnebc))
-                            <input type="hidden" name="iddonnebc" value="{{ $iddonnebc }}">
-                        @endif
                         <div class="form-group row">
                             <div class="col-6">
                                 <div class="row no-gutters">
                                     <div class="col-12">
-                                        <label class="col-form-label">Date entrée </label>
+                                        <label class="col-form-label">Désignation </label>
                                     </div>
                                     <div class="col-12">
-                                        @error('dateentree')
+                                        @error('designation')
                                             <p class="text-danger">{{ $message }}</p>
                                         @enderror
-                                        <input type="date" class="form-control" name="dateentree">
+                                        <input type="text" class="form-control" name="designation">
                                     </div>
                                 </div>
                             </div>
                             <div class="col-6">
                                 <div class="row no-gutters">
                                     <div class="col-12">
-                                        <label class="col-form-label">date facturation</label>
+                                        <label class="col-form-label">Réference</label>
                                     </div>
                                     <div class="col-12">
-                                        @error('datefacturation')
+                                        @error('reference')
                                             <p class="text-danger">{{ $message }}</p>
                                         @enderror
-                                        <input type="date" class="form-control" name="datefacturation">
+                                        <input type="text" class="form-control" name="reference">
                                     </div>
                                 </div>
                             </div>
@@ -61,118 +56,31 @@
                             <div class="col-3">
                                 <div class="row no-gutters">
                                     <div class="col-12">
-                                        <label class="col-form-label">Catégorie</label>
+                                        <label class="col-form-label">Couleur</label>
                                     </div>
                                     <div class="col-12">
-                                        @error('idcategorietissus')
+                                        @error('couleur')
                                             <p class="text-danger">{{ $message }}</p>
                                         @enderror
-                                        <select class="form-control" name="idcategorietissus">
-                                            <option value="">Selectionner la catégorie</option>
-                                            @foreach ($catTissu as $catTissus)
-                                                <option value="{{ $catTissus->id }}"
-                                                    {{ isset($data) && $data->categorie == $catTissus->categorie ? 'selected' : '' }}>
-                                                    {{ $catTissus->categorie }}
-                                                </option>
-                                            @endforeach
-                                        </select>
+                                        <input type="text" class="form-control" name="couleur">
                                     </div>
                                 </div>
                             </div>
                             <div class="col-3">
                                 <div class="row no-gutters">
                                     <div class="col-12">
-                                        <label class="col-form-label">Classe</label>
+                                        <label class="col-form-label">Saison</label>
                                     </div>
                                     <div class="col-12">
-                                        @error('idclassematierepremiere')
+                                        @error('saison')
                                             <p class="text-danger">{{ $message }}</p>
                                         @enderror
-                                        <select class="form-control" name="idclassematierepremiere" id="classe"
-                                            style="width: 100%">
-                                            <option value="">Selectionner la classe</option>
-                                            @foreach ($classeMatiere as $classeMatieres)
-                                                <option value="{{ $classeMatieres->id }}">
-                                                    {{ $classeMatieres->classe }}
-                                                </option>
-                                            @endforeach
-                                        </select>
+                                        <input type="text" class="form-control" name="saison">
                                     </div>
                                 </div>
                             </div>
                             <div class="col-3">
                                 <div class="row no-gutters">
-                                    <div class="col-12">
-                                        <label class="col-form-label">Utilisation</label>
-                                    </div>
-                                    <div class="col-12">
-                                        @error('idutilisationwms')
-                                            <p class="text-danger">{{ $message }}</p>
-                                        @enderror
-                                        <select class="form-control" name="idutilisationwms" id="classe"
-                                            style="width: 100%">
-                                            <option value="">Selectionner le type d'utilisation</option>
-                                            @foreach ($utilisation as $utilisations)
-                                                <option value="{{ $utilisations->id }}">
-                                                    {{ $utilisations->utilisation }}
-                                                </option>
-                                            @endforeach
-                                        </select>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="col-3">
-                                <div class="row no-gutters">
-                                    <div class="col-12">
-                                        <label class="col-form-label">Numéro BC </label>
-                                    </div>
-                                    <div class="col-12">
-                                        @error('numerobc')
-                                            <p class="text-danger">{{ $message }}</p>
-                                        @enderror
-                                        <input type="text" name="numerobc" class="form-control"
-                                            placeholder="Numéro du BC"
-                                            {{ isset($data->numerobc) ? 'value=' . $data->numerobc . '' : '' }}
-                                            readonly>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="form-group row">
-                            <div class="col-3">
-                                <div class="row no-gutters">
-                                    <div class="col-12">
-
-                                        <label class="col-form-label">Numéro BL </label>
-                                    </div>
-                                    <div class="col-12">
-                                        @error('numerobl')
-                                            <p class="text-danger">{{ $message }}</p>
-                                        @enderror
-                                        <input type="text" name="numerobl" class="form-control"
-                                            placeholder="Numéro du BL">
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="col-3">
-                                <div class="row no-gutters">
-                                    <div class="col-12">
-
-                                        <label class="col-form-label">Numéro Facture</label>
-                                    </div>
-                                    <div class="col-12">
-                                        @error('numerofacture')
-                                            <p class="text-danger">{{ $message }}</p>
-                                        @enderror
-                                        <input type="text" name="numerofacture" class="form-control"
-                                            placeholder="Numéro du BC">
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="col-3">
-                                <div class="row no-gutters">
-                                    {{-- TODO:change to autocomplete --}}
                                     <div class="col-12">
                                         <label class="col-form-label">Fournisseur Tissu</label>
                                     </div>
@@ -194,9 +102,8 @@
                             </div>
                             <div class="col-3">
                                 <div class="row no-gutters">
-                                    {{-- TODO: change to autocomplete --}}
                                     <div class="col-12">
-                                        <label class="col-form-label">Client Tissu</label>
+                                        <label class="col-form-label">Client</label>
                                     </div>
                                     <div class="col-12">
                                         @error('client')
@@ -215,142 +122,120 @@
                                 </div>
                             </div>
                         </div>
+
                         <div class="form-group row">
                             <div class="col-3">
                                 <div class="row no-gutters">
-                                    {{-- TODO: A mediter si vraiment besoin --}}
                                     <div class="col-12">
+
                                         <label class="col-form-label">Modèle </label>
                                     </div>
                                     <div class="col-12">
                                         @error('modele')
                                             <p class="text-danger">{{ $message }}</p>
                                         @enderror
-                                        <input type="text" name="modele" class="form-control"
-                                            placeholder="Modele"
-                                            {{ isset($data->nom_modele) ? 'value=' . $data->nom_modele . '' : '' }}>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="col-3">
-                                <div class="row no-gutters">
-                                    {{-- TODO: A mediter si vraiment besoin --}}
-                                    <div class="col-12">
-                                        <label class="col-form-label">Saison</label>
-                                    </div>
-                                    <div class="col-12">
-                                        @error('saison')
-                                            <p class="text-danger">{{ $message }}</p>
-                                        @enderror
-                                        <input type="text" name="saison" class="form-control"
-                                            placeholder="Saison"
-                                            {{ isset($data->type_saison) ? 'value=' . $data->type_saison . '' : '' }}>
+                                        <input type="text" name="modele" class="form-control">
                                     </div>
                                 </div>
                             </div>
                             <div class="col-3">
                                 <div class="row no-gutters">
                                     <div class="col-12">
-                                        <label class="col-form-label">Désignation</label>
+                                        <label class="col-form-label">Date d'entrée</label>
                                     </div>
                                     <div class="col-12">
-                                        @error('designation')
+                                        @error('dateentree')
                                             <p class="text-danger">{{ $message }}</p>
                                         @enderror
-                                        <input type="text" name="designation" class="form-control"
-                                            placeholder="Désignation"
-                                            {{ isset($data->des_tissus) ? 'value=' . $data->des_tissus . '' : '' }}>
-
+                                        <input type="date" name="dateentree" class="form-control">
                                     </div>
                                 </div>
                             </div>
                             <div class="col-3">
                                 <div class="row no-gutters">
                                     <div class="col-12">
-                                        <label class="col-form-label">Réference tissu</label>
+                                        <label class="col-form-label">Date de facturation</label>
                                     </div>
                                     <div class="col-12">
-                                        @error('reftissu')
+                                        @error('datefacturation')
                                             <p class="text-danger">{{ $message }}</p>
                                         @enderror
-                                        <input type="text" name="reftissu" class="form-control"
-                                            placeholder="Reference du tissu"
-                                            {{ isset($data->ref_tissus) ? 'value=' . $data->ref_tissus . '' : '' }}>
-
+                                        <input type="date" name="datefacturation" class="form-control">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-3">
+                                <div class="row no-gutters">
+                                    <div class="col-12">
+                                        <label class="col-form-label">Num BC</label>
+                                    </div>
+                                    <div class="col-12">
+                                        @error('numbc')
+                                            <p class="text-danger">{{ $message }}</p>
+                                        @enderror
+                                        <input type="text" name="numbc" class="form-control">
                                     </div>
                                 </div>
                             </div>
                         </div>
-
-
                         <div class="form-group row">
                             <div class="col-3">
                                 <div class="row no-gutters">
                                     <div class="col-12">
-                                        <label class="col-form-label">Composition</label>
+                                        <label class="col-form-label">Num BL</label>
                                     </div>
                                     <div class="col-12">
-                                        @error('composition')
+                                        @error('numbc')
                                             <p class="text-danger">{{ $message }}</p>
                                         @enderror
-                                        <input type="text" name="composition" class="form-control"
-                                            placeholder="Composition"
-                                            {{ isset($data->composition_tissus) ? 'value=' . $data->composition_tissus . '' : '' }}>
-
+                                        <input type="text" name="numbl" class="form-control">
                                     </div>
                                 </div>
                             </div>
                             <div class="col-3">
                                 <div class="row no-gutters">
                                     <div class="col-12">
-                                        <label class="col-form-label">Couleur</label>
-                                    </div>
-                                    <div class="col-12">
-                                        @error('couleur')
-                                            <p class="text-danger">{{ $message }}</p>
-                                        @enderror
-                                        <input type="text" name="couleur" class="form-control"
-                                            placeholder="Couleur"
-                                            {{ isset($data->couleur) ? 'value=' . $data->couleur . '' : '' }}>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="col-3">
-                                <div class="row no-gutters">
-                                    <div class="col-12">
-                                        <label class="col-form-label">Laize</label>
-                                    </div>
-                                    <div class="col-12">
-                                        @error('laize')
-                                            <p class="text-danger">{{ $message }}</p>
-                                        @enderror
-                                        <input type="number" name="laize" class="form-control"
-                                            placeholder="Laize"
-                                            {{ isset($data->laize) ? 'value=' . $data->laize . '' : '' }}>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="col-3">
-                                <div class="row no-gutters">
-                                    <div class="col-12">
-                                        <label class="col-form-label">Quantité commandé</label>
+                                        <label class="col-form-label">Quantité commander</label>
                                     </div>
                                     <div class="col-12">
                                         @error('qtecommande')
                                             <p class="text-danger">{{ $message }}</p>
                                         @enderror
-                                        <input type="number" name="qtecommande" class="form-control"
-                                            placeholder="Quantité commandé"
-                                            {{ isset($data->quantite) ? 'value=' . $data->quantite . '' : '' }}>
+                                        <input type="text" name="qtecommande" class="form-control">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-3">
+                                <div class="row no-gutters">
+                                    <div class="col-12">
+                                        <label class="col-form-label">Quantité reçue</label>
+                                    </div>
+                                    <div class="col-12">
+                                        @error('qterecu')
+                                            <p class="text-danger">{{ $message }}</p>
+                                        @enderror
+                                        <input type="text" name="qterecu" class="form-control">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-3">
+                                <div class="row no-gutters">
+                                    <div class="col-12">
+                                        <label class="col-form-label">Image</label>
+                                    </div>
+                                    <div class="col-12">
+                                        @error('image')
+                                            <p class="text-danger">{{ $message }}</p>
+                                        @enderror
+                                        <input type="file" name="image" class="form-control">
                                     </div>
                                 </div>
                             </div>
                         </div>
 
 
-
                         <div class="form-group row">
-                            <div class="col-4">
+                            <div class="col-3">
                                 <div class="row no-gutters">
                                     <div class="col-12">
                                         <label class="col-form-label">Unité QC</label>
@@ -360,16 +245,7 @@
                                             <p class="text-danger">{{ $message }}</p>
                                         @enderror
                                         <select class="form-control" name="idunitemesurematierepremiere">
-                                            {{-- @if ($data->unite)
-                                                @php
-                                                    $selectedunite = $uniteCommande->firstWhere('unite', $data->unite);
-                                                @endphp
-                                                @if ($selectedunite)
-                                                    <option value="{{ $selectedunite->id }}">
-                                                        {{ $selectedunite->unite }}</option>
-                                                @endif
-                                            @endif --}}
-                                            <option value="">Selectionner la catégorie</option>
+                                            <option value="">Selectionner l'unité'</option>
                                             @foreach ($uniteCommande as $uniteCommandes)
                                                 <option value="{{ $uniteCommandes->id }}"
                                                     {{ isset($data) && $data->unite == $uniteCommandes->unite_mesure ? 'selected' : '' }}>
@@ -380,51 +256,7 @@
                                     </div>
                                 </div>
                             </div>
-                            <div class="col-4">
-                                <div class="row no-gutters">
-                                    <div class="col-12">
-                                        <label class="col-form-label">Quantité reçu</label>
-                                    </div>
-                                    <div class="col-12">
-                                        @error('qterecu')
-                                            <p class="text-danger">{{ $message }}</p>
-                                        @enderror
-                                        <input type="number" name="qterecu" class="form-control"
-                                            placeholder="Quantité reçu">
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="col-4">
-                                <div class="row no-gutters">
-                                    <div class="col-12">
-                                        <label class="col-form-label">Nombre de rouleau</label>
-                                    </div>
-                                    <div class="col-12">
-                                        @error('nbrouleau')
-                                            <p class="text-danger">{{ $message }}</p>
-                                        @enderror
-                                        <input type="number" name="nbrouleau" class="form-control"
-                                            placeholder="Nombre de rouleau">
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="form-group row">
-                            <div class="col-4">
-                                <div class="row no-gutters">
-                                    <div class="col-12">
-                                        <label class="col-form-label">Nombre de lot</label>
-                                    </div>
-                                    <div class="col-12">
-                                        @error('nblot')
-                                            <p class="text-danger">{{ $message }}</p>
-                                        @enderror
-                                        <input type="number" name="nblot" class="form-control"
-                                            placeholder="Nombre de lot">
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="col-4">
+                            <div class="col-3">
                                 <div class="row no-gutters">
                                     <div class="col-12">
                                         <label class="col-form-label">Prix Unitaire</label>
@@ -433,13 +265,12 @@
                                         @error('prixunitaire')
                                             <p class="text-danger">{{ $message }}</p>
                                         @enderror
-                                        <input type="number" name="prixunitaire" class="form-control"
-                                            placeholder="Prix Unitaire"
+                                        <input type="text" name="prixunitaire" class="form-control"
                                             {{ isset($data->prix_unitaire) ? 'value=' . $data->prix_unitaire . '' : '' }}>
                                     </div>
                                 </div>
                             </div>
-                            <div class="col-4">
+                            <div class="col-3">
                                 <div class="row no-gutters">
                                     <div class="col-12">
                                         <label class="col-form-label">Unité monétaire</label>
@@ -448,7 +279,6 @@
                                         @error('idunitemonetaire')
                                             <p class="text-danger">{{ $message }}</p>
                                         @enderror
-
                                         <select class="form-control" name="idunitemonetaire">
                                             <option value="">Selectionner la catégorie</option>
                                             @foreach ($uniteMonetaire as $uniteMonetaires)
@@ -461,13 +291,25 @@
                                     </div>
                                 </div>
                             </div>
-                        </div>
-
-                        <div class="form-group row">
-                            <div class="col-4">
+                            <div class="col-3">
                                 <div class="row no-gutters">
                                     <div class="col-12">
-                                        {{-- TODO: CHANGE THIS TO MULTIPLE CELLULE --}}
+                                        <label class="col-form-label">Fret</label>
+                                    </div>
+                                    <div class="col-12">
+                                        @error('fret')
+                                            <p class="text-danger">{{ $message }}</p>
+                                        @enderror
+                                        <input type="number" name="fret" class="form-control">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <div class="col-12">
+                                <div class="row no-gutters">
+                                    <div class="col-12">
+                                        {{-- TODO: CHANGE THIS TO CELLULE OF CONSOMMABLE --}}
                                         <label class="col-form-label">Cellule</label>
                                     </div>
                                     <div class="col-12">
@@ -479,32 +321,7 @@
                                     </div>
                                 </div>
                             </div>
-                            <div class="col-4">
-                                <div class="row no-gutters">
-                                    <div class="col-12">
-                                        <label class="col-form-label">Fret</label>
-                                    </div>
-                                    <div class="col-12">
-                                        @error('fret')
-                                            <p class="text-danger">{{ $message }}</p>
-                                        @enderror
-                                        <input type="text" name="fret" class="form-control"
-                                            placeholder="Fret">
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="col-4">
-                                <div class="row no-gutters">
-                                    <div class="col-12">
-                                        <label class="col-form-label">Image</label>
-                                    </div>
-                                    <div class="col-12">
-                                        <input type="file" class="form-control" name="image">
-                                    </div>
-                                </div>
-                            </div>
                         </div>
-
                         <div class="form-group row">
                             <div class="col-12">
                                 <div class="row no-gutters">
@@ -517,7 +334,6 @@
                                 </div>
                             </div>
                         </div>
-
                         <div class="form-group row">
                             <div class="col-lg-8 ml-auto text-right d-flex justify-content-end">
                                 <button type="submit" class="btn btn-success">Ajouter</button>

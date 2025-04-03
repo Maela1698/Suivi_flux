@@ -1,14 +1,60 @@
 @include('CRM.header')
 @include('CRM.sidebar')
+<style>
+    .static-field {
+        padding: 8px;
+        background-color: #f8f9fa;
+        border: 1px solid #ddd;
+        border-radius: 5px;
+        color: #313030;
+    }
+
+    .static-label {
+        font-weight: bold;
+        font-size: 14px;
+        color: black;
+    }
+</style>
 <div class="content-body">
     <div class="container-fluid">
         @include('WMS.headerWMS')
         <div class="card col-12">
             <div class="card-header d-flex justify-content-between align-items-center entete">
-                {{-- TODO: Detailler --}}
                 <h3 class="entete">NOUVELLE SORTIE </h3>
             </div>
             <div class="card-body">
+                <div class="row g-3">
+                    <!-- DESIGNATION -->
+                    <div class="col-md-6">
+                        <div class="static-label">DESIGNATION</div>
+                        <div class="static-field">{{ $stock->designation }}</div>
+                    </div>
+                    <!-- REFERENCE -->
+                    <div class="col-md-6">
+                        <div class="static-label">REFERENCE</div>
+                        <div class="static-field">{{ $stock->reference }}</div>
+                    </div>
+                    <!-- CLASSE -->
+                    <div class="col-md-6">
+                        <div class="static-label">CLASSE</div>
+                        <div class="static-field">{{ $stock->classe }}</div>
+                    </div>
+                    <!-- FOURNISSEUR -->
+                    <div class="col-md-6">
+                        <div class="static-label">FOURNISSEUR</div>
+                        <div class="static-field">{{ $stock->fournisseur }}</div>
+                    </div>
+                    <!-- RECEIVED QTY -->
+                    <div class="col-md-6">
+                        <div class="static-label">QUANTITÉ EN STOCK</div>
+                        <div class="static-field">{{ $stock->qtestock }}</div>
+                    </div>
+                    <!-- COULEUR -->
+                    <div class="col-md-6">
+                        <div class="static-label">COULEUR</div>
+                        <div class="static-field">{{ $stock->couleur }}</div>
+                    </div>
+                </div>
                 <div class="form-validation">
                     <form class="form-valide" action="{{ route('WMS.sortie-stock-tissu') }}" method="post"
                         enctype="multipart/form-data" autocomplete="off">
@@ -25,12 +71,12 @@
                             </div>
                         @endif
                         <input type="hidden" class="form-control" name="idstocktissu" value="{{ $stock->id }}">
-                        <input type="hidden" class="form-control" name="idunitemesurematierepremiere"
-                            value="{{ $stock->idunitemesurematierepremiere }}">
+                        <input type="hidden" class="form-control" name="obsolete" value="{{ $stock->obsolete }}">
+                        <input type="hidden" class="form-control" name="typeSortie" value="1">
                         <input type="hidden" class="form-control" name="idfamilletissus"
                             value="{{ $stock->idfamilletissus }}">
                         <div class="form-group row">
-                            <div class="col-3">
+                            <div class="col-4">
                                 <div class="row no-gutters">
                                     <div class="col-12">
                                         <label class="col-form-label">Date Sortie</label>
@@ -39,11 +85,12 @@
                                         @error('datesortie')
                                             <p class="text-danger">{{ $message }}</p>
                                         @enderror
-                                        <input type="date" class="form-control" name="datesortie" required>
+                                        <input type="date" class="form-control" name="datesortie"
+                                            value="{{ date('Y-m-d') }}" readonly>
                                     </div>
                                 </div>
                             </div>
-                            <div class="col-3">
+                            <div class="col-4">
                                 <div class="row no-gutters">
                                     <div class="col-12">
                                         <label class="col-form-label">Numéro BC interne</label>
@@ -57,208 +104,8 @@
                                     </div>
                                 </div>
                             </div>
-                            <div class="col-3">
-                                <div class="row no-gutters">
-                                    <div class="col-12">
-                                        <label class="col-form-label">Catégorie</label>
-                                    </div>
-                                    <div class="col-12">
-                                        @error('idcategorietissus')
-                                            <p class="text-danger">{{ $message }}</p>
-                                        @enderror
-                                        <select class="form-control" name="idcategorietissus" required>
-                                            <option value="">Selectionner la catégorie</option>
-                                            @foreach ($catTissu as $catTissus)
-                                                <option value="{{ $catTissus->id }}"
-                                                    {{ isset($stock) && $stock->categorie == $catTissus->categorie ? 'selected' : '' }}>
-                                                    {{ $catTissus->categorie }}
-                                                </option>
-                                            @endforeach
-                                        </select>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="col-3">
-                                <div class="row no-gutters">
-                                    <div class="col-12">
-                                        <label class="col-form-label">Classe</label>
-                                    </div>
-                                    <div class="col-12">
-                                        @error('idclassematierepremiere')
-                                            <p class="text-danger">{{ $message }}</p>
-                                        @enderror
-                                        <select class="form-control" name="idclassematierepremiere" required>
-                                            <option value="">Selectionner la classe</option>
-                                            @foreach ($classeMatiere as $classeMatieres)
-                                                <option value="{{ $classeMatieres->id }}"
-                                                    {{ isset($stock) && $stock->idclassematierepremiere == $classeMatieres->id ? 'selected' : '' }}>
-                                                    {{ $classeMatieres->classe }}
-                                                </option>
-                                            @endforeach
-                                        </select>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="form-group row">
-                            <div class="col-3">
-                                <div class="row no-gutters">
-                                    <div class="col-12">
-                                        <label class="col-form-label">Utilisation</label>
-                                    </div>
-                                    <div class="col-12">
-                                        @error('idutilisationwms')
-                                            <p class="text-danger">{{ $message }}</p>
-                                        @enderror
-                                        <select class="form-control" name="idutilisationwms" required>
-                                            <option value="">Selectionner le type d'utilisation</option>
-                                            @foreach ($utilisation as $utilisations)
-                                                <option value="{{ $utilisations->id }}"
-                                                    {{ isset($stock) && $stock->idutilisationwms == $utilisations->id ? 'selected' : '' }}>
-                                                    {{ $utilisations->utilisation }}
-                                                </option>
-                                            @endforeach
-                                        </select>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="col-3">
-                                <div class="row no-gutters">
-                                    <div class="col-12">
-                                        <label class="col-form-label">Reference tissu</label>
-                                    </div>
-                                    <div class="col-12">
-                                        @error('reference')
-                                            <p class="text-danger">{{ $message }}</p>
-                                        @enderror
-                                        <input type="text" class="form-control" name="reference"
-                                            value="{{ $stock->reference }}">
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="col-3">
-                                <div class="row no-gutters">
-                                    <div class="col-12">
-                                        <label class="col-form-label">Désignation</label>
-                                    </div>
-                                    <div class="col-12">
-                                        @error('designation')
-                                            <p class="text-danger">{{ $message }}</p>
-                                        @enderror
-                                        <input type="text" class="form-control" name="designation"
-                                            value="{{ $stock->designation }}">
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="col-3">
-                                <div class="row no-gutters">
-                                    <div class="col-12">
-                                        <label class="col-form-label">Composition</label>
-                                    </div>
-                                    <div class="col-12">
-                                        @error('composition')
-                                            <p class="text-danger">{{ $message }}</p>
-                                        @enderror
-                                        <input type="text" name="composition" class="form-control"
-                                            placeholder="Composition" value="{{ $stock->composition }}" required>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
 
-                        <div class="form-group row">
-                            <div class="col-3">
-                                <div class="row no-gutters">
-                                    <div class="col-12">
-                                        <label class="col-form-label">Couleur</label>
-                                    </div>
-                                    <div class="col-12">
-                                        @error('couleur')
-                                            <p class="text-danger">{{ $message }}</p>
-                                        @enderror
-                                        <input type="text" name="couleur" class="form-control"
-                                            value="{{ $stock->couleur }}" placeholder="Couleur" required>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="col-3">
-                                <div class="row no-gutters">
-                                    <div class="col-12">
-                                        <label class="col-form-label">Fournisseur</label>
-                                    </div>
-                                    <div class="col-12">
-                                        @error('idfournisseur')
-                                            <p class="text-danger">{{ $message }}</p>
-                                        @enderror
-                                        <input type="hidden" name="idfournisseur"
-                                            value="{{ $stock->idfournisseur }}">
-                                        <input type="text" name="fournisseur" class="form-control"
-                                            placeholder="Fournisseur" value="{{ $stock->fournisseur }}" readonly>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="col-3">
-                                <div class="row no-gutters">
-                                    <div class="col-12">
-                                        <label class="col-form-label">Client</label>
-                                    </div>
-                                    <div class="col-12">
-                                        @error('idclient')
-                                            <p class="text-danger">{{ $message }}</p>
-                                        @enderror
-                                        <select class="form-control client" name="idclient" id="client">
-                                        </select>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="col-3">
-                                <div class="row no-gutters">
-                                    <div class="col-12">
-                                        <label class="col-form-label">Modèle</label>
-                                    </div>
-                                    <div class="col-12">
-                                        @error('modele')
-                                            <p class="text-danger">{{ $message }}</p>
-                                        @enderror
-                                        <input type="text" name="modele" class="form-control"
-                                            placeholder="Modèle" value="{{ $stock->modele }}">
-
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
-
-                        <div class="form-group row">
-                            <div class="col-3">
-                                <div class="row no-gutters">
-                                    <div class="col-12">
-                                        <label class="col-form-label">Saison</label>
-                                    </div>
-                                    <div class="col-12">
-                                        @error('saison')
-                                            <p class="text-danger">{{ $message }}</p>
-                                        @enderror
-                                        <input type="text" name="saison" class="form-control"
-                                            placeholder="Saison" value="{{ $stock->saison }}">
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="col-3">
-                                <div class="row no-gutters">
-                                    <div class="col-12">
-                                        <label class="col-form-label">Laize</label>
-                                    </div>
-                                    <div class="col-12">
-                                        @error('laize')
-                                            <p class="text-danger">{{ $message }}</p>
-                                        @enderror
-                                        <input type="text" name="laize" class="form-control"
-                                            placeholder="Laize" value="{{ $stock->laize }}">
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="col-3">
+                            <div class="col-4">
                                 <div class="row no-gutters">
                                     <div class="col-12">
                                         <label class="col-form-label">Destinataire</label>
@@ -272,7 +119,9 @@
                                     </div>
                                 </div>
                             </div>
-                            <div class="col-3">
+                        </div>
+                        <div class="form-group row">
+                            <div class="col-4">
                                 <div class="row no-gutters">
                                     <div class="col-12">
                                         <label class="col-form-label">Receveur</label>
@@ -286,9 +135,7 @@
                                     </div>
                                 </div>
                             </div>
-                        </div>
-                        <div class="form-group row">
-                            <div class="col-6">
+                            <div class="col-4">
                                 <div class="row no-gutters">
                                     <div class="col-12">
                                         <label class="col-form-label">Quantité livré</label>
@@ -302,7 +149,7 @@
                                     </div>
                                 </div>
                             </div>
-                            <div class="col-6">
+                            <div class="col-4">
                                 <div class="row no-gutters">
                                     <div class="col-12">
                                         <label class="col-form-label">Prix unitaire</label>
@@ -335,10 +182,7 @@
                                 <button type="submit" class="btn btn-success">Ajouter</button>
                             </div>
                         </div>
-
-
                         <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
-
                     </form>
                 </div>
             </div>

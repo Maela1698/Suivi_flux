@@ -78,10 +78,36 @@
                 <h4 class="text-primary m -0 font-weight-bold">Historique de sortie de {{ $typeWMS->type }} </h4>
             </div>
             <div class="card-body">
-                {{-- TODO: Filtre --}}
-                {{-- <form class="mb-4" action="#" method="get">
-                    @csrf
+                <form class="mb-4" action="{{ route('WMS.filtre-sortie-wms') }}" method="get">
+                    @csrf 
                     <div class="row">
+                        <input type="hidden" name="idwms_type" value="{{ $typeWMS->id }}">
+                        <div class="col-md-3 col-lg-2 mb-3">
+                            <div class="input-group">
+                                <select class="form-control w-50" name="idfamillewms">
+                                    <optgroup label="Famille">
+                                        <option value="">Sélection de la famille</option>
+                                        @foreach ($familleWMS as $familleWMSs)
+                                            <option value="{{ $familleWMSs->id }}">{{ $familleWMSs->nom }}
+                                            </option>
+                                        @endforeach
+                                    </optgroup>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-md-3 col-lg-2 mb-3">
+                            <div class="input-group">
+                                <select class="form-control w-50" name="idclassematierepremiere">
+                                    <optgroup label="Classe">
+                                        <option value="">Sélection de la Classe</option>
+                                        @foreach ($classeMatiere as $classeMatieres)
+                                            <option value="{{ $classeMatieres->id }}">{{ $classeMatieres->classe }}
+                                            </option>
+                                        @endforeach
+                                    </optgroup>
+                                </select>
+                            </div>
+                        </div>
                         <div class="col-md-3 col-lg-2 mb-3">
                             <div class="input-group">
                                 <select class="form-control w-50" name="idclient">
@@ -122,11 +148,17 @@
                             </div>
                         </div>
 
+                        <div class="col-3">
+                            <div class="input-group" id="date-range">
+                                <input type="text" class="form-control" name="commentaire" placeholder="Commentaire">
+                            </div>
+                        </div>
+
                         <div class="col-1">
                             <button class="btn btn-success">Filtrer</button>
                         </div>
                     </div>
-                </form> --}}
+                </form>
                 <div class="table-responsive table mt-2" id="dataTable" role="grid"
                     aria-describedby="dataTable_info">
                     @if (Session::has('success'))
@@ -181,13 +213,13 @@
                                                     <i class="fa fa-arrow-circle-o-left"></i>
                                                 </button>
                                             </div>
-                                            <div>
+                                            {{-- <div>
                                                 <button class="btn btn-danger" type="button" data-toggle="modal"
                                                     data-target="#suppression-modal-{{ $WMSSortie->id }}"
                                                     style="border-radius: 50%">
                                                     <i class="fa fa-trash"></i>
                                                 </button>
-                                            </div>
+                                            </div> --}}
                                         </div>
 
                                     </td>
@@ -279,6 +311,50 @@
                             @endforeach
                         </tbody>
                     </table>
+                </div>
+                <div class="pagination justify-content-center">
+                    @if ($sortieWMS->lastPage() > 1)
+                        <ul class="pagination justify-content-center">
+                            <!-- Previous Page Link -->
+                            <li class="page-item {{ $sortieWMS->onFirstPage() ? 'disabled' : '' }}">
+                                <a class="page-link" href="{{ $sortieWMS->previousPageUrl() }}"
+                                    aria-label="Previous">
+                                    <span aria-hidden="true">&laquo; Previous</span>
+                                </a>
+                            </li>
+
+                            <!-- Pagination Links -->
+                            @php
+                                $currentPage = $sortieWMS->currentPage();
+                                $lastPage = $sortieWMS->lastPage();
+                                $visiblePages = min($lastPage, 4); // Maximum number of visible pages
+                                $startPage = max(1, $currentPage - floor($visiblePages / 2));
+                                $endPage = min($lastPage, $startPage + $visiblePages - 1);
+                            @endphp
+
+                            @if ($startPage > 1)
+                                <li class="page-item disabled"><span class="page-link">...</span></li>
+                            @endif
+
+                            @for ($i = $startPage; $i <= $endPage; $i++)
+                                <li class="page-item {{ $sortieWMS->currentPage() == $i ? 'active' : '' }}">
+                                    <a class="page-link" href="{{ $sortieWMS->url($i) }}">{{ $i }}</a>
+                                </li>
+                            @endfor
+
+                            @if ($endPage < $lastPage)
+                                <li class="page-item disabled"><span class="page-link">...</span></li>
+                            @endif
+
+                            <!-- Next Page Link -->
+                            <li
+                                class="page-item {{ $sortieWMS->currentPage() == $sortieWMS->lastPage() ? 'disabled' : '' }}">
+                                <a class="page-link" href="{{ $sortieWMS->nextPageUrl() }}" aria-label="Next">
+                                    <span aria-hidden="true">Next &raquo;</span>
+                                </a>
+                            </li>
+                        </ul>
+                    @endif
                 </div>
             </div>
         </div>

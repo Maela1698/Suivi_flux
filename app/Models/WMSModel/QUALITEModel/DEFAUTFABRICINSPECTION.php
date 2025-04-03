@@ -14,13 +14,20 @@ class DEFAUTFABRICINSPECTION extends Model
         'idqualiterouleautissu',
         'image',
         'metrage',
-        'defaut',
+        'iddefectfabrictype',
         'defectpoint',
         'demeritpoint',
         'sonnette',
     ];
 
-    public $timestamps = false; //disable timestamps
+    // Disable auto-incrementing ID behavior
+    public $incrementing = false;
+
+    // Disable timestamps
+    public $timestamps = false;
+
+    // If your primary key is composite (combination of identreetissu and idcellule), you can set them like this:
+    protected $primaryKey = null;
 
     public static function getValidationRules($id = null)
     {
@@ -28,7 +35,7 @@ class DEFAUTFABRICINSPECTION extends Model
             'idqualiterouleautissu' => 'required',
             'image' => 'required',
             'metrage' => 'required',
-            'defaut' => 'required',
+            'iddefectfabrictype' => 'required',
             'defectpoint' => 'required',
             'demeritpoint' => 'required',
             'sonnette' => 'required',

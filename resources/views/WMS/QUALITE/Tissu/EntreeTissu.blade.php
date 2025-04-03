@@ -1,5 +1,52 @@
 @include('CRM.header')
 @include('CRM.sidebar')
+<style>
+    .status-circle {
+        display: inline-block;
+        width: 20px;
+        /* Adjust size */
+        height: 20px;
+        border-radius: 50%;
+        /* Makes the element circular */
+        border: 2px solid #000;
+        /* Optional: Add a border */
+    }
+
+    .status-container {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        /* Adds space between the circle and label */
+    }
+
+    .status-label {
+        font-size: 16px;
+        font-weight: bold;
+    }
+
+    .red {
+        background-color: red;
+    }
+
+    .yellow {
+        background-color: yellow;
+        border-color: #000;
+    }
+
+    .green {
+        background-color: green;
+    }
+
+    .grey {
+        background-color: grey;
+        border-color: greenyellow;
+    }
+
+    .grey-red {
+        background-color: grey;
+        border-color: red;
+    }
+</style>
 <div class="content-body">
 
     <div class="container-fluid">
@@ -129,26 +176,56 @@
                                 <th>Date Entrée</th>
                                 <th>Quantité commander</th>
                                 <th>Inspection</th>
+                                <th>Rapport Inspection</th>
+
                             </tr>
                         </thead>
                         <tbody style="color: black">
                             @foreach ($historyEntree as $historyEntrees)
                                 <tr>
-                                    <th style="display: flex; align-items: center;">
-                                        <div class="code" style="margin-right: 5px;">
-                                            <div class="fa-circle"></div>
-                                        </div>
-                                        <div class="code" style="margin-right: 5px;">
-                                            <div class="fa-circle"></div>
-                                        </div>
-                                        <div class="code" style="margin-right: 5px;">
-                                            <div class="fa-circle"></div>
-                                        </div>
-                                        <div class="code" style="margin-right: 5px;">
-                                            <div class="fa-circle"></div>
-                                        </div>
-                                        <div class="code">
-                                            <div class="fa-circle"></div>
+                                    <th>
+                                        <div class="status-container">
+                                            @php
+                                                $targetDate = \Carbon\Carbon::parse($historyEntrees->dateentree); // Replace with your target date
+                                                $today = \Carbon\Carbon::now();
+                                                $daysDifference = $today->diffInDays($targetDate);
+
+                                                $statusClass = '';
+                                                $statusLabel = '';
+
+                                                if ($historyEntrees->conformite == 1) {
+                                                    $statusClass = 'grey-red';
+                                                    $statusLabel = 'Non conforme';
+                                                } elseif (
+                                                    isset(
+                                                        $historyEntrees->conformite,
+                                                        $historyEntrees->fabricinspection,
+                                                        $historyEntrees->elongation,
+                                                        $historyEntrees->nuance,
+                                                        $historyEntrees->disgorging,
+                                                    ) &&
+                                                    $historyEntrees->conformite == 0 &&
+                                                    $historyEntrees->fabricinspection == 0 &&
+                                                    $historyEntrees->elongation == 0 &&
+                                                    $historyEntrees->nuance == 0 &&
+                                                    $historyEntrees->disgorging == 0
+                                                ) {
+                                                    $statusClass = 'grey';
+                                                    $statusLabel = 'Finished';
+                                                } elseif ($daysDifference >= 7) {
+                                                    $statusClass = 'red';
+                                                    $statusLabel = 'Critical';
+                                                } elseif ($daysDifference >= 5) {
+                                                    $statusClass = 'yellow';
+                                                    $statusLabel = 'Warning';
+                                                } else {
+                                                    $statusClass = 'green';
+                                                    $statusLabel = 'Safe';
+                                                }
+
+                                            @endphp
+                                            <span class="status-circle {{ $statusClass }}"></span>
+                                            <span class="status-label">{{ $statusLabel }}</span>
                                         </div>
                                     </th>
 
@@ -164,6 +241,11 @@
                                     <td>
                                         <a class="btn btn-facebook"
                                             href="{{ route('QUALITE.page-entree-rouleau-qualite', ['identreetissu' => $historyEntrees->id]) }}">Inspection</a>
+                                    </td>
+                                    <td>
+                                        <a class="btn btn-facebook"
+                                            href="{{ route('QUALITE.page-rapport-inspection-tissu', ['identreetissu' => $historyEntrees->id]) }}">Rapport
+                                            Inspection</a>
                                     </td>
                                 </tr>
                             @endforeach

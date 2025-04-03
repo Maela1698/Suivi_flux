@@ -56,7 +56,7 @@ class CTController extends Controller
             DB::commit();
         } catch (\Exception $e) {
             DB::rollBack();
-            $errorMessage = 'Une anomalie est survenue lors du processus d\'enregistrement des données, veuillez réessayer.'.$e;
+            $errorMessage = 'Une anomalie est survenue lors du processus d\'enregistrement des données, veuillez réessayer.' . $e;
 
             return back()->withInput()->withErrors(['error' => $errorMessage]);
         }

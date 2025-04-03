@@ -4,6 +4,8 @@ namespace App\Models\WMSModel\WMS;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\DB;
+
 
 class EntreeWMS extends Model
 {
@@ -75,4 +77,11 @@ class EntreeWMS extends Model
 
         return compact('rules', 'messages');
     }
+
+    public static function getEntreeWMSByStock($idstockwms)
+    {
+        $select = DB::select('select * from entreewms where idstockwms='.$idstockwms);
+        return self::hydrate($select);
+    }
+
 }

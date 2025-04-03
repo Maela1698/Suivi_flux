@@ -68,6 +68,8 @@
                                                 href="{{ route('WMS.tissu-stock', ['idFamilleTissu' => 1]) }}">Stock</a>
                                             <a class="dropdown-item"
                                                 href="{{ route('WMS.tissu-sortie-accueil', ['idFamilleTissu' => 1]) }}">Sortie</a>
+                                            <a class="dropdown-item"
+                                                href="{{ route('WMS.retour-tissu-historique', ['idFamilleTissu' => 1]) }}">Retour</a>
                                         </div>
                                     </div>
                                 </div>
@@ -92,6 +94,8 @@
                                                 href="{{ route('WMS.tissu-stock', ['idFamilleTissu' => 2]) }}">Stock</a>
                                             <a class="dropdown-item"
                                                 href="{{ route('WMS.tissu-sortie-accueil', ['idFamilleTissu' => 2]) }}">Sortie</a>
+                                            <a class="dropdown-item"
+                                                href="{{ route('WMS.retour-tissu-historique', ['idFamilleTissu' => 2]) }}">Retour</a>
                                         </div>
                                     </div>
                                 </div>
@@ -116,11 +120,14 @@
                                                 href="{{ route('WMS.tissu-stock', ['idFamilleTissu' => 3]) }}">Stock</a>
                                             <a class="dropdown-item"
                                                 href="{{ route('WMS.tissu-sortie-accueil', ['idFamilleTissu' => 3]) }}">Sortie</a>
+                                            <a class="dropdown-item"
+                                                href="{{ route('WMS.retour-tissu-historique', ['idFamilleTissu' => 3]) }}">Retour</a>
                                         </div>
                                     </div>
                                 </div>
                             </div>
                         </div>
+                        {{-- TODO: A FAIRE --}}
                         <div class="col mb-4">
                             <div>
                                 <img class="rounded img-fluid w-100 fit-cover"
@@ -134,9 +141,12 @@
                                             Voir +
                                         </button>
                                         <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-                                            <a class="dropdown-item" href="#">Entrée</a>
-                                            <a class="dropdown-item" href="#">Stock</a>
-                                            <a class="dropdown-item" href="#">Sortie</a>
+                                            <a class="dropdown-item"
+                                                href="{{ route('WMS.page-accueil-entree-wms', ['idtypewms' => 6]) }}">Entrée</a>
+                                            <a class="dropdown-item"
+                                                href="{{ route('WMS.page-stock-wms', ['idtypewms' => 6]) }}">Stock</a>
+                                            <a class="dropdown-item"
+                                                href="{{ route('WMS.page-accueil-sortie-wms', ['idtypewms' => 6]) }}">Sortie</a>
                                         </div>
                                     </div>
                                 </div>

@@ -49,8 +49,7 @@ class StockTissu extends Model
             'idfamilletissus' => 'required|numeric',
         ];
 
-        $messages = [
-        ];
+        $messages = [];
 
         return compact('rules', 'messages');
     }

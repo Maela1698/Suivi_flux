@@ -3,17 +3,19 @@
 namespace App\Http\Controllers\QUALITECONTROLLER;
 
 use App\Http\Controllers\Controller;
+use App\Models\QUALITEModel\QualiteRouleauTissu;
 use App\Models\QUALITEModel\TestConformiteTissu;
-use App\Models\WMSMODEL\QUALITEModel\CODIFICATIONACCESSOIRE_INSPECTIONACCESSOIRE;
-use App\Models\WMSMODEL\QUALITEModel\DEFAUTFABRICINSPECTION;
-use App\Models\WMSMODEL\QUALITEModel\INSPECTIONACCESSOIRE;
-use App\Models\WMSMODEL\QUALITEModel\QUALITEROULEAUTISSU_TESTDISCORGING;
-use App\Models\WMSMODEL\QUALITEModel\QUALITEROULEAUTISSU_TESTNUANCE;
-use App\Models\WMSMODEL\QUALITEModel\QUALITEROULEAUTISSU_TESTRETRACTION;
-use App\Models\WMSMODEL\QUALITEModel\TESTDISCORGING;
-use App\Models\WMSMODEL\QUALITEModel\TESTFABRICINSPECTION;
-use App\Models\WMSMODEL\QUALITEModel\TESTNUANCE;
-use App\Models\WMSMODEL\QUALITEModel\TESTRETRACTION;
+use App\Models\WMSModel\QUALITEModel\CODIFICATIONACCESSOIRE_INSPECTIONACCESSOIRE;
+use App\Models\WMSModel\QUALITEModel\DEFAUTFABRICINSPECTION;
+use App\Models\WMSModel\QUALITEModel\INSPECTIONACCESSOIRE;
+use App\Models\WMSModel\QUALITEModel\ListeQualiteRouleauFabricTissu;
+use App\Models\WMSModel\QUALITEModel\QUALITEROULEAUTISSU_TESTDISCORGING;
+use App\Models\WMSModel\QUALITEModel\QUALITEROULEAUTISSU_TESTNUANCE;
+use App\Models\WMSModel\QUALITEModel\QUALITEROULEAUTISSU_TESTRETRACTION;
+use App\Models\WMSModel\QUALITEModel\TESTDISCORGING;
+use App\Models\WMSModel\QUALITEModel\TESTFABRICINSPECTION;
+use App\Models\WMSModel\QUALITEModel\TESTNUANCE;
+use App\Models\WMSModel\QUALITEModel\TESTRETRACTION;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
@@ -22,6 +24,67 @@ class QUALITEController extends Controller
 {
 
     //!-------------------------------------------------Controller Tissu-------------------------------------------------!//
+    function importRouleauQualiteTissu(Request $request)
+    {
+
+        // Valider le fichier
+        $request->validate([
+            'csvImport' => 'required|file|mimes:csv,txt',
+        ]);
+
+        // Chemin du fichier uploadé
+        $filePath = $request->file('csvImport')->getRealPath();
+
+        // Ouvrir le fichier CSV
+        if (($handle = fopen($filePath, 'r')) !== false) {
+            // Lire l'en-tête (première ligne)
+            $header = fgetcsv($handle, 0, $this->detectDelimiter($filePath));
+
+            // Vérifier les colonnes attendues
+            $expectedColumns = ['reference', 'lot', 'laize', 'metrage', 'poids'];
+            if ($header !== $expectedColumns) {
+                return back()->withErrors('error', 'Les colonnes du fichier CSV sont incorrectes.');
+            }
+
+            // Lire les données ligne par ligne
+            while (($data = fgetcsv($handle, 0, $this->detectDelimiter($filePath))) !== false) {
+                // Mapper les colonnes avec les données
+                $row = array_combine($header, $data);
+
+                // Insérer dans la base
+                QualiteRouleauTissu::create([
+                    'reference' => $row['reference'],
+                    'lot' => $row['lot'],
+                    'laize' => $row['laize'],
+                    'metrage' => $row['metrage'],
+                    'poids' => $row['poids'],
+                    'identreetissu' => $request->input('identreetissu'),
+                ]);
+            }
+
+            fclose($handle);
+
+            return back()->with('success', 'Données importées avec succès.');
+        }
+
+        return back()->withErrors('error', 'Impossible de lire le fichier.');
+    }
+
+    function detectDelimiter($filePath)
+    {
+        $delimiters = [",", ";"];
+        $handle = fopen($filePath, 'r');
+        $firstLine = fgets($handle);
+        fclose($handle);
+
+        foreach ($delimiters as $delimiter) {
+            if (substr_count($firstLine, $delimiter) > 0) {
+                return $delimiter;
+            }
+        }
+
+        return ",";
+    }
     public function testConformite(Request $request)
     {
         // TODO: Un simple ajout not duplicated
@@ -43,7 +106,12 @@ class QUALITEController extends Controller
         }
         try {
             DB::beginTransaction();
-            $testConformite = new TestConformiteTissu($data);
+            $testConformite = TestConformiteTissu::where('identreetissu', $data['identreetissu'])->first();
+            if (!$testConformite) {
+                $testConformite = new TestConformiteTissu($data);
+            } else {
+                $testConformite->fill($data);
+            }
             $res = $testConformite->save();
             DB::commit();
         } catch (\Exception $e) {
@@ -78,6 +146,39 @@ class QUALITEController extends Controller
                 $testFabricInspection->fill($data);
             }
             $res = $testFabricInspection->save();
+            DB::commit();
+        } catch (\Exception $e) {
+            DB::rollBack();
+            $errorMessage = 'Une anomalie est survenue lors du processus d\'enregistrement du test, veuillez réessayer.' . $e;
+
+            return back()->withInput($data)->withErrors(['error' => $errorMessage]);
+        }
+        $message = $res ? 'La procédure d\'enregistrement s\'est déroulée avec succès.' : 'Une erreur est survenue, empêchant l\'enregistrement des données.';
+        $status = $res ? 'success' : 'error';
+
+        return back()->with($status, $message);
+    }
+    function listeRouleauFabricInspection(Request $request)
+    {
+        $data = $request->all();
+        $validationData = ListeQualiteRouleauFabricTissu::getValidationRules();
+        $rules = $validationData['rules'];
+        $validator = Validator::make($data, $rules);
+        if ($validator->fails()) {
+            $errors = $validator->errors();
+            return redirect()->back()->withErrors($errors)->withInput($data);
+        }
+        try {
+            DB::beginTransaction();
+
+            $listeRouleauFabricInspection = ListeQualiteRouleauFabricTissu::where('idqualiterouleautissu', $data['idqualiterouleautissu'])->first();
+            if (!$listeRouleauFabricInspection) {
+                $listeRouleauFabricInspection = new ListeQualiteRouleauFabricTissu($data);
+            } else {
+                $listeRouleauFabricInspection->fill($data);
+            }
+            $res = $listeRouleauFabricInspection->save();
+
             DB::commit();
         } catch (\Exception $e) {
             DB::rollBack();
@@ -303,12 +404,12 @@ class QUALITEController extends Controller
         }
         try {
             DB::beginTransaction();
-            $testDisgorging = QUALITEROULEAUTISSU_TESTDISCORGING::where('idqualiterouleautissu', $data['idqualiterouleautissu'])->first();
-            if (!$testDisgorging) {
-                $testDisgorging = new QUALITEROULEAUTISSU_TESTDISCORGING($data);
-            } else {
-                $testDisgorging->fill($data);
-            }
+            // $testDisgorging = QUALITEROULEAUTISSU_TESTDISCORGING::where('idqualiterouleautissu', $data['idqualiterouleautissu'])->first();
+            // if (!$testDisgorging) {
+            $testDisgorging = new QUALITEROULEAUTISSU_TESTDISCORGING($data);
+            // } else {
+            //     $testDisgorging->fill($data);
+            // }
             $res = $testDisgorging->save();
             DB::commit();
         } catch (\Exception $e) {
