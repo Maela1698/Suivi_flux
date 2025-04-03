@@ -222,6 +222,7 @@ class ControllerCompliance extends Controller
                 'fichier' => $constat->chemin
              ]);
         }
+
         return response()->json(['error' => 'Constat non trouvé'], 404);
     }
 

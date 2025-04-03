@@ -1,7 +1,6 @@
 @include('CRM.header')
 @include('CRM.sidebar')
 @include('COMPLIANCE.STYLE.styleListeConstatAuditInterne')
-
 <title>ListeConstat</title>
 <div class="content-body">
     <!-- row -->
@@ -69,7 +68,7 @@
                     <h3 class="entete">LISTE CONSTAT</h3>
                     <button type="button" data-toggle="modal" data-target="#constat" class="btn btn-primary">Ajouter</button>
                 </div>
-                <form action="{{ route('COMPLIANCE.readAuditInterne') }}" method="post" autocomplete="off">
+                <form action="{{ route('COMPLIANCE.listeConstat') }}" method="post" autocomplete="off">
                     @csrf
                     <div class="row">
                         <div class="col-lg">
@@ -90,7 +89,7 @@
                                     <option value="">Section</option>
                                     @foreach ( $sections as $section )
                                         <option value="{{ $section->id }}" {{ request('id_section') == $section->id ? 'selected' : '' }}>
-                                            {{ $section->nom_section }}
+                                            {{ $section->designation }}
                                         </option>
                                     @endforeach
                                 </select>                                
@@ -98,7 +97,7 @@
                         </div>
                         <div class="col-lg">
                             <button class="btn btn-success" style="width: 100px">Filtrer</button>
-                            <button type="button" class="btn btn-primary" id="rapport-button">Rapport</button>
+                            <button type="button" data-toggle="modal" data-target="#pdf" class="btn btn-primary" id="apercuPdfBtn">Apercu PDF</button>
                         </div>
                     </div>
                 </form>
@@ -118,8 +117,8 @@
                             </tr>
                         </thead>
                         <tbody>
-                            @foreach ($audits as $constat)
-                                <tr data-toggle="modal" data-target="#cinConstat" data-id="{{ $constat->id }}">
+                            @foreach ($constats as $constat)
+                                <tr data-toggle="modal" data-target="#cinConstat" data-id="{{ $constat->constat_id }}">
                                     <td>
                                         <div class="code">
                                             <div class="circle
@@ -129,20 +128,20 @@
                                             "></div>
                                         </div>
                                     </td>
-                                    <td>{{ $constat->id }}</td>
-                                    <td>{{ $constat->date_detection }}</td>
+                                    <td>{{ $constat->constat_numero }}</td>
+                                    <td>{{ $constat->dateconstat }}</td>
                                     <td>
                                         <?php
-                                            $descriptions = substr($constat->constat, 0, 50);
-                                            $hasMore = strlen($constat->constat) > 50;
+                                            $descriptions = substr($constat->description, 0, 50);
+                                            $hasMore = strlen($constat->description) > 50;
                                         ?>
                                         {{ $descriptions }} @if($hasMore)...@endif
                                     </td>
                                     <td>{{ $constat->section }}</td>
                                     <td>{{ $constat->action }}</td>
                                     <td>{{ $constat->priorite }}</td>
-                                    <td>{{ $constat->deadline }}</td>
-                                    <td>{{ $constat->avancement }}%</td>
+                                    <td>{{ $constat->constat_deadline }}</td>
+                                    <td>{{ $constat->constat_avancement }}%</td>
                                 </tr>
                             @endforeach
                         </tbody>
