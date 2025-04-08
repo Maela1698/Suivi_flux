@@ -4,21 +4,21 @@ use App\Http\Controllers\COMPLIANCECONTROLLER\ControllerAuditInterne;
 use App\Http\Controllers\COMPLIANCECONTROLLER\ControllerCompliance;
 use Illuminate\Support\Facades\Route;
 
-Route::get('/planActionPdf', [ControllerCompliance::class, 'planActionApercu'])->name('COMPLIANCE.planActionPdf');
-Route::match(['get', 'post'],'/COMPLIANCE.newAjoutConstat',[ControllerCompliance::class,'newAjoutConstat'])->name('COMPLIANCE.newAjoutConstat');
-Route::get('/getConstatDetail', [ControllerCompliance::class, 'getConstatDetail']);
-Route::get('/getSections', [ControllerCompliance::class, 'getSections']);
-Route::get('/getResponsableSection', [ControllerCompliance::class, 'getResponsableSection']);
-Route::get('/addSection', [ControllerCompliance::class, 'addSection'])->name('COMPLIANCE.addSection');
+Route::get('/planActionPdf', [ControllerCompliance::class, 'planActionApercu'])->name('COMPLIANCE.planActionPdf')->middleware('checkrole:Compliance');
+Route::match(['get', 'post'],'/COMPLIANCE.newAjoutConstat',[ControllerCompliance::class,'newAjoutConstat'])->name('COMPLIANCE.newAjoutConstat')->middleware('checkrole:Compliance');
+Route::get('/getConstatDetail', [ControllerCompliance::class, 'getConstatDetail'])->middleware('checkrole:Compliance');
+Route::get('/getSections', [ControllerCompliance::class, 'getSections'])->middleware('checkrole:Compliance');
+Route::get('/getResponsableSection', [ControllerCompliance::class, 'getResponsableSection'])->middleware('checkrole:Compliance');
+Route::get('/addSection', [ControllerCompliance::class, 'addSection'])->name('COMPLIANCE.addSection')->middleware('checkrole:Compliance');
 
 
 // ROUTE AUDIT INTERNE
-Route::match(['get','post'],'/readAuditInterne', [ControllerAuditInterne::class, 'readAudit'])->name('COMPLIANCE.readAuditInterne');
-Route::get('/getSectionCompliance', [ControllerAuditInterne::class, 'getSectionCompliance']);
-Route::get('/getAuditInterneDetail', [ControllerAuditInterne::class, 'getAuditInterneDetail']);
-Route::post('/createAuditInterne', [ControllerAuditInterne::class, 'createAuditInterne'])->name('AUDITINTERNE.Create');
-Route::post('/updateAvancement', [ControllerAuditInterne::class, 'updateAvancement'])->name('AUDITINTERNE.Update');
-Route::get('/getRapport', [ControllerAuditInterne::class, 'getRapport'])->name('AUDITINTERNE.Rapport');
+Route::match(['get','post'],'/readAuditInterne', [ControllerAuditInterne::class, 'readAudit'])->name('COMPLIANCE.readAuditInterne')->middleware('checkrole:Compliance');
+Route::get('/getSectionCompliance', [ControllerAuditInterne::class, 'getSectionCompliance'])->middleware('checkrole:Compliance');
+Route::get('/getAuditInterneDetail', [ControllerAuditInterne::class, 'getAuditInterneDetail'])->middleware('checkrole:Compliance');
+Route::post('/createAuditInterne', [ControllerAuditInterne::class, 'createAuditInterne'])->name('AUDITINTERNE.Create')->middleware('checkrole:Compliance');
+Route::post('/updateAvancement', [ControllerAuditInterne::class, 'updateAvancement'])->name('AUDITINTERNE.Update')->middleware('checkrole:Compliance');
+Route::get('/getRapport', [ControllerAuditInterne::class, 'getRapport'])->name('AUDITINTERNE.Rapport')->middleware('checkrole:Compliance');
 
 
 
