@@ -1,6 +1,6 @@
 <!-- Modal ajout constat -->
-<div class="modal fade" id="constat" tabindex="-1" role="dialog" aria-labelledby="choixEtapeModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered modal-lg" role="document" style="width: 450px">
+<div class="modal fade bd-example-modal-lg" id="constat" tabindex="-1" role="dialog" aria-labelledby="choixEtapeModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
         <div class="modal-content">
             <div class="modal-header">
                 <h5 class="modal-title" id="choixEtapeModalLabel">Insertion constat
@@ -10,26 +10,16 @@
                 </button>
             </div>
             <div class="modal-body">
-                <form action="{{ route('COMPLIANCE.newAjoutConstat') }}" method="POST" autocomplete="off" enctype="multipart/form-data">
+                <form action="{{ route('AUDITINTERNE.Create') }}" method="POST" autocomplete="off" enctype="multipart/form-data">
                     @csrf
                     <div class="row">
-                        <div class="col-12 mt-2">
-                            <div class="row no-gutters">
-                                <div class="col-12">
-                                    <label class="col-form-label texte">Numero</label>
-                                </div>
-                                <div class="col-12">
-                                    <input type="text" class="form-control" name="numero"  required>
-                                </div>
-                            </div>
-                        </div>
                         <div class="col-12 mt-1">
                             <div class="row no-gutters">
                                 <div class="col-12">
-                                    <label class="col-form-label texte">Date constat</label>
+                                    <label class="col-form-label texte">Date detection</label>
                                 </div>
                                 <div class="col-12">
-                                    <input type="date" class="form-control" name="date_constat"  required>
+                                    <input type="date" class="form-control" name="date_detection"  required>
                                 </div>
                             </div>
                         </div>
@@ -41,7 +31,7 @@
                                 <div class="col-12">
                                     <select class="form-control" name="id_section">
                                         @foreach ($sections as $section)
-                                            <option value="{{ $section->id }}">{{ $section->designation }}</option>
+                                            <option value="{{ $section->id }}">{{ $section->nom_section }}</option>
                                         @endforeach
                                     </select>
                                 </div>
@@ -64,20 +54,20 @@
                         <div class="col-12 mt-2">
                             <div class="row no-gutters">
                                 <div class="col-12">
-                                    <label class="col-form-label texte">Description</label>
+                                    <label class="col-form-label texte">Constat</label>
                                 </div>
                                 <div class="col-12">
-                                    <textarea class="form-control" name="description" required>Je test le description de mon new ajout constat</textarea>
+                                    <textarea class="form-control" name="constat" required>Test Constat</textarea>    
                                 </div>
                             </div>
                         </div>
                         <div class="col-12 mt-2">
                             <div class="row no-gutters">
                                 <div class="col-12">
-                                    <label class="col-form-label texte">Moyen/Actions</label>
+                                    <label class="col-form-label texte">Action</label>
                                 </div>
                                 <div class="col-12">
-                                    <input type="text" class="form-control" name="action" value="Je test l'action de mon new ajout constat" required>
+                                    <input type="text" class="form-control" name="action" value="Test Action" required>    
                                 </div>
                             </div>
                         </div>
@@ -88,16 +78,6 @@
                                 </div>
                                 <div class="col-12">
                                     <input type="date" class="form-control" name="deadline"  required>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-12 mt-2">
-                            <div class="row no-gutters">
-                                <div class="col-12">
-                                    <label class="col-form-label texte">Fichier</label>
-                                </div>
-                                <div class="col-12">
-                                    <input type="file" class="form-control" name="fichierConstat" accept="image/*" capture="camera">
                                 </div>
                             </div>
                         </div>
@@ -120,14 +100,44 @@
                 <button type="button" class="close" data-dismiss="modal"><span>&times;</span>
                 </button>
             </div>
-            <form action="{{ route('COMPLIANCE.updateAvancement') }}" method="GET">
+            <form action="{{ route('AUDITINTERNE.Update') }}" method="POST" enctype="multipart/form-data" autocomplete="off">
+                @csrf
                 <div class="modal-body">
-                    <div>
-                        <img src="" class="img-fluid rounded-start mb-5" alt="Logo" width="200px" height="200px" id="fichierConstat">
+                    <div class="row grid">
+                        <div class="col-xl-6">
+                            <div class="grid-col">
+                                <img src="" class="img-fluid rounded-start mb-5"  width="200px" height="200px" id="photo_initial">
+                            </div>
+                            <div class="col-12 mt-2">
+                                <div class="row no-gutters">
+                                    <div class="col-12">
+                                        <label class="col-form-label texte">Photo Initial</label>
+                                    </div>
+                                    <div class="col-12">
+                                        <input type="file" class="form-control" name="photo_initial" id="input_photo_initial" accept="image/*">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-xl-6">
+                            <div class="grid-col">
+                                <img src="" class="img-fluid rounded-start mb-5"  width="200px" height="200px" id="photo_final">
+                            </div>
+                            <div class="col-12 mt-2">
+                                <div class="row no-gutters">
+                                    <div class="col-12">
+                                        <label class="col-form-label texte">Photo Final</label>
+                                    </div>
+                                    <div class="col-12">
+                                        <input type="file" class="form-control" name="photo_final" accept="image/*">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                     <div class="basic-form">
                         <div class="form-row">
-                            <input type="hidden" name="id_constat" id="id_constat">
+                            <input type="hidden" name="id_audit" id="id_audit">
                             <div class="form-group col-md-6">
                                 <label>Numero</label>
                                 <input type="text" class="form-control" id="numero-input" name="numero" required>
@@ -218,14 +228,14 @@
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    @foreach ($constats as $constat)
+                                    @foreach ($audits  as $constat)
                                         <tr>
                                             <td>{{ $constat->constat_numero }}</td>
                                             <td>{{ $constat->dateconstat }}</td>
                                             <td>{{ $constat->section }}</td>
                                             <td>{{ $constat->description }}</td>
                                             <td>{{ $constat->action }}</td>
-                                            <td>{{ $constat->priorite }}</td>
+                                            <td>{{ $constat->priorite['valeur'] }}</td>
                                             <td>{{ $constat->constat_deadline }}</td>
                                             <td>{{ $constat->constat_avancement }}%</td>
                                         </tr>

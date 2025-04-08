@@ -2,7 +2,7 @@
 <script>
     function fetchSections() {
         $.ajax({
-            url: '/getSections',
+            url: '/getSectionCompliance',
             method: 'GET',
             success: function(sections) {
                 populateSectionSelect(sections);
@@ -18,7 +18,7 @@
         const selectElement = $('#id_section');
         selectElement.empty(); // Vider le select avant d'ajouter les nouvelles options
         sections.forEach(section => {
-            selectElement.append(new Option(section.designation, section.id));
+            selectElement.append(new Option(section.nom_section, section.id));
         });
     }
 
@@ -30,41 +30,41 @@
         return dateString;
     }
 
-    function loadConstatDetails(constatId) {
+    function loadConstatDetails(id_audit) {
         $.ajax({
-            url: '/getConstatDetail',
+            url: '/getAuditInterneDetail',
             method: 'GET',
-            data: { id: constatId },
+            data: { id: id_audit },
             success: function(response) {
-                $('#id_constat').val(constatId);
-                $('#numero').text(response.constat_numero);
-                $('#numero-input').val(response.constat_numero);
-                $('#date_constat').val(convertToISOFormat(response.dateconstat));
-                $('#description').val(response.description);
+                $('#photo_initial').attr('src','');
+                $('#photo_final').attr('src','');
+                $('#input_photo_initial').prop('disabled', false);
+                $('#id_audit').val(id_audit);
+                $('#numero').text(response.id);
+                $('#numero-input').val(response.id);
+                $('#date_constat').val(convertToISOFormat(response.date_detection));
+                $('#description').val(response.constat);
                 $('input[name="action"]').val(response.action);
-                $('input[name="deadline"]').val(convertToISOFormat(response.constat_deadline));
-                var fichier = response.fichier; // Remplacez ceci par la façon dont vous obtenez le nom du fichier
-                var basePath = '{{ asset('uploads/constat/') }}';
-
-                // Assurez-vous que basePath se termine par une barre oblique
-                if (!basePath.endsWith('/')) {
-                    basePath += '/';
+                $('input[name="deadline"]').val(convertToISOFormat(response.deadline));
+                if (response.photo_initial && response.mime_type_initial) {
+                    $('#photo_initial').attr('src', 'data:' + response.mime_type_initial + ';base64,' + response.photo_initial);
+                    $('#input_photo_initial').prop('disabled', true);
                 }
-                var srcPath = basePath + fichier;
 
-                // Mettre à jour l'attribut src de l'image
-                $('#fichierConstat').attr('src', srcPath);
+                if (response.photo_final && response.mime_type_final) {
+                    $('#photo_final').attr('src', 'data:' + response.mime_type_final + ';base64,' + response.photo_final);
+                }
                 
                 @if(Session::has('avancement_invalide'))
                     $('input[name="avancement"]').val({{ Session::get('avancement_invalide') }});
                 @else
-                    $('input[name="avancement"]').val(response.constat_avancement);
+                    $('input[name="avancement"]').val(response.avancement);
                 @endif
 
 
-                if (response.section_id) {
-                    console.log('Setting section ID:', response.section_id);
-                    $('#id_section').val(response.section_id);
+                if (response.id_section) {
+                    console.log('Setting section ID:', response.id_section);
+                    $('#id_section').val(response.id_section);
                 }
                 if (response.priorite) {
                     console.log('Setting priorite:', response.priorite);
@@ -86,14 +86,14 @@
     $(document).ready(function() {
         fetchSections();
         $('tr[data-target="#cinConstat"]').click(function() {
-            var constatId = $(this).data('id');
-            loadConstatDetails(constatId);
-            localStorage.setItem('constat_id',constatId);
+            var id_audit = $(this).data('id');
+            loadConstatDetails(id_audit);
+            localStorage.setItem('id_audit',id_audit);
         });
         @if(Session::has('check_violation'))
             const modal = new bootstrap.Modal(document.getElementById('cinConstat'));
             modal.show();
-            loadConstatDetails(localStorage.getItem('constat_id'));
+            loadConstatDetails(localStorage.getItem('id_audit'));
             const errorContainer = document.getElementById('check_violation');
             errorContainer.innerText = "{{ Session::get('check_violation') }}";
         @endif
@@ -113,3 +113,10 @@
     });
 </script>
 
+<script>
+    var rapportAuditInterneUrl = "{{ route('AUDITINTERNE.Rapport') }}"
+    document.getElementById('rapport-button').addEventListener('click', function(event) {
+        event.preventDefault();
+        window.location.href = rapportAuditInterneUrl;
+    });
+</script>

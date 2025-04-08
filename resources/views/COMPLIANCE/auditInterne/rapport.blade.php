@@ -19,54 +19,151 @@
                             </div>
                             <div class="col-lg d-flex align-items-end">
                                 <button type="submit" class="btn btn-success">Filtrer</button>
+                                <button type="button" class="btn btn-primary" id="export-pdf">Exporter</button>
                             </div>
                         </div>
                     </form>
-                    <div class=>
-                    <div class="row align-items-center">
-                        <div class="col-auto text-center">
-                            <img src="./images/NEW LOGO.png" class="img-loi" alt="Logo">
+                    <div id="pdfContent">
+                        <div class="row align-items-center">
+                            <div class="col-auto text-center">
+                                <img src="./images/NEW LOGO.png" class="img-loi" alt="Logo">
+                            </div>
+                            <div class="col text-right">
+                                <h4 class="font-weight-bold">Rapport Audit Interne</h4>
+                                <p class="mb-1"><strong>Mois/Annee :</strong>{{ $mois_annee_affichage ?? '' }} <span id="dateDebut"></span></p>
+                            </div>
                         </div>
-                        <div class="col text-right">
-                            <h4 class="font-weight-bold">Rapport Audit Interne</h4>
-                            <p class="mb-1"><strong>Début Constat :</strong> <span id="dateDebut"></span></p>
-                            <p class="mb-1"><strong>Fin Constat :</strong> <span id="dateFin"></span></p>
-                        </div>
-                    </div>
-                    </div>
-                    <div class="table-responsive mt-3">
-                        <table class="table table-bordered table-hover">
-                            <thead class="thead-light">
-                                <tr>
-                                    <th>ID</th>
-                                    <th>Detection</th>
-                                    <th>Section</th>
-                                    <th>Constat</th>
-                                    <th>Moyens</th>
-                                    <th>Priorité</th>
-                                    <th>Deadline</th>
-                                    <th>Avancement</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                @foreach ($audits as $audit)
+                        <div class="table-responsive mt-3">
+                            <table class="table table-bordered table-hover">
+                                <thead class="thead-light">
                                     <tr>
-                                        <td>{{ $audit->id }}</td>
-                                        <td>{{ $audit->date_detection }}</td>
-                                        <td>{{ $audit->section }}</td>
-                                        <td>{{ $audit->constat }}</td>
-                                        <td>{{ $audit->action }}</td>
-                                        <td>{{ $audit->priorite }}</td>
-                                        <td>{{ $audit->deadline }}</td>
-                                        <td>{{ $audit->avancement }}%</td>
+                                        <th class="th-cell">ID</th>
+                                        <th>Detection</th>
+                                        <th>Section</th>
+                                        <th>Constat</th>
+                                        <th>Moyens</th>
+                                        <th>Priorité</th>
+                                        <th>Deadline</th>
+                                        <th>Avancement</th>
                                     </tr>
-                                @endforeach
-                            </tbody>
-                        </table>
+                                </thead>
+                                <tbody>
+                                    @foreach ($audits as $audit)
+                                        <tr>
+                                            <td class="id-cell">{{ $audit->id }}</td>
+                                            <td class="id-cell">{{ $audit->date_detection }}</td>
+                                            <td>{{ $audit->section }}</td>
+                                            <td>{{ $audit->constat }}</td>
+                                            <td>{{ $audit->action }}</td>
+                                            <td class="{{ $audit->priorite['classe'] }}">{{ $audit->priorite['valeur'] }}</td>
+                                            <td class="id-cell">{{ $audit->deadline }}</td>
+                                            <td class="{{ $audit->avancement['classe'] }}">{{ $audit->avancement['valeur'] }}%</td>
+                                        </tr>
+                                    @endforeach
+                                </tbody>
+                            </table>
+                        </div>
+                        <div class="row align-items-center">
+                            <div class="col-auto text-center">
+                                <img src="./images/NEW LOGO.png" class="img-loi" alt="Logo">
+                            </div>
+                            <div class="col text-right">
+                                <h4 class="font-weight-bold">Rapport Actions Resolus</h4>
+                                <p class="mb-1"><strong>Mois/Annee :</strong>{{ $mois_annee_affichage ?? '' }}<span id="dateFin"></span></p>
+                            </div>
+                        </div>
+                        <div class="table-responsive mt-3">
+                            <table class="table table-bordered table-hover">
+                                <thead class="thead-light">
+                                    <tr>
+                                        <th class="th-cell">ID</th>
+                                        <th>Detection</th>
+                                        <th>Section</th>
+                                        <th>Constat</th>
+                                        <th>Moyens</th>
+                                        <th>Priorité</th>
+                                        <th>Deadline</th>
+                                        <th>Avancement</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach ($resolus as $audit)
+                                        <tr class="faible">
+                                            <td class="id-cell">{{ $audit->id }}</td>
+                                            <td class="id-cell">{{ $audit->date_detection }}</td>
+                                            <td>{{ $audit->section }}</td>
+                                            <td>{{ $audit->constat }}</td>
+                                            <td>{{ $audit->action }}</td>
+                                            <td>{{ $audit->priorite['valeur'] }}</td>
+                                            <td class="id-cell">{{ $audit->deadline }}</td>
+                                            <td>{{ $audit->avancement['valeur'] }}%</td>
+                                        </tr>
+                                    @endforeach
+                                </tbody>
+                            </table>
+                        </div>
+                        <div class="row align-items-center">
+                            <div class="col-auto text-center">
+                                <img src="./images/NEW LOGO.png" class="img-loi" alt="Logo">
+                            </div>
+                            <div class="col text-right">
+                                <h4 class="font-weight-bold">Reste des actions non resolus</h4>
+                                <p class="mb-1"><strong>Mois/Annee :</strong>{{ $mois_annee_affichage ?? '' }} <span id="dateDebut"></span></p>
+                                
+                            </div>
+                        </div>
+                        <div class="table-responsive mt-3">
+                            <table class="table table-bordered table-hover">
+                                <thead class="thead-light">
+                                    <tr>
+                                        <th class="th-cell">ID</th>
+                                        <th>Detection</th>
+                                        <th>Section</th>
+                                        <th>Constat</th>
+                                        <th>Moyens</th>
+                                        <th>Priorité</th>
+                                        <th>Deadline</th>
+                                        <th>Avancement</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach ($restes as $audit)
+                                        <tr>
+                                            <td class="id-cell">{{ $audit->id }}</td>
+                                            <td class="id-cell">{{ $audit->date_detection }}</td>
+                                            <td>{{ $audit->section }}</td>
+                                            <td>{{ $audit->constat }}</td>
+                                            <td>{{ $audit->action }}</td>
+                                            <td>{{ $audit->priorite['valeur'] }}</td>
+                                            <td class="id-cell">{{ $audit->deadline }}</td>
+                                            <td>{{ $audit->avancement['valeur'] }}%</td>
+                                        </tr>
+                                    @endforeach
+                                </tbody>
+                            </table>
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
     </div>
 </div>
+<script>
+    document.getElementById('export-pdf').addEventListener('click', function() {
+        // Appel de la fonction JavaScript que vous souhaitez exécuter
+        exportToPDF();
+    });
+    function exportToPDF() {
+        const element = document.getElementById("pdfContent");
+
+        const options = {
+            filename: 'Rapport_Plan_Action.pdf',
+            image: { type: 'jpeg', quality: 0.98 },
+            html2canvas: { scale: 2 },
+            jsPDF: { unit: 'mm', format: 'a4', orientation: 'landscape' }
+        };
+        html2pdf().set(options).from(element).save();
+    }
+</script>
+
 @include('CRM.footer')

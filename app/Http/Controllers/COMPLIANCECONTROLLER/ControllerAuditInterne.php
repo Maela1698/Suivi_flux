@@ -33,15 +33,32 @@ class ControllerAuditInterne extends Controller
     }
     public function getRapport(Request $request){
         $audits = VAuditInterne::orderBy('id','desc');
+        $resolus = VAuditInterne::orderBy('id','desc');
+        $restes = VAuditInterne::orderBy('id','desc');
         $selectedMoisAnnee = $request->mois_annee ?? null;
-        if (!empty($selectedMoisAnnee)) {
-            $selectedMoisAnnee = $this->getPreviousMoisAnnee($selectedMoisAnnee);
-            $tranche_date = $this->transformToDate($selectedMoisAnnee);
-            $audits = $audits->whereBetween('date_detection', [$tranche_date['debut'], $tranche_date['fin']])
+        if (!empty($selectedMoisAnnee)){
+            
+            $mois_annee_audit = $this->getPreviousMoisAnnee($selectedMoisAnnee);
+            $date_audit = $this->transformToDate($mois_annee_audit);
+            $mois_annee_affichage = new DateTime($selectedMoisAnnee);
+            $mois_annee_affichage = $mois_annee_affichage->format('Y-M');
+
+            $date_resolu = $this->transformToDate($selectedMoisAnnee);
+            $audits = $audits->whereBetween('date_detection', [$date_audit['debut'], $date_audit['fin']])
                  ->where('avancement', '<', 100)
                  ->get();
+            $resolus = $resolus->whereBetween('deadline',[$date_resolu['debut'],$date_resolu['fin']])
+                ->where('avancement', 100)
+                ->get();
+            if($audits->isNotEmpty()){
+                $audit_ids = $audits->pluck('id')->toArray();
+                $restes = $restes->whereBetween('deadline',[$date_resolu['debut'],$date_resolu['fin']])
+                ->where('avancement', '<',100)
+                ->whereNotIn('id', $audit_ids)
+                ->get();
+            }
         }
-        return view('COMPLIANCE.auditInterne.rapport',compact('audits'));
+        return view('COMPLIANCE.auditInterne.rapport',compact('audits','resolus','restes','mois_annee_affichage'));
     }
 
     public function transformToDate($selectedMoisAnnee){
@@ -248,7 +265,7 @@ class ControllerAuditInterne extends Controller
             return redirect()->route('COMPLIANCE.readAuditInterne');
         }
         catch(Exception $e){
-             Session::flash('photo_audit_exception',$e->getMessage());
+            Session::flash('photo_audit_exception',$e->getMessage());
             return redirect()->route('COMPLIANCE.readAuditInterne');
         }
     }

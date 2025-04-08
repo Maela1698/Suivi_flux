@@ -68,7 +68,7 @@
                     <h3 class="entete">LISTE CONSTAT</h3>
                     <button type="button" data-toggle="modal" data-target="#constat" class="btn btn-primary">Ajouter</button>
                 </div>
-                <form action="{{ route('COMPLIANCE.listeConstat') }}" method="post" autocomplete="off">
+                <form action="{{ route('COMPLIANCE.readAuditInterne') }}" method="post" autocomplete="off">
                     @csrf
                     <div class="row">
                         <div class="col-lg">
@@ -89,7 +89,7 @@
                                     <option value="">Section</option>
                                     @foreach ( $sections as $section )
                                         <option value="{{ $section->id }}" {{ request('id_section') == $section->id ? 'selected' : '' }}>
-                                            {{ $section->designation }}
+                                            {{ $section->nom_section }}
                                         </option>
                                     @endforeach
                                 </select>                                
@@ -97,7 +97,7 @@
                         </div>
                         <div class="col-lg">
                             <button class="btn btn-success" style="width: 100px">Filtrer</button>
-                            <button type="button" data-toggle="modal" data-target="#pdf" class="btn btn-primary" id="apercuPdfBtn">Apercu PDF</button>
+                            <button type="button" class="btn btn-primary" id="rapport-button">Rapport</button>    
                         </div>
                     </div>
                 </form>
@@ -106,8 +106,8 @@
                         <thead>
                             <tr>
                                 <th>Code</th>
-                                <th>Numero</th>
-                                <th>Date</th>
+                                <th>ID</th>
+                                <th>Detection</th>
                                 <th>Constat</th>
                                 <th>Section</th>
                                 <th>Actions</th>
@@ -117,8 +117,8 @@
                             </tr>
                         </thead>
                         <tbody>
-                            @foreach ($constats as $constat)
-                                <tr data-toggle="modal" data-target="#cinConstat" data-id="{{ $constat->constat_id }}">
+                            @foreach ($audits as $constat)
+                                <tr data-toggle="modal" data-target="#cinConstat" data-id="{{ $constat->id }}">
                                     <td>
                                         <div class="code">
                                             <div class="circle
@@ -128,20 +128,20 @@
                                             "></div>
                                         </div>
                                     </td>
-                                    <td>{{ $constat->constat_numero }}</td>
-                                    <td>{{ $constat->dateconstat }}</td>
+                                    <td>{{ $constat->id }}</td>
+                                    <td>{{ $constat->date_detection }}</td>
                                     <td>
                                         <?php
-                                            $descriptions = substr($constat->description, 0, 50);
-                                            $hasMore = strlen($constat->description) > 50;
+                                            $descriptions = substr($constat->constat, 0, 50);
+                                            $hasMore = strlen($constat->constat) > 50;
                                         ?>
                                         {{ $descriptions }} @if($hasMore)...@endif
                                     </td>
                                     <td>{{ $constat->section }}</td>
                                     <td>{{ $constat->action }}</td>
-                                    <td>{{ $constat->priorite }}</td>
-                                    <td>{{ $constat->constat_deadline }}</td>
-                                    <td>{{ $constat->constat_avancement }}%</td>
+                                    <td>{{ $constat->priorite['valeur'] }}</td>
+                                    <td>{{ $constat->deadline }}</td>
+                                    <td>{{ $constat->avancement['valeur'] }}%</td>
                                 </tr>
                             @endforeach
                         </tbody>
