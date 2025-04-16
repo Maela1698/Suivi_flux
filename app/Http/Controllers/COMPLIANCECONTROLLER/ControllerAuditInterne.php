@@ -353,8 +353,9 @@ class ControllerAuditInterne extends Controller
     }
 
     public function ajoutMultiple(){
+        $date = Carbon::now()->toDateString();
         $sections = VSectionCompliance::where('etat',true)->get();
-        return view('COMPLIANCE.auditInterne.ajoutMultiple',compact('sections'));
+        return view('COMPLIANCE.auditInterne.ajoutMultiple',compact('sections','date'));
     }
 
     

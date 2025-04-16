@@ -29,7 +29,7 @@
                             </div>
                             <div class="col-lg">
                                 <label>Date detection</label>
-                                <input class="form-control" type="date" name="date_detection" required>
+                                <input class="form-control" type="date" name="date_detection" value="{{ $date }}"required>
                             </div>
                             <div class="col-lg">
                                 <button type="button" class="btn btn-primary" id="btn-ajout-mult">
