@@ -1,37 +1,53 @@
-CREATE OR REPLACE VIEW public.vue_constats
-AS SELECT c.id AS constat_id,
-    c.dateconstat,
-    s.designation AS section,
-    c.priorite,
-    c.description,
-    t.valeur AS typeaudit,
-    c.typeaudit_id,
-    q.questionnaire_id,
-    q.question,
-    q.procede,
-    q.departement,
-    q.score,
-    q.criticite,
-    p.deadline,
-    c.section_id,
-    c.action,
-    c.deadline AS constat_deadline,
-    c.avancement AS constat_avancement,
-    c.numero AS constat_numero,
-    r.id_employe AS matricule,
-    e.nom,
-    e.prenom,
-    f.chemin,
-    CASE
-        WHEN c.avancement = 100 THEN 1 
-        WHEN c.avancement < 100 AND c.deadline < CURRENT_DATE THEN 3
-        WHEN c.avancement < 100 THEN 2
-    END AS etat_constat
-   FROM constat c
-     LEFT JOIN section s ON c.section_id = s.id
-     LEFT JOIN typeaudit t ON c.typeaudit_id = t.id
-     LEFT JOIN vue_questionnaires q ON c.id = c.question_id
-     LEFT JOIN planaction p ON p.constat_id = c.id
-     LEFT JOIN responsable_section r ON r.id_section = c.section_id
-     LEFT JOIN listeemploye e ON e.id = r.id_employe
-     LEFT JOIN fichier f ON c.id = f.constat_id;
+--section_compliance
+
+    CREATE OR REPLACE VIEW public.v_audit_interne
+    AS SELECT ai.id,
+        ai.date_detection,
+        ai.id_section,
+        s.nom_section AS section,
+        ai.priorite,
+        ai.constat,
+        ai.action,
+        ai.deadline,
+        ai.avancement,
+        ai.new_deadline,
+        ai.numero_init,
+        ai.date_realisation,
+            CASE
+                WHEN ai.avancement = 100 THEN 1
+                WHEN ai.avancement < 100 AND ai.deadline < CURRENT_DATE THEN 3
+                WHEN ai.avancement < 100 THEN 2
+                ELSE NULL::integer
+            END AS etat_constat,
+        pai.photo_initial,
+        pai.photo_final,
+        pai.mime_type_initial,
+        pai.mime_type_final,
+        s.resp_id,
+        l.id AS id_emp,
+        l.nom AS nom_emp,
+        l.matricule AS mlle_emp,
+        s.resp_mail,
+        l.prenom AS prenom_emp
+    FROM audit_interne ai
+        LEFT JOIN section_compliance s ON s.id = ai.id_section
+        LEFT JOIN photo_audit_interne pai ON pai.id_audit_interne::text = ai.id::text
+        LEFT JOIN listeemploye l ON l.id = s.resp_id ;
+
+CREATE OR REPLACE VIEW public.v_section_compliance
+AS SELECT s.id,
+    s.nom_section,
+    s.etat,
+    s.resp_id,
+    l.nom AS nom_emp,
+    l.prenom AS prenom_emp 
+FROM section_compliance s
+    LEFT JOIN listeemploye l ON l.id = s.resp_id;
+
+ALTER TABLE public.audit_interne DROP CONSTRAINT audit_interne_check_date_realisation;
+ALTER TABLE public.audit_interne ADD CONSTRAINT audit_interne_date_realisation_check CHECK (date_realisation <= deadline);
+
+
+
+
+ALTER TABLE public.audit_interne ALTER COLUMN deadline DROP NOT NULL;

@@ -24,16 +24,20 @@
                             </div>
                         </div>
                         <div class="col-12 mt-2">
-                            <div class="row no-gutters">
-                                <div class="col-12">
+                            <div class="form-row">
+                                <div class="form-group col-md-6">
                                     <label class="col-form-label texte">Section</label>
-                                </div>
-                                <div class="col-12">
-                                    <select class="form-control" name="id_section">
+                                    <input class="form-control" list="liste_sections" id="sectionInput" placeholder="Section">
+                                    <input type="hidden" name="id_section" id="id_section_input" value="{{ request('id_section_input') }}">
+                                    <datalist id="liste_sections">
                                         @foreach ($sections as $section)
-                                            <option value="{{ $section->id }}">{{ $section->nom_section }}</option>
+                                            <option data-id="{{ $section->id }}"  data-nom="{{ $section->nom_emp }}" data-prenom="{{ $section->prenom_emp }}" value="{{ $section->nom_section }}"></option>
                                         @endforeach
-                                    </select>
+                                    </datalist>
+                                </div>
+                                <div class="form-group col-md-6">
+                                    <label class="col-form-label texte">Responsable</label>
+                                    <input type="text" class="form-control" id="responsable_input" placeholder="Responsable" name="resp_id" disabled>
                                 </div>
                             </div>
                         </div>
@@ -105,8 +109,8 @@
                 <div class="modal-body">
                     <div class="row grid">
                         <div class="col-xl-6">
-                            <div class="grid-col">
-                                <img src="" class="img-fluid rounded-start mb-5"  width="200px" height="200px" id="photo_initial">
+                            <div class="photo">
+                                <img src=""  id="photo_initial">
                             </div>
                             <div class="col-12 mt-2">
                                 <div class="row no-gutters">
@@ -120,8 +124,8 @@
                             </div>
                         </div>
                         <div class="col-xl-6">
-                            <div class="grid-col">
-                                <img src="" class="img-fluid rounded-start mb-5"  width="200px" height="200px" id="photo_final">
+                            <div class="photo">
+                                <img src="" id="photo_final">
                             </div>
                             <div class="col-12 mt-2">
                                 <div class="row no-gutters">
@@ -146,13 +150,17 @@
                                 <label>Date Constat</label>
                                 <input type="date" class="form-control" id="date_constat" name="date_constat" required>
                             </div>
-                            <div class="form-group col-md-6">
+                            <div class="form-group col-md-4">
                                 <label>Section</label>
                                 <select class="form-control" name="id_section" id="id_section">
                                     <!-- Options should be populated here -->
                                 </select>
                             </div>
-                            <div class="form-group col-md-6">
+                            <div class="form-group col-md-4">
+                                <label>Responsable</label>
+                                <input type="text" class="form-control" id="resp" required>
+                            </div>
+                            <div class="form-group col-md-4">
                                 <label>Priorité</label>
                                 <select class="form-control" name="priorite" id="priorite">
                                     <option value="1">Faible</option>
@@ -166,18 +174,26 @@
                                 <label>Description</label>
                                 <textarea class="form-control" name="description" id="description" required></textarea>
                             </div>
-                            <div class="form-group col-md-7">
+                            <div class="form-group col-md-10">
                                 <label>Action</label>
                                 <input type="text" class="form-control" name="action" required>
-                            </div>
-                            <div class="form-group col-md-3">
-                                <label>Deadline</label>
-                                <input type="date" class="form-control" name="deadline" required>
                             </div>
                             <div class="form-group col-md-2">
                                 <label>Avancement(%)</label>
                                 <input type="number" class="form-control" name="avancement" required>
                                 <div id="check_violation" class="text-danger mb-3"></div>
+                            </div>
+                            <div class="form-group col-md-4">
+                                <label>Deadline</label>
+                                <input type="date" class="form-control" name="deadline" required>
+                            </div>
+                            <div class="form-group col-md-4">
+                                <label>New Deadline</label>
+                                <input type="date" class="form-control" name="new_deadline" id="new_deadline">
+                            </div>
+                            <div class="form-group col-md-4">
+                                <label>Date Realisation</label>
+                                <input type="date" class="form-control" name="date_real" id="date_real">
                             </div>
                         </div>
                     </div>

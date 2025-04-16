@@ -23,7 +23,7 @@
                             </div>
                         </div>
                     </form>
-                    <div id="pdfContent">
+                    <div class="card-body" id="pdfContent">
                         <div class="row align-items-center">
                             <div class="col-auto text-center">
                                 <img src="./images/NEW LOGO.png" class="img-loi" alt="Logo">
@@ -40,10 +40,12 @@
                                         <th class="th-cell">ID</th>
                                         <th>Detection</th>
                                         <th>Section</th>
+                                        <th>Responsable</th>
                                         <th>Constat</th>
                                         <th>Moyens</th>
                                         <th>Priorité</th>
                                         <th>Deadline</th>
+                                        <th>New Deadline</th>
                                         <th>Avancement</th>
                                     </tr>
                                 </thead>
@@ -53,10 +55,12 @@
                                             <td class="id-cell">{{ $audit->id }}</td>
                                             <td class="id-cell">{{ $audit->date_detection }}</td>
                                             <td>{{ $audit->section }}</td>
+                                            <td>{{ $audit->nom_emp ?? '-'}} {{ $audit->prenom_emp ?? '-' }}</th>
                                             <td>{{ $audit->constat }}</td>
                                             <td>{{ $audit->action }}</td>
                                             <td class="{{ $audit->priorite['classe'] }}">{{ $audit->priorite['valeur'] }}</td>
                                             <td class="id-cell">{{ $audit->deadline }}</td>
+                                            <td class="id-cell">{{ $audit->new_deadline ?? '--' }}</td>
                                             <td class="{{ $audit->avancement['classe'] }}">{{ $audit->avancement['valeur'] }}%</td>
                                         </tr>
                                     @endforeach
@@ -79,10 +83,13 @@
                                         <th class="th-cell">ID</th>
                                         <th>Detection</th>
                                         <th>Section</th>
+                                        <th>Responsable</th>
                                         <th>Constat</th>
                                         <th>Moyens</th>
                                         <th>Priorité</th>
                                         <th>Deadline</th>
+                                        <th>New Deadline</th>
+                                        <th>Realisation</th>
                                         <th>Avancement</th>
                                     </tr>
                                 </thead>
@@ -92,10 +99,13 @@
                                             <td class="id-cell">{{ $audit->id }}</td>
                                             <td class="id-cell">{{ $audit->date_detection }}</td>
                                             <td>{{ $audit->section }}</td>
+                                            <td>{{ $audit->nom_emp ?? '-'}} {{ $audit->prenom_emp ?? '-' }}</th>
                                             <td>{{ $audit->constat }}</td>
                                             <td>{{ $audit->action }}</td>
                                             <td>{{ $audit->priorite['valeur'] }}</td>
                                             <td class="id-cell">{{ $audit->deadline }}</td>
+                                            <td class="id-cell">{{ $audit->new_deadline ?? '--' }}</td>
+                                            <td class="id-cell">{{ $audit->date_realisation ?? '--' }}</td>
                                             <td>{{ $audit->avancement['valeur'] }}%</td>
                                         </tr>
                                     @endforeach
@@ -119,10 +129,12 @@
                                         <th class="th-cell">ID</th>
                                         <th>Detection</th>
                                         <th>Section</th>
+                                        <th>Responsable</th>
                                         <th>Constat</th>
                                         <th>Moyens</th>
                                         <th>Priorité</th>
                                         <th>Deadline</th>
+                                        <th>New Deadline</th>
                                         <th>Avancement</th>
                                     </tr>
                                 </thead>
@@ -132,11 +144,13 @@
                                             <td class="id-cell">{{ $audit->id }}</td>
                                             <td class="id-cell">{{ $audit->date_detection }}</td>
                                             <td>{{ $audit->section }}</td>
+                                            <td>{{ $audit->nom_emp ?? '-'}} {{ $audit->prenom_emp ?? '-' }}</th>
                                             <td>{{ $audit->constat }}</td>
                                             <td>{{ $audit->action }}</td>
-                                            <td>{{ $audit->priorite['valeur'] }}</td>
+                                            <td class="{{ $audit->priorite['classe'] }}">{{ $audit->priorite['valeur'] }}</td>
                                             <td class="id-cell">{{ $audit->deadline }}</td>
-                                            <td>{{ $audit->avancement['valeur'] }}%</td>
+                                            <td class="id-cell">{{ $audit->new_deadline ?? '--' }}</td>
+                                            <td class="{{ $audit->avancement['classe'] }}">{{ $audit->avancement['valeur'] }}%</td>
                                         </tr>
                                     @endforeach
                                 </tbody>
@@ -150,14 +164,13 @@
 </div>
 <script>
     document.getElementById('export-pdf').addEventListener('click', function() {
-        // Appel de la fonction JavaScript que vous souhaitez exécuter
         exportToPDF();
     });
     function exportToPDF() {
         const element = document.getElementById("pdfContent");
 
         const options = {
-            filename: 'Rapport_Plan_Action.pdf',
+            filename: 'Rapport_Audit_Interne_{{ $mois_annee_affichage }}.pdf',
             image: { type: 'jpeg', quality: 0.98 },
             html2canvas: { scale: 2 },
             jsPDF: { unit: 'mm', format: 'a4', orientation: 'landscape' }

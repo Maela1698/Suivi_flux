@@ -45,10 +45,11 @@
                 $('#date_constat').val(convertToISOFormat(response.date_detection));
                 $('#description').val(response.constat);
                 $('input[name="action"]').val(response.action);
+                $('#resp').val(response.nom_emp + ' ' + response.prenom_emp);
                 $('input[name="deadline"]').val(convertToISOFormat(response.deadline));
+                $('input[name="date_real"]').val(response.date_real);
                 if (response.photo_initial && response.mime_type_initial) {
                     $('#photo_initial').attr('src', 'data:' + response.mime_type_initial + ';base64,' + response.photo_initial);
-                    $('#input_photo_initial').prop('disabled', true);
                 }
 
                 if (response.photo_final && response.mime_type_final) {
@@ -65,6 +66,13 @@
                 if (response.id_section) {
                     console.log('Setting section ID:', response.id_section);
                     $('#id_section').val(response.id_section);
+                }
+                
+
+                if (response.new_deadline) {
+                    $('#new_deadline').val(response.new_deadline);
+                } else {
+                    $('#new_deadline').val(''); // Vider le contenu de l'input si la condition n'est pas remplie
                 }
                 if (response.priorite) {
                     console.log('Setting priorite:', response.priorite);
@@ -120,3 +128,62 @@
         window.location.href = rapportAuditInterneUrl;
     });
 </script>
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        event.preventDefault();
+
+        document.getElementById('sectionInput').addEventListener('input', function () {
+            const input = this.value;
+            const dataList = document.getElementById('liste_sections');
+            const hiddenInput = document.getElementById('id_section_input');
+          
+            
+            let found = false;
+
+            Array.from(dataList.options).forEach(option => {
+                if (option.value === input) {
+                    hiddenInput.value = option.getAttribute('data-id');
+                    var nom = option.getAttribute('data-nom');
+                    var prenom = option.getAttribute('data-prenom');
+                    $('input[name="resp_id"]').prop('disabled',false);
+                    $('input[name="resp_id"]').val(nom + ' ' + prenom);
+                    $('input[name="resp_id"]').prop('disabled',true);
+                    found = true;
+                }
+            });
+            if (!found) {
+                hiddenInput.value = '';
+            }
+        });
+    });
+</script>
+@if(session('scrollTo'))
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            const element = document.querySelector("{{ session('scrollTo') }}");
+            if (element) {
+                // Ajouter la classe de surbrillance
+                element.classList.add('highlight');
+
+                // Ajuster le défilement en fonction de la hauteur de l'en-tête
+                const headerHeight = 60; // Remplacez par la hauteur réelle de votre en-tête
+                window.scrollTo({
+                    top: element.getBoundingClientRect().top + window.pageYOffset - headerHeight,
+                    behavior: 'smooth'
+                });
+
+                // Retirer la classe après 6 secondes
+                setTimeout(function() {
+                    element.classList.remove('highlight');
+                }, 2000);
+            }
+        });
+    </script>
+@endif
+
+<script>
+    document.getElementById('btn-ajout-mult').addEventListener('click', function() {
+        window.location.href = "{{ route('AUDITINTERNE.ajoutMultiple') }}";
+    });
+</script>
+

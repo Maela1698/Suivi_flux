@@ -67,6 +67,7 @@
                 <div class="card-header d-flex justify-content-between align-items-center">
                     <h3 class="entete">LISTE CONSTAT</h3>
                     <button type="button" data-toggle="modal" data-target="#constat" class="btn btn-primary">Ajouter</button>
+                    <button type="button" class="btn btn-primary" id="btn-ajout-mult">Ajout Multiple</button>
                 </div>
                 <form action="{{ route('COMPLIANCE.readAuditInterne') }}" method="post" autocomplete="off">
                     @csrf
@@ -101,8 +102,8 @@
                         </div>
                     </div>
                 </form>
-                <div class="table-responsive" style="margin-top: -15px;">
-                    <table class="table student-data-table m-t-20 table-hover mt-3 perso" style="color: black">
+                <div class="table-responsive mt-3">
+                    <table class="table table-bordered">
                         <thead>
                             <tr>
                                 <th>Code</th>
@@ -110,6 +111,7 @@
                                 <th>Detection</th>
                                 <th>Constat</th>
                                 <th>Section</th>
+                                <th>Responsable</th>
                                 <th>Actions</th>
                                 <th>Priorite</th>
                                 <th>Deadline</th>
@@ -118,7 +120,7 @@
                         </thead>
                         <tbody>
                             @foreach ($audits as $constat)
-                                <tr data-toggle="modal" data-target="#cinConstat" data-id="{{ $constat->id }}">
+                                <tr id="audit-{{ $constat->id }}" data-toggle="modal" data-target="#cinConstat" data-id="{{ $constat->id }}">
                                     <td>
                                         <div class="code">
                                             <div class="circle
@@ -128,8 +130,8 @@
                                             "></div>
                                         </div>
                                     </td>
-                                    <td>{{ $constat->id }}</td>
-                                    <td>{{ $constat->date_detection }}</td>
+                                    <td class="id-cell">{{ $constat->id }}</td>
+                                    <td class="id-cell">{{ $constat->date_detection }}</td>
                                     <td>
                                         <?php
                                             $descriptions = substr($constat->constat, 0, 50);
@@ -138,9 +140,10 @@
                                         {{ $descriptions }} @if($hasMore)...@endif
                                     </td>
                                     <td>{{ $constat->section }}</td>
+                                    <td>{{ $constat->nom_emp ?? '-'}} {{ $constat->prenom_emp ?? '-' }}</td>
                                     <td>{{ $constat->action }}</td>
                                     <td>{{ $constat->priorite['valeur'] }}</td>
-                                    <td>{{ $constat->deadline }}</td>
+                                    <td class="id-cell">{{ $constat->deadline }}</td>
                                     <td>{{ $constat->avancement['valeur'] }}%</td>
                                 </tr>
                             @endforeach

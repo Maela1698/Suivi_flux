@@ -24,17 +24,43 @@ class CheckRole
     //     return redirect('/unauthorized'); // Vous pouvez personnaliser cette redirection
     // }
 
-    public function handle(Request $request, Closure $next, $role)
-    {
-        if ($request->session()->has('employe')) {
-            $userRole = $request->session()->get('employe')[0]->role;
+    // public function handle(Request $request, Closure $next, $role)
+    // {
+    //     if ($request->session()->has('employe')) {
+    //         $userRole = $request->session()->get('employe')[0]->role;
 
-            // Vérifier si l'utilisateur a l'un des rôles autorisés
-            if (in_array($userRole, explode('|', $role))) {
-                return $next($request);
+    //         // Vérifier si l'utilisateur a l'un des rôles autorisés
+    //         if (in_array($userRole, explode('|', $role))) {
+    //             return $next($request);
+    //         }
+    //     }
+
+    //     return redirect('/unauthorized');
+    // }
+
+    public function handle(Request $request, Closure $next, $roles = null)
+    {
+
+        // Vérifie si l'utilisateur est connecté
+        if (!$request->session()->has('employe')) {
+            // Redirige vers la page de connexion
+            return redirect()->route('pageLogin');
+        }
+
+        // // Vérifie si le rôle correspond (si un rôle est requis)
+        // if ($role && $request->session()->get('employe')[0]->role !== $role) {
+        //     return redirect()->route('unauthorized');
+        // }
+
+        if ($roles) {
+            $userRole = $request->session()->get('employe')[0]->role;
+            $allowedRoles = explode('!', $roles);
+            if (!in_array($userRole, $allowedRoles)) {
+                return redirect()->route('unauthorized');
             }
         }
 
-        return redirect('/unauthorized');
+
+        return $next($request);
     }
 }

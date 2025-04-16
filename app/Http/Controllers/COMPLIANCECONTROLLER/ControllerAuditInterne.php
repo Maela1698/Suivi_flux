@@ -8,6 +8,7 @@ use App\Models\COMPLIANCE\PhotoAuditInterne;
 use App\Models\COMPLIANCE\Section;
 use App\Models\COMPLIANCE\SectionCompliance;
 use App\Models\COMPLIANCE\VAuditInterne;
+use App\Models\COMPLIANCE\VSectionCompliance;
 use Carbon\Carbon;
 use Exception;
 use Illuminate\Contracts\View\View;
@@ -35,6 +36,7 @@ class ControllerAuditInterne extends Controller
         $audits = VAuditInterne::orderBy('id','desc');
         $resolus = VAuditInterne::orderBy('id','desc');
         $restes = VAuditInterne::orderBy('id','desc');
+        $mois_annee_affichage = '';
         $selectedMoisAnnee = $request->mois_annee ?? null;
         if (!empty($selectedMoisAnnee)){
             
@@ -93,12 +95,13 @@ class ControllerAuditInterne extends Controller
     }
 
     public function getSectionCompliance(){
-        $sections = SectionCompliance::where('etat', true)->get();
+        $sections = VSectionCompliance::where('etat', true)->get();
         return response()->json($sections);
     }
 
     public function readAudit(Request $request): View{
-        $sections = SectionCompliance::where('etat',true)->get();
+        
+        $sections = VSectionCompliance::where('etat',true)->get();
         $audits = VAuditInterne::orderBy('id','desc');
 
         $dateDebut = null;
@@ -153,6 +156,11 @@ class ControllerAuditInterne extends Controller
                 'taux_retard' => 0
             ];
         }
+        $request->session()->put('filters', [
+            'daterange' => $selectedDateRange,
+            'resolution' => $selectedResolution,
+            'id_section' => $selectedSection,
+        ]);
         return view('COMPLIANCE.listeConstat', compact('audits', 'sections', 'constat_stat','dateDebut','dateFin'));
     }
 
@@ -173,7 +181,11 @@ class ControllerAuditInterne extends Controller
                 'mime_type_initial' => $audit->mime_type_initial,
                 'photo_final' => $audit->photo_final,
                 'mime_type_final' => $audit->mime_type_final,
-             ]);
+                'nom_emp' => $audit->nom_emp ?? '--',
+                'prenom_emp' => $audit->prenom_emp ?? '--',
+                'new_deadline' => $audit->new_deadline,
+                'date_real' => $audit->date_realisation
+            ]);
         }
         return response()->json(['error' => 'audit non trouvé'], 404);
     }
@@ -200,24 +212,82 @@ class ControllerAuditInterne extends Controller
         $audit_interne->store($data);
         return redirect()->route(route: 'COMPLIANCE.readAuditInterne');
     }
+    
+    public function doAjoutMultiple(Request $request){
+        // Récupérer les données du formulaire
+        $constats = $request->input('constat');
+        $actions = $request->input('action');
+        $priorites = $request->input('priorite');
+        $deadlines = $request->input('deadline');
+        // $photos = $request->input('photo_initial');
+        $date_detection = $request->date_detection;
+        $id_section = $request->id_section;
+
+        // Créer un tableau pour stocker les données structurées
+        $data = [];
+
+        // Parcourir les données et les organiser dans le tableau
+        foreach ($constats as $index => $constat) {
+            $data[] = [
+                'constat' => $constat,
+                'date_detection' => $date_detection,
+                'id_section' => $id_section,
+                'action' => $actions[$index],
+                'priorite' => $priorites[$index],
+                'deadline' => $deadlines[$index],
+                // 'photo_initial' => $photos[$index],
+            ];
+        }
+        $this->createNewAuditInterne($data);
+        $request->session()->put('filters', [
+            'resolution' => 2,
+            'id_section' => $id_section,
+        ]);
+
+        $filters = $request->session()->get('filters', []);
+        return redirect()->route('COMPLIANCE.readAuditInterne', $filters);
+    }
+
+    public function createNewAuditInterne($data){
+        foreach($data as $audit){
+            $audit_interne = new AuditInterne();
+            $audit_interne->store($audit);
+        }
+    }
+
+    public function verifyIfExist($id_audit){
+        $id_photo = "P".$id_audit;
+        $photo = PhotoAuditInterne::find($id_photo);
+        if($photo){
+            return true;
+        }
+        return false;
+    }
 
     public function updateAvancement(Request $request){
         try{
             DB::beginTransaction();
             $audit = AuditInterne::find($request->id_audit);
-            $this->verifyAvancement($request->avancement, $audit->avancement);
             $audit->avancement = $request->avancement;
+            if($request->new_deadline){
+                $audit->new_deadline = $request->new_deadline;
+            }
+            if($request->date_real){
+                $audit->date_realisation = $request->date_real;
+            }
             $audit->save();
             if($request->hasFile('photo_initial')){
                 $file = $request->file('photo_initial');
-                $this->insertPhoto($audit->id,$file);
+                $this->insertOrUpdatePhoto($audit->id,$file);
             }
             if($request->hasFile('photo_final')){
                 $file = $request->file('photo_final');
                 $this->updatePhoto($audit->id,$file);
             }
             DB::commit();
-            return redirect()->route(route: 'COMPLIANCE.readAuditInterne');
+            $filters = $request->session()->get('filters', []);
+
+            return redirect()->route('COMPLIANCE.readAuditInterne', $filters)->with('scrollTo', '#audit-' . $audit->id);
         }
         catch (QueryException $e) {
             DB::rollBack();
@@ -225,27 +295,39 @@ class ControllerAuditInterne extends Controller
                 Session::flash('check_violation', 'la valeur doit etre inferieur à 100%');
                 Session::flash('avancement_invalide', $request->avancement);
             }
-            return redirect()->route(route: 'COMPLIANCE.readAuditInterne');
+            $filters = $request->session()->get('filters', []);
+            return redirect()->route('COMPLIANCE.readAuditInterne',$filters);
         }
         catch (Exception $e){
             DB::rollBack();
             Session::flash('check_violation', $e->getMessage());
             Session::flash('avancement_invalide', $request->avancement);
-            return redirect()->route('COMPLIANCE.readAuditInterne');
+            $filters = $request->session()->get('filters', []);
+            return redirect()->route('COMPLIANCE.readAuditInterne',$filters);
         }
     }
 
-    public function insertPhoto($id_audit,UploadedFile $file){
+    public function insertOrUpdatePhoto($id_audit,UploadedFile $file){
         try{
-            $mime_type = $file->getMimeType();
-            $image_base64 = base64_encode(file_get_contents($file->getRealPath()));
-            $data_photo_audit = [
-                'id' => 'P'.$id_audit,
-                'id_audit_interne' => $id_audit,
-                'photo_initial' => $image_base64,
-                'mime_type_initial' => $mime_type,
-            ];
-            PhotoAuditInterne::create($data_photo_audit);
+            if(!$this->verifyIfExist($id_audit)){
+                $mime_type = $file->getMimeType();
+                $image_base64 = base64_encode(file_get_contents($file->getRealPath()));
+                $data_photo_audit = [
+                    'id' => 'P'.$id_audit,
+                    'id_audit_interne' => $id_audit,
+                    'photo_initial' => $image_base64,
+                    'mime_type_initial' => $mime_type,
+                ];
+                PhotoAuditInterne::create($data_photo_audit);
+            }
+            else{
+                $mime_type = $file->getMimeType();
+                $photo_audit = PhotoAuditInterne::find("P".$id_audit);
+                $image_base64 = base64_encode(file_get_contents($file->getRealPath()));
+                $photo_audit->photo_initial = $image_base64;
+                $photo_audit->mime_type_initial = $mime_type;
+                $photo_audit->save();
+            }
             return redirect()->route('COMPLIANCE.readAuditInterne');
         }
         catch(Exception $e){
@@ -269,4 +351,11 @@ class ControllerAuditInterne extends Controller
             return redirect()->route('COMPLIANCE.readAuditInterne');
         }
     }
+
+    public function ajoutMultiple(){
+        $sections = VSectionCompliance::where('etat',true)->get();
+        return view('COMPLIANCE.auditInterne.ajoutMultiple',compact('sections'));
+    }
+
+    
 }
