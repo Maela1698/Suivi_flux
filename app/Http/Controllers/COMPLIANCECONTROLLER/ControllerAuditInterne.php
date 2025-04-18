@@ -81,8 +81,9 @@ class ControllerAuditInterne extends Controller
             $moisAnnee = $this->transformToDate($mois_annee);
             $mois_annee_affichage =  $deadline_debut->format('Y-M');
             
+            $dateFinMety = $deadline_fin->format('Y-m-d');
             
-            $audits = $audits->whereBetween('date_detection',[$moisAnnee['debut'],$dateFin])->where('avancement','<',100);
+            $audits = $audits->whereBetween('date_detection',[$moisAnnee['debut'],$dateFinMety])->where('avancement','<',100);
             $resolus = $resolus->whereBetween('date_realisation',[$deadline_debut,$deadline_fin])->where('avancement',100);
             $audits_ids = $audits->pluck('id')->toArray();
             $restes = $restes
