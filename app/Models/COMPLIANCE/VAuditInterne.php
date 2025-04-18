@@ -19,7 +19,9 @@ class VAuditInterne extends Model{
         'date_detection',
         'priorite',
         'deadline',
-        'avancement'
+        'avancement',
+        'new_deadline',
+        'date_realisation'
     ];
 
     public function getPrioriteAttribute($value){
@@ -38,6 +40,20 @@ class VAuditInterne extends Model{
     }
 
     public function getDeadlineAttribute($value){
+        if($value){
+            $date = Carbon::parse($value);
+            return $date->format('d-m-Y');
+        }
+    }
+
+    public function getNewDeadlineAttribute($value){
+        if($value){
+            $date = Carbon::parse($value);
+            return $date->format('d-m-Y');
+        }
+    }
+
+    public function getDateRealisationAttribute($value){
         if($value){
             $date = Carbon::parse($value);
             return $date->format('d-m-Y');

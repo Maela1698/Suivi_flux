@@ -1,0 +1,60 @@
+.img-fluid {
+    max-width: 50%;
+    height: auto;
+    /* margin-left: -56%; */
+}
+
+.img-loi {
+    max-width: 50%;
+    height: auto;
+    margin-left: -56%;
+}
+
+td{
+    color : black;
+}
+
+
+.id-cell {
+    white-space: nowrap; /* Empêche le texte de passer à la ligne */
+}
+
+.th-cell {
+    width: auto;
+}
+
+.faible{
+    background-color: #c7eecf;
+}
+
+.moyenne{
+    background-color: #feec9a;
+}
+
+.elevee{
+    background-color: #ffc8cb;
+}
+
+/* .table tr {
+    page-break-inside: avoid;
+} */
+
+
+    .table tr {
+        page-break-inside: avoid; /* Empêche la coupure des lignes entre les pages */
+        margin-bottom: 15px; /* Ajoute une marge pour plus d'espace entre les lignes */
+    }
+    .table {
+        border-collapse: collapse;
+        width: 100%; /* Assure que le tableau utilise toute la largeur disponible */
+    }
+    .table td, .table th {
+        padding: 10px; /* Ajoute du padding pour améliorer l'espacement interne des cellules */
+        border: 1px solid #ddd; /* Ajoute une bordure pour une meilleure délimitation des cellules */
+    }
+    .table thead {
+        display: table-header-group; /* Répète l'en-tête sur chaque page */
+    }
+    .table tfoot {
+        display: table-footer-group; /* Répète le pied de tableau sur chaque page */
+    }

@@ -21,3 +21,4 @@ Route::post('/updateAvancement', [ControllerAuditInterne::class, 'updateAvanceme
 Route::get('/getRapport', [ControllerAuditInterne::class, 'getRapport'])->name('AUDITINTERNE.Rapport')->middleware('checkrole:Compliance!CRM');
 Route::get('/ajoutMultiple', [ControllerAuditInterne::class, 'ajoutMultiple'])->name('AUDITINTERNE.ajoutMultiple')->middleware('checkrole:Compliance!CRM');
 Route::post('/doAjoutMultiple', [ControllerAuditInterne::class, 'doAjoutMultiple'])->name('AUDITINTERNE.doAjoutMultiple')->middleware('checkrole:Compliance!CRM');
+Route::get('/rapportHebdo', [ControllerAuditInterne::class, 'getRapportHebdo'])->name('AUDITINTERNE.rapportHebdo')->middleware('checkrole:Compliance!CRM');

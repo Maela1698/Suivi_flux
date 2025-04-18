@@ -185,5 +185,8 @@
     document.getElementById('btn-ajout-mult').addEventListener('click', function() {
         window.location.href = "{{ route('AUDITINTERNE.ajoutMultiple') }}";
     });
+    document.getElementById('rapportHebdo-button').addEventListener('click', function() {
+        window.location.href = "{{ route('AUDITINTERNE.rapportHebdo') }}";
+    });
 </script>
 

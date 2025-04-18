@@ -99,6 +99,7 @@
                         <div class="col-lg">
                             <button class="btn btn-success" style="width: 100px">Filtrer</button>
                             <button type="button" class="btn btn-primary" id="rapport-button">Rapport</button>    
+                            <button type="button" class="btn btn-primary" id="rapportHebdo-button">Rapport hebdo</button>    
                         </div>
                     </div>
                 </form>

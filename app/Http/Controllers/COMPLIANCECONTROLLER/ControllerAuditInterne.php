@@ -63,10 +63,44 @@ class ControllerAuditInterne extends Controller
         return view('COMPLIANCE.auditInterne.rapport',compact('audits','resolus','restes','mois_annee_affichage'));
     }
 
+    public function getRapportHebdo(Request $request){
+        $audits = VAuditInterne::orderBy('date_detection');
+        $resolus = VAuditInterne::orderBy('date_detection');
+        $restes = VAuditInterne::orderBy('id','desc');
+        $mois_annee_affichage = '';
+
+        $selectedDateRange = $request->daterange  ?? '';
+        if (!empty($selectedDateRange)) {
+            list($deadline_debut,$deadline_fin) = explode(' au ',$selectedDateRange);
+            $deadline_debut = Carbon::createFromFormat('d-m-Y', $deadline_debut);
+            $deadline_fin = Carbon::createFromFormat('d-m-Y', $deadline_fin);
+            $dateDebut = $deadline_debut->format('d-m-Y');
+            $dateFin = $deadline_fin->format('d-m-Y');
+
+            $mois_annee = $deadline_debut->format('Y-m');
+            $moisAnnee = $this->transformToDate($mois_annee);
+            $mois_annee_affichage =  $deadline_debut->format('Y-M');
+            
+            
+            $audits = $audits->whereBetween('date_detection',[$moisAnnee['debut'],$dateFin])->where('avancement','<',100);
+            $resolus = $resolus->whereBetween('date_realisation',[$deadline_debut,$deadline_fin])->where('avancement',100);
+            $audits_ids = $audits->pluck('id')->toArray();
+            $restes = $restes
+                // ->where('date_detection','<=',$deadline_fin)
+                ->where('avancement','<',100)
+                ->whereNotIn('id',$audits_ids);
+
+            $audits = $audits->get();
+            $resolus = $resolus->get(); 
+            $restes = $restes->get();
+        }
+        return view('COMPLIANCE.auditInterne.rapportHebdo',compact('audits','resolus','restes','mois_annee_affichage'));
+    }
+
     public function transformToDate($selectedMoisAnnee){
         // Créer un objet DateTime à partir de la chaîne "AAAA-MM"
         $date = new DateTime($selectedMoisAnnee . '-01');
-
+        
         // Obtenir la première date du mois
         $firstDay = $date->format('Y-m-d');
 
@@ -100,7 +134,6 @@ class ControllerAuditInterne extends Controller
     }
 
     public function readAudit(Request $request): View{
-        
         $sections = VSectionCompliance::where('etat',true)->get();
         $audits = VAuditInterne::orderBy('id','desc');
 
@@ -357,6 +390,8 @@ class ControllerAuditInterne extends Controller
         $sections = VSectionCompliance::where('etat',true)->get();
         return view('COMPLIANCE.auditInterne.ajoutMultiple',compact('sections','date'));
     }
+
+ 
 
     
 }
