@@ -99,7 +99,7 @@
                                             <td class="id-cell">{{ $audit->id }}</td>
                                             <td class="id-cell">{{ $audit->date_detection }}</td>
                                             <td>{{ $audit->section }}</td>
-                                            <td>{{ $audit->nom_emp ?? '-'}} {{ $audit->prenom_emp ?? '-' }}</th>
+                                            <td class="fixed-width">{{ $audit->nom_emp ?? '-'}} {{ $audit->prenom_emp ?? '-' }}</th>
                                             <td>{{ $audit->constat }}</td>
                                             <td>{{ $audit->action }}</td>
                                             <td>{{ $audit->priorite['valeur'] }}</td>

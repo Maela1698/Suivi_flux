@@ -58,3 +58,13 @@ td{
     .table tfoot {
         display: table-footer-group; /* Répète le pied de tableau sur chaque page */
     }
+
+    .fixed-width {
+        width: 150px; /* Largeur fixe */
+        word-wrap: break-word; /* Permettre le retour à la ligne */
+        white-space: normal; /* Retour à la ligne automatique */
+    }
+
+    #pdfContent{
+        font-size: 75%;
+    }
