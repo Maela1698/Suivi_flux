@@ -27,7 +27,7 @@
             const [day, month, year] = dateString.split('-');
             return `${year}-${month}-${day}`;
         }
-        
+        return dateString;
     }
 
     function loadConstatDetails(id_audit) {
@@ -49,7 +49,6 @@
                 $('input[name="deadline"]').val(convertToISOFormat(response.deadline));
                 $('input[name="date_real"]').val(convertToISOFormat(response.date_real));
                 $('input[name="new_deadline"]').val(convertToISOFormat(response.new_deadline));
-                alert(convertToISOFormat(response.date_real));
                 if (response.photo_initial && response.mime_type_initial) {
                     $('#photo_initial').attr('src', 'data:' + response.mime_type_initial + ';base64,' + response.photo_initial);
                 }
@@ -208,4 +207,17 @@
     });
 </script>
 
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const avancementInput = document.getElementById('avancement');
+        const dateRealInput = document.getElementById('date_real');
 
+        avancementInput.addEventListener('input', function () {
+            if (avancementInput.value == 100) {
+                const today = new Date().toISOString().split('T')[0]; // Obtenir la date d'aujourd'hui au format AAAA-MM-JJ
+                dateRealInput.value = today;
+                dateRealInput.disabled = false; // Activer l'input date
+            }
+        });
+    });
+</script>
