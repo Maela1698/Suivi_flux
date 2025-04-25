@@ -207,17 +207,4 @@
     });
 </script>
 
-<script>
-    document.addEventListener('DOMContentLoaded', function () {
-        const avancementInput = document.getElementById('avancement');
-        const dateRealInput = document.getElementById('date_real');
 
-        avancementInput.addEventListener('input', function () {
-            if (avancementInput.value == 100) {
-                const today = new Date().toISOString().split('T')[0]; // Obtenir la date d'aujourd'hui au format AAAA-MM-JJ
-                dateRealInput.value = today;
-                dateRealInput.disabled = false; // Activer l'input date
-            }
-        });
-    });
-</script>

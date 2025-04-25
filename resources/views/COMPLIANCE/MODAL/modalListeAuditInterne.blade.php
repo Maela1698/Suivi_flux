@@ -193,7 +193,7 @@
                             </div>
                             <div class="form-group col-md-4">
                                 <label>Date Realisation</label>
-                                <input type="date" class="form-control" name="date_real" id="date_real" disabled>
+                                <input type="date" class="form-control" name="date_real" id="date_real">
                             </div>
                         </div>
                     </div>
