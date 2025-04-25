@@ -320,6 +320,7 @@ class ControllerAuditInterne extends Controller
             }
             if($request->date_real){
                 $audit->date_realisation = $request->date_real;
+                dd($audit->date_realisation);
             }
             $audit->save();
             if($request->hasFile('photo_initial')){
