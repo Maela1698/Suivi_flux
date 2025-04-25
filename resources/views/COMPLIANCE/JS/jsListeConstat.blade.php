@@ -47,7 +47,8 @@
                 $('input[name="action"]').val(response.action);
                 $('#resp').val(response.nom_emp + ' ' + response.prenom_emp);
                 $('input[name="deadline"]').val(convertToISOFormat(response.deadline));
-                $('input[name="date_real"]').val(response.date_real);
+                $('input[name="date_real"]').val(convertToISOFormat(response.date_real));
+                $('input[name="new_deadline"]').val(convertToISOFormat(response.new_deadline));
                 if (response.photo_initial && response.mime_type_initial) {
                     $('#photo_initial').attr('src', 'data:' + response.mime_type_initial + ';base64,' + response.photo_initial);
                 }
@@ -68,12 +69,6 @@
                     $('#id_section').val(response.id_section);
                 }
                 
-
-                if (response.new_deadline) {
-                    $('#new_deadline').val(response.new_deadline);
-                } else {
-                    $('#new_deadline').val(''); // Vider le contenu de l'input si la condition n'est pas remplie
-                }
                 if (response.priorite) {
                     console.log('Setting priorite:', response.priorite);
                     $('#priorite option').each(function() {
@@ -189,4 +184,40 @@
         window.location.href = "{{ route('AUDITINTERNE.rapportHebdo') }}";
     });
 </script>
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        event.preventDefault();
+        document.getElementById('sectionInput').addEventListener('input', function () {
+            const input = this.value;
+            const dataList = document.getElementById('liste_sections');
+            const hiddenInput = document.getElementById('id_section_input');
+            
+            let found = false;
 
+            Array.from(dataList.options).forEach(option => {
+                if (option.value === input) {
+                    hiddenInput.value = option.getAttribute('data-id');
+                    found = true;
+                }
+            });
+            if (!found) {
+                hiddenInput.value = '';
+            }
+        });
+    });
+</script>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const avancementInput = document.getElementById('avancement');
+        const dateRealInput = document.getElementById('date_real');
+
+        avancementInput.addEventListener('input', function () {
+            if (avancementInput.value == 100) {
+                const today = new Date().toISOString().split('T')[0]; // Obtenir la date d'aujourd'hui au format AAAA-MM-JJ
+                dateRealInput.value = today;
+                dateRealInput.disabled = false; // Activer l'input date
+            }
+        });
+    });
+</script>

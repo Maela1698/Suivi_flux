@@ -73,7 +73,6 @@
                             </div>
                             <div class="col text-right">
                                 <h4 class="font-weight-bold">Rapport Actions Resolus</h4>
-                                <p class="mb-1"><strong>Mois/Annee :</strong>{{ $mois_annee_affichage ?? '' }}<span id="dateFin"></span></p>
                             </div>
                         </div>
                         <div class="table-responsive mt-3">
@@ -118,8 +117,6 @@
                             </div>
                             <div class="col text-right">
                                 <h4 class="font-weight-bold">Reste des actions non resolus</h4>
-                                <p class="mb-1"><strong>Mois/Annee :</strong>{{ $mois_annee_affichage ?? '' }} <span id="dateDebut"></span></p>
-                                
                             </div>
                         </div>
                         <div class="table-responsive mt-3">

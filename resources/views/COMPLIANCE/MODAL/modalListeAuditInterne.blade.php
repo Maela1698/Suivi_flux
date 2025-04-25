@@ -180,7 +180,7 @@
                             </div>
                             <div class="form-group col-md-2">
                                 <label>Avancement(%)</label>
-                                <input type="number" class="form-control" name="avancement" required>
+                                <input type="number" class="form-control" name="avancement" id="avancement" required>
                                 <div id="check_violation" class="text-danger mb-3"></div>
                             </div>
                             <div class="form-group col-md-4">
@@ -193,7 +193,7 @@
                             </div>
                             <div class="form-group col-md-4">
                                 <label>Date Realisation</label>
-                                <input type="date" class="form-control" name="date_real" id="date_real">
+                                <input type="date" class="form-control" name="date_real" id="date_real" disabled>
                             </div>
                         </div>
                     </div>

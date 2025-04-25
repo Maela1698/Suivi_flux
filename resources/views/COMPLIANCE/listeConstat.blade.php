@@ -86,14 +86,13 @@
                         </div>
                         <div class="col-lg">
                             <div class="input-group">
-                                <select class="form-control" name="id_section">
-                                    <option value="">Section</option>
-                                    @foreach ( $sections as $section )
-                                        <option value="{{ $section->id }}" {{ request('id_section') == $section->id ? 'selected' : '' }}>
-                                            {{ $section->nom_section }}
-                                        </option>
+                                <input class="form-control" list="liste_sections" id="sectionInput" placeholder="Section" value="{{ $section ? $section->nom_section : ''}}">
+                                <input type="hidden" name="id_section" id="id_section_input" value="{{ request('id_section_input') }}">
+                                <datalist id="liste_sections">
+                                    @foreach ($sections as $section)
+                                        <option data-id="{{ $section->id }}"  value="{{ $section->nom_section }}"></option>
                                     @endforeach
-                                </select>                                
+                                </datalist>                              
                             </div>
                         </div>
                         <div class="col-lg">
@@ -144,7 +143,9 @@
                                     <td>{{ $constat->nom_emp ?? '-'}} {{ $constat->prenom_emp ?? '-' }}</td>
                                     <td>{{ $constat->action }}</td>
                                     <td>{{ $constat->priorite['valeur'] }}</td>
-                                    <td class="id-cell">{{ $constat->deadline }}</td>
+                                    <td class="id-cell">
+                                        {{ $constat->new_deadline ? $constat->new_deadline : $constat->deadline }}
+                                    </td>
                                     <td>{{ $constat->avancement['valeur'] }}%</td>
                                 </tr>
                             @endforeach

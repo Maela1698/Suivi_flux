@@ -160,8 +160,10 @@ class ControllerAuditInterne extends Controller
         }
 
         $selectedSection = $request->id_section ?? '';
+        $section = null;
         if(!empty($selectedSection)){
             $audits = $audits->where('id_section',$selectedSection);
+            $section = VSectionCompliance::where('id',$selectedSection)->first();
         }
 
         $audits = $audits->get();
@@ -195,7 +197,7 @@ class ControllerAuditInterne extends Controller
             'resolution' => $selectedResolution,
             'id_section' => $selectedSection,
         ]);
-        return view('COMPLIANCE.listeConstat', compact('audits', 'sections', 'constat_stat','dateDebut','dateFin'));
+        return view('COMPLIANCE.listeConstat', compact('audits', 'sections', 'constat_stat','dateDebut','dateFin','section'));
     }
 
     public function getAuditInterneDetail (Request $request) {
@@ -253,10 +255,11 @@ class ControllerAuditInterne extends Controller
         $actions = $request->input('action');
         $priorites = $request->input('priorite');
         $deadlines = $request->input('deadline');
-        // $photos = $request->input('photo_initial');
+        $photos = $request->file('photo_initial');
         $date_detection = $request->date_detection;
         $id_section = $request->id_section;
 
+        // dd($photos);
         // Créer un tableau pour stocker les données structurées
         $data = [];
 
@@ -269,7 +272,7 @@ class ControllerAuditInterne extends Controller
                 'action' => $actions[$index],
                 'priorite' => $priorites[$index],
                 'deadline' => $deadlines[$index],
-                // 'photo_initial' => $photos[$index],
+                'photo_initial' => isset($photos[$index]) ? $photos[$index] : null,
             ];
         }
         $this->createNewAuditInterne($data);
@@ -283,9 +286,14 @@ class ControllerAuditInterne extends Controller
     }
 
     public function createNewAuditInterne($data){
+       
         foreach($data as $audit){
             $audit_interne = new AuditInterne();
             $audit_interne->store($audit);
+            if($audit['photo_initial'] !== null){
+                $this->insertOrUpdatePhoto($audit_interne->id, $audit['photo_initial']);
+            }
+            
         }
     }
 
@@ -302,7 +310,11 @@ class ControllerAuditInterne extends Controller
         try{
             DB::beginTransaction();
             $audit = AuditInterne::find($request->id_audit);
+            $this->verifyAvancement($request->avancement,$audit->avancement);
             $audit->avancement = $request->avancement;
+            if($request->deadline){
+                $audit->deadline = $request->deadline;
+            }
             if($request->new_deadline){
                 $audit->new_deadline = $request->new_deadline;
             }
