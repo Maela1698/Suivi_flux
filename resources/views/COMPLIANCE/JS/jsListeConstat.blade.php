@@ -49,6 +49,7 @@
                 $('input[name="deadline"]').val(convertToISOFormat(response.deadline));
                 $('input[name="date_real"]').val(convertToISOFormat(response.date_real));
                 $('input[name="new_deadline"]').val(convertToISOFormat(response.new_deadline));
+                alert(convertToISOFormat(response.date_real));
                 if (response.photo_initial && response.mime_type_initial) {
                     $('#photo_initial').attr('src', 'data:' + response.mime_type_initial + ';base64,' + response.photo_initial);
                 }
