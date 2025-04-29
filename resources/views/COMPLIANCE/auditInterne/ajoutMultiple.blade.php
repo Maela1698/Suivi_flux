@@ -29,7 +29,8 @@
                             </div>
                             <div class="col-lg">
                                 <label>Date detection</label>
-                                <input class="form-control" type="date" name="date_detection" value="{{ $date }}" disabled>
+                                <input class="form-control" type="date"  value="{{ $date }}" disabled>
+                                <input  type="hidden"  name="date_detection" value="{{ $date }}">
                             </div>
                             <div class="col-lg">
                                 <button type="button" class="btn btn-primary" id="btn-ajout-mult">
