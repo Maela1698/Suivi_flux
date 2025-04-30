@@ -1,5 +1,6 @@
 @include('PROJET.page.header')
 @include('CRM.sidebar')
+@include('PROJET.STYLE.stylePortefeuille')
 <div class="content-body">
     <div class="container-fluid">
         <div class="row page-titles mx-0">
@@ -64,46 +65,95 @@
         <div class="row">
             <div class="col-lg-12">
                 <div class="card">
+                    <div class="card-header">
+                        <h4 class="card-title mb-0">Filtre</h4>
+                    </div>
+                    <div class="card-body">
+                        <div class="basic-form">
+                            <form>
+                                <div class="form-row row gy-2">
+                                    <div class="col-12 col-lg-3">
+                                        <label>Chef</label>
+                                        <input class="form-control" list="liste_chefs" id="chefInput">
+                                        <datalist id="liste_chefs">
+                                            <option data-id="">Santatra</option>
+                                            <option data-id="">Kanto</option>
+                                            <option data-id="">Notia</option>
+                                        </datalist>
+                                    </div>
+                                    <div class="col-12 col-lg-3">
+                                        <label>Date debut</label>
+                                        <input class="form-control" id="dateDebut" type="text" name="dateDebut">
+                                    </div>
+                                    <div class="col-12 col-lg-3">
+                                        <label>Date fin</label>
+                                        <input class="form-control" id="dateFin" type="text" name="dateFin">
+                                    </div>
+                                    <div class="col-12 col-lg-2">
+                                        <label>Etat</label>
+                                        <input type="text" class="form-control">
+                                    </div>
+                                    <div class="col-12 col-lg-1 d-flex align-items-lg-end mt-2 mt-lg-0">
+                                        <button type="button" class="btn btn-primary w-100">Filtrer</button>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>                        
+                    </div>
+                </div>
+                <!-- /# card -->
+            </div>
+        </div>
+        <!-- row -->
+
+        <div class="row">
+            <div class="col-lg-12">
+                <div class="card">
                     <div class="card-header d-flex justify-content-between align-items-center">
                         <h4 class="card-title mb-0">Liste des Portefeuilles</h4>
                         <button type="button" class="btn btn-success">Ajouter</button>
                     </div>
                     <div class="card-body">
                         <div class="table-responsive">
-                            <table class="table table-hover table-responsive-sm">
+                            <table class="table table-hover">
                                 <thead>
                                     <tr>
                                         <th>#</th>
-                                        <th>Name</th>
-                                        <th>Status</th>
-                                        <th>Date</th>
-                                        <th>Price</th>
+                                        <th>Titre</th>
+                                        <th>Chef</th>
+                                        <th>Equipe</th>
+                                        <th>Programmes</th>
+                                        <th>Projets</th>
+                                        <th>Debut</th>
+                                        <th>Fin</th>
+                                        <th>Avancement</th>
+                                        <th>Etat</th>
                                     </tr>
                                 </thead>
                                 <tbody>
                                     <tr>
-                                        <th>1</th>
-                                        <td>Kolor Tea Shirt For Man</td>
-                                        <td><span class="badge badge-primary">Sale</span>
-                                        </td>
-                                        <td>January 22</td>
-                                        <td class="color-primary">$21.56</td>
+                                        <th>PR0001</th>
+                                        <td>ERP</td>
+                                        <td>Santatra RANDRIANAHERY</td>
+                                        <td>6</td>
+                                        <td>5</td>
+                                        <td>12</td>
+                                        <td>12/05/2025</td>
+                                        <td>03/08/2025</td>
+                                        <td>12%</td>
+                                        <td><span class="badge badge-primary">En cours</span></td>
                                     </tr>
                                     <tr>
-                                        <th>2</th>
-                                        <td>Kolor Tea Shirt For Women</td>
-                                        <td><span class="badge badge-success">Tax</span>
-                                        </td>
-                                        <td>January 30</td>
-                                        <td class="color-success">$55.32</td>
-                                    </tr>
-                                    <tr>
-                                        <th>3</th>
-                                        <td>Blue Backpack For Baby</td>
-                                        <td><span class="badge badge-danger">Extended</span>
-                                        </td>
-                                        <td>January 25</td>
-                                        <td class="color-danger">$14.85</td>
+                                        <th>PR0002</th>
+                                        <td>CRM</td>
+                                        <td>Notia Niavo</td>
+                                        <td>4</td>
+                                        <td>2</td>
+                                        <td>8</td>
+                                        <td>12/05/2025</td>
+                                        <td>03/08/2025</td>
+                                        <td>67%</td>
+                                        <td><span class="badge badge-success">Acheve</span></td>
                                     </tr>
                                 </tbody>
                             </table>
@@ -113,6 +163,9 @@
                 <!-- /# card -->
             </div>
         </div>
+        <!-- row -->
+
     </div>
 </div>
+@include('PROJET.JS.jsPortefeuille')
 @include('CRM.footer')
