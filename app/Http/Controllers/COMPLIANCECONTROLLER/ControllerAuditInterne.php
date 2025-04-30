@@ -315,6 +315,9 @@ class ControllerAuditInterne extends Controller
             if($request->deadline){
                 $audit->deadline = $request->deadline;
             }
+            if($request->constat){
+                $audit->constat = $request->constat;
+            }
             if($request->new_deadline){
                 $audit->new_deadline = $request->new_deadline;
             }

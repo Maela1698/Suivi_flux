@@ -172,7 +172,7 @@
                         <div class="form-row">
                             <div class="form-group col-md-12">
                                 <label>Description</label>
-                                <textarea class="form-control" name="description" id="description" required></textarea>
+                                <textarea class="form-control" name="constat" id="description" required></textarea>
                             </div>
                             <div class="form-group col-md-10">
                                 <label>Action</label>
