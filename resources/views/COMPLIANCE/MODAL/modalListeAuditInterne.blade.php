@@ -185,7 +185,7 @@
                             </div>
                             <div class="form-group col-md-4">
                                 <label>Deadline</label>
-                                <input type="date" class="form-control" name="deadline" required>
+                                <input type="date" class="form-control" name="deadline">
                             </div>
                             <div class="form-group col-md-4">
                                 <label>New Deadline</label>
